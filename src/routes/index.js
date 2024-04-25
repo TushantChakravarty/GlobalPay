@@ -1,12 +1,6 @@
-import Fastify from 'fastify'
 import neftRoutes from '../neft/routes.js'
 
-const registerRoutes = ()=>{
-
-    const fastify = Fastify({
-        logger: true
-    })
-    
+const registerRoutes = (fastify)=>{
     fastify.register(neftRoutes)
 }
 
