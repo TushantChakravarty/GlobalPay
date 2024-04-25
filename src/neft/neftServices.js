@@ -38,7 +38,9 @@
     const response = await fetch(process.env.NEFT_TEST_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "X-IBM-Client-Id":"",
+        "X-IBM-Client Secret":""
       },
       body: JSON.stringify(requestBody)
     })
