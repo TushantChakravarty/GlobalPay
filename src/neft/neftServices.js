@@ -35,7 +35,7 @@
       }
     };
     
-    fetch(process.env.NEFT_TEST_URL, {
+    const response = await fetch(process.env.NEFT_TEST_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -58,7 +58,7 @@
         // Handle errors here
       });
     
-      
+      return response
 }
 
 export default {

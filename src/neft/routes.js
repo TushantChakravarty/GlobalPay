@@ -6,8 +6,8 @@ async function neftRoutes (fastify, options) {
     })
 
     fastify.get('/neft/transfer', async (request, reply) => {
-      await neftService.neftTransfer()
-      return { hello: 'neft' }
+      const response =await neftService.neftTransfer()
+      return { hello: response }
     })
   }
   
