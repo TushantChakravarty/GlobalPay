@@ -199,3 +199,126 @@ fetch(url, options)
 //   createQrCode,
 //   createPayout
 // }
+
+export async function createRazorpayContact(){
+  try{
+    const keyId = process.env.RAZORPAY_KEY_ID
+    const keySecret = process.env.RAZORPAY_KEY_SECRET
+
+    const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+
+    const request_body = {
+      name: "Shubhanshu tripathi",
+      email: "tshubhanshu007@gmaail.com",
+      contact: 8318089088,
+      type: "employee",
+      reference_id: "Acme Contact ID 12345",
+      notes:{
+        random_key_1: "Make it so.",
+        random_key_2: "Tea. Earl Grey. Hot."
+      }
+    }
+
+    const response = await fetch('https://api.razorpay.com/v1/contacts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(request_body)
+    });
+
+    if (!response.ok) {
+      console.log(response)
+      throw new Error('Network response was not ok');
+    }
+
+    console.log("checkpoint 4")
+    const data = await response.json();
+    console.log("checkpoint 5")
+    console.log('contact created successfully:', data);
+    
+  }catch(err){
+    console.log(`razorpayService.js-createRazorpayContact`,err);
+  }
+}
+
+
+export async function createRazorpayFundAccountForBank(){
+  try{
+    const keyId = process.env.RAZORPAY_KEY_ID
+    const keySecret = process.env.RAZORPAY_KEY_SECRET
+
+const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+
+   const request_body = {
+    "contact_id": "cont_O81BzbKgs3GCG9",
+    "account_type": "bank_account",
+    "bank_account": {
+      "name": "Subhanshu kumar tripathi",
+      "ifsc": "BARB0KASHYA",
+      "account_number": "31778100032723"
+    }
+  }
+    const response = await fetch('https://api.razorpay.com/v1/fund_accounts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(request_body)
+    });
+
+    if (!response.ok) {
+      console.log(response)
+      throw new Error('Network response was not ok');
+    }
+
+    
+    const data = await response.json();
+   
+    console.log('fund account created successfully:', data);
+    
+  }catch(err){
+    console.log(`razorpayService.js-createRazorpayContact`,err);
+  }
+}
+
+export async function createRazorpayFundAccountForVpa(){
+  try{
+    const keyId = process.env.RAZORPAY_KEY_ID
+    const keySecret = process.env.RAZORPAY_KEY_SECRET
+
+const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+
+   const request_body = {
+    contact_id: "cont_O81BzbKgs3GCG9",
+    account_type: "vpa",
+    vpa: {
+      address: "8318089088@ybl"
+    }
+  }
+  
+    const response = await fetch('https://api.razorpay.com/v1/fund_accounts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(request_body)
+    });
+
+    if (!response.ok) {
+      console.log(response)
+      throw new Error('Network response was not ok');
+    }
+
+    
+    const data = await response.json();
+   
+    console.log('fund account created successfully:', data);
+    
+  }catch(err){
+    console.log(`razorpayService.js-createRazorpayContact`,err);
+  }
+}
