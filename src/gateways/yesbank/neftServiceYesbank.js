@@ -1,4 +1,4 @@
- async function neftServiceYesbank(){
+ export default async function neftServiceYesbank(){
 
     const requestBody = {
       "transfer": {
@@ -63,6 +63,6 @@
       return response
 }
 
-export default {
-  neftServiceYesbank
-  };
+// export default  {
+//   neftServiceYesbank
+//   };

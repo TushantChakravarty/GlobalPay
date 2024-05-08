@@ -1,4 +1,4 @@
-import neftServiceYesbank from "../gateways/yesbank/neftServiceYesbank";
+import neftServiceYesbank from "../gateways/yesbank/neftServiceYesbank.js";
 
 
 
