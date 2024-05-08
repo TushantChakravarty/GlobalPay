@@ -1,4 +1,4 @@
-import neftService from "./neftServices.js"
+import { neftTransfer } from "./neftServices.js"
 
 async function neftRoutes (fastify, options) {
     fastify.get('/', async (request, reply) => {
@@ -6,7 +6,7 @@ async function neftRoutes (fastify, options) {
     })
 
     fastify.get('/neft/transfer', async (request, reply) => {
-      const response =await neftService.neftTransfer()
+      const response =await neftTransfer()
       return { hello: response }
     })
   }

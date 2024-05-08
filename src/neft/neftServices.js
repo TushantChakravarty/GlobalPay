@@ -1,16 +1,14 @@
-import neftServiceYesbank from "../gateways/yesbank/neftServiceYesbank.js";
+import { neftYesbank } from "../gateways/yesbank/neftServiceYesbank.js";
 
 
 
 
 
 
-async function neftTransfer(){
 
-      const response = await neftServiceYesbank.neftServiceYesbank2()
+export async function neftTransfer(){
+
+      const response = await neftYesbank()
       return response
 }
 
-export default {
-    neftTransfer
-  };
