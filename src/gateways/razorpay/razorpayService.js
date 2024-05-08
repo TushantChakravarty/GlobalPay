@@ -111,7 +111,7 @@ console.log("checkpoint 2")
 
 const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
   const payoutData = {
-    account_number: '7878780080316316',
+    account_number: '20323508372',
     fund_account_id: 'fa_00000000000001',
     amount: 1000000,
     currency: 'INR',
@@ -155,7 +155,43 @@ const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
 };
 
 
+export async function createPayoutVpa()
+{
+  const apiKey =  process.env.RAZORPAY_KEY_ID;
+const apiSecret =  process.env.RAZORPAY_KEY_SECRET
 
+const url = 'https://api.razorpay.com/v1/payouts';
+
+const data = {
+  account_number: '2323230037526232',
+  fund_account_id: 'fa_O7yYdKCfb3i1Dj',
+  amount: 100,
+  currency: 'INR',
+  mode: 'IMPS',
+  purpose: 'refund',
+  queue_if_low_balance: true,
+  reference_id: 'Acme Transaction ID 12345',
+  narration: 'Acme Corp Fund Transfer',
+  notes: {
+    notes_key_1: 'Tea, Earl Grey, Hot',
+    notes_key_2: 'Tea, Earl Grey… decaf.'
+  }
+};
+
+const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic ' + Buffer.from(apiKey + ':' + apiSecret).toString('base64')
+  },
+  body: JSON.stringify(data)
+};
+
+fetch(url, options)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+}
 
 
 // module.exports={
