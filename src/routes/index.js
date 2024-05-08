@@ -1,5 +1,6 @@
-import neftRoutes from '../neft/routes.js'
+import neftRoutes from "../gateways/yesBank/neft/routes"
 
+neftRoutes
 const registerRoutes = (fastify)=>{
     fastify.register(neftRoutes)
 }
