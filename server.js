@@ -6,7 +6,6 @@ import { createPayout, createPayoutVpa } from './src/gateways/razorpay/razorpayS
 const fastify = Fastify({
   logger: true
 })
-createPayoutVpa()
 
 const startServer = async ()=>{
 
