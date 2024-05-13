@@ -1,4 +1,4 @@
-import neftRoutes from '../neft/routes.js'
+import neftRoutes from '../payout/neft/routes.js'
 
 const registerRoutes = (fastify)=>{
     fastify.register(neftRoutes)
