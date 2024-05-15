@@ -15,6 +15,7 @@ import config from '../config/database.js'
 
 // 1. Import the model files
 import Transaction from './Transaction/transaction.model.js';
+import Callbacks from './callbacks/callback.model.js';
 
 
 
@@ -26,6 +27,7 @@ const sequelize = new Sequelize(config)
 // For example db.Challenge = Challenge(sequelize, Sequelize.DataTypes)
 
 db.Transaction = Transaction(sequelize, Sequelize.DataTypes)
+db.Callbacks = Callbacks(sequelize, Sequelize.DataTypes)
 
 
 // Initialize models
