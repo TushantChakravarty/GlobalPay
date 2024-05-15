@@ -10,7 +10,7 @@ export async function bulkpeUpiCollect(){
     note: 'Test',
     vpa: 'test@vpa'
   };
-  console.log("checkpoint 2",process.env.BULKPE_API_KEY)
+  //console.log("checkpoint 2",process.env.BULKPE_API_KEY)
 
   const headers = {
     'Content-Type': 'application/json',
