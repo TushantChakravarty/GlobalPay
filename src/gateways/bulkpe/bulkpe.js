@@ -8,7 +8,7 @@ export async function bulkpeUpiCollect(){
     redirectUrl: 'https://google.com',
     referenceId: 'TESTTRX011',
     note: 'Test',
-    vpa: 'test@vpa'
+    vpa: '8318089088@ybl'
   };
   console.log("checkpoint 2")
 
