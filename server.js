@@ -8,11 +8,11 @@ import { cashfreePayin } from './src/gateways/cashfree/cashfree.js';
 const fastify = Fastify({
   logger: true
 })
-bulkpeUpiCollect()
-cashfreePayin({
-    amount:10,
-    phone:9340079982
-})
+//bulkpeUpiCollect()
+// cashfreePayin({
+//     amount:10,
+//     phone:9340079982
+// })
 const startServer = async ()=>{
 
     try {

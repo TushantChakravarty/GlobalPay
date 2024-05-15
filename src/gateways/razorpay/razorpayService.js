@@ -4,7 +4,7 @@ import Razorpay from 'razorpay'
 //const fetch = require('node-fetch');
 import fetch from 'node-fetch'
 
-export async function createPaymentLinkViaRazorpay() {
+export async function createPaymentLinkViaRazorpay(details) {
   try {
     console.log("checkpoint 1")
       // Razorpay instance
@@ -18,7 +18,7 @@ export async function createPaymentLinkViaRazorpay() {
       // generate payment link
       const response = await razorpay?.paymentLink?.create({
           // "upi_link": true, // true if you want to generate upi link
-          "amount": 200,
+          "amount": details?.amount,
           "currency": "INR",
           "accept_partial": true,
           "first_min_partial_amount": 100,
@@ -53,11 +53,12 @@ export async function createPaymentLinkViaRazorpay() {
           }
       })
       console.log("checkpoint 3")
-      console.log(response)
+     // console.log(response)
       console.log("checkpoint 4")
       if (!response) throw new Error("Unable to generate payment link");
 
-      console.log(response)
+      //console.log(response)
+      return response
   } catch (err) {
       console.log(`PaymentService.createPaymentLinkViaRazorpay: ${err}`);
       console.table(err)

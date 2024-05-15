@@ -7,6 +7,8 @@ async function payinUpiRoutes (fastify, options) {
       const response =await bulkpeUpiCollect();
       return reply.send(response) 
     })
+
+
   }
   
 export default payinUpiRoutes;
