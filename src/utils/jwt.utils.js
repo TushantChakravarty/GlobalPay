@@ -19,9 +19,7 @@ export const validateToken = async (request, reply) => {
   };
 
   export const validateTokenAndApiKey = async (request, reply) => {
-   const validated = await validateToken(request, reply);
-   if(validated)
-    await validateApiKey(request, reply);
-   else
-   reply.status(401).send({message:'invalid token'});
+    await validateToken(request, reply);
+   await validateApiKey(request, reply);
+   
   };

@@ -46,7 +46,7 @@ export const validateApiKey = async (request, reply) => {
     }
     if(user?.apiKey == originalText)
     {
-      console.log(user?.apiKey == originalText)
+      //console.log(user?.apiKey == originalText)
       request.apiKeyDetails = originalText;
     }else{
       return reply.status(401).send({ message: 'Invalid API key' });
