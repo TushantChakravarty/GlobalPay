@@ -26,7 +26,7 @@ export default (sequelize, DataTypes) => {
     
     User.init(
       {
-        emailId: { type: DataTypes.STRING, unique: true },
+        email_id: { type: DataTypes.STRING, unique: true },
         first_name: { type: DataTypes.STRING },
         last_name: { type: DataTypes.STRING },
         business_name: { type: DataTypes.STRING },

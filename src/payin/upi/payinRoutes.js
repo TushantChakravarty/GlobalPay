@@ -1,6 +1,9 @@
 import { bulkpeUpiCollect } from "../../gateways/bulkpe/bulkpe.js";
+import { validateTokenAndApiKey } from "../../utils/jwt.utils.js";
 
 async function payinUpiRoutes(fastify, options) {
+    
+    fastify.addHook('preValidation', validateTokenAndApiKey);
     fastify.post('/upiCollect', {
       schema: {
         body: {

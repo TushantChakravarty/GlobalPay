@@ -1,5 +1,8 @@
+import User from "../db/user/user.model.js";
+import { generateUserToken } from "../utils/jwt.utils.js";
 import { generatePassword,convertPass,encryptText } from "../utils/password.utils.js";
-import { createUser } from "./userDao.js";
+import { createUser, findUser } from "./userDao.js";
+import bcrypt from 'bcryptjs';
 
 
 export async function userRegisterService(details) {
@@ -20,12 +23,11 @@ export async function userRegisterService(details) {
                   console.log("encrypted key", encrytedKey);
                   details.apiKey = apiKey;
                   details.balance = 0;
-                  createUser
                   const createdUser = await createUser(details)
                   let responseData ={}
                   if(createUser){
                     responseData = {
-                      email: createdUser.emailId,
+                      email: createdUser.email_id,
                       password: password,
                       apiKey: encrytedKey,
                     };
@@ -41,3 +43,16 @@ export async function userRegisterService(details) {
 }
 
 
+export async function userLoginService(details,fastify)
+{
+  const { email_id, password } = details
+  const user = await findUser(email_id)
+      
+  if (user && await bcrypt.compare(password, user.password)) {
+    const token = await generateUserToken(email_id,fastify)
+    await user.update({ token }, { where: { email_id } });
+    return { token }
+  }
+
+  return { message: 'Invalid email or password' }
+}

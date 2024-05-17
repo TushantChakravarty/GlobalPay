@@ -1,6 +1,8 @@
+import {  validateTokenAndApiKey } from "../../utils/jwt.utils.js";
 import { createPaymentPageRequest } from "./payinPageServices.js";
 
 async function paymentPageRoutes(fastify, options) {
+    fastify.addHook('preValidation', validateTokenAndApiKey);
     fastify.post('/hostedPage', {
         schema: {
             body: {
