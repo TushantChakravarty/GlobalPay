@@ -1,26 +1,26 @@
-version: '3'
+# version: '3'
 
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - POSTGRES_HOST=postgres
-      - POSTGRES_USER=globalpay_user
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=globalpay
-    depends_on:
-      - postgres
+# services:
+#   app:
+#     build: .
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - POSTGRES_HOST=postgres
+#       - POSTGRES_USER=globalpay_user
+#       - POSTGRES_PASSWORD=1234
+#       - POSTGRES_DB=globalpay
+#     depends_on:
+#       - postgres
 
-  postgres:
-    image: postgres:latest
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=globalpay_user
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=globalpay
+#   postgres:
+#     image: postgres:latest
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       - POSTGRES_USER=globalpay_user
+#       - POSTGRES_PASSWORD=1234
+#       - POSTGRES_DB=globalpay
 
 # version: '3'
 # services:
@@ -44,4 +44,37 @@ services:
 #     ports:
 #       - "3000:3000"
 #     command: sh -c "npm run migrate && npm start"
+
+
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=globalpay_user
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=globalpay
+    depends_on:
+      - postgres
+    networks:
+      - mynetwork
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=globalpay_user
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=globalpay
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
 

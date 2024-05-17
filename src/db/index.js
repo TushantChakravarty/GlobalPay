@@ -17,6 +17,7 @@ import config from '../config/database.js'
 import Transaction from './Transaction/transaction.model.js';
 import Callbacks from './callbacks/callback.model.js';
 import User from './user/user.model.js';
+import Admin from './admin/admin.model.js';
 
 
 
@@ -30,6 +31,7 @@ const sequelize = new Sequelize(config)
 db.Transaction = Transaction(sequelize, Sequelize.DataTypes)
 db.Callbacks = Callbacks(sequelize, Sequelize.DataTypes)
 db.User = User(sequelize, Sequelize.DataTypes)
+db.Admin = Admin(sequelize, Sequelize.DataTypes)
 
 // Initialize models
 const initializeModels = () => {

@@ -7,114 +7,135 @@ import fetch from 'node-fetch'
 export async function createPaymentLinkViaRazorpay(details) {
   try {
     console.log("checkpoint 1")
-      // Razorpay instance
-      const razorpay = new Razorpay({
-          key_id: process.env.RAZORPAY_KEY_ID,
-          key_secret: process.env.RAZORPAY_KEY_SECRET
-      })
+    // Razorpay instance
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET
+    })
 
-      console.log("checkpoint 2")
+    console.log("checkpoint 2")
 
-      // generate payment link
-      const response = await razorpay?.paymentLink?.create({
-          // "upi_link": true, // true if you want to generate upi link
-          "amount": details?.amount,
-          "currency": "INR",
-          "accept_partial": true,
-          "first_min_partial_amount": 100,
-          "expire_by": new Date().getTime() + 24 * 7 * 60 * 60 * 1000, // 7 days in milliseconds
-          //"reference_id": 10,
-          "description": "",
-          "customer": {
-              "name": "test_user",
-              "email": "test@gmail.com",
-              "contact": "8318089088"
-          },
-          "notify": {
-              "sms": true,
-              "email": true
-          },
-          "reminder_enable": true,
-          // "callback_url": `${process.env.LIVE_URL}/api/v1/callback/razorpay?payment_id=${1}`, // callback url, i.e where to redirect user after payment
-          // "callback_method": "get",
-          "options": {
-              "checkout": {
-                  "name": "razarpaytest",
-                  "theme": {
-                      "hide_topbar": true
-                  }
-                  // "method": { // Customize payment methods visibility on checkout form
-                  //     "netbanking": "1",
-                  //     "card": "1",
-                  //     "upi": "0",
-                  //     "wallet": "0"
-                  // }
-              }
+    // generate payment link
+    const response = await razorpay?.paymentLink?.create({
+      // "upi_link": true, // true if you want to generate upi link
+      "amount": details?.amount,
+      "currency": "INR",
+      "accept_partial": true,
+      "first_min_partial_amount": 100,
+      "expire_by": new Date().getTime() + 24 * 7 * 60 * 60 * 1000, // 7 days in milliseconds
+      //"reference_id": 10,
+      "description": "",
+      "customer": {
+        "name": "test_user",
+        "email": "test@gmail.com",
+        "contact": "8318089088"
+      },
+      "notify": {
+        "sms": true,
+        "email": true
+      },
+      "reminder_enable": true,
+      // "callback_url": `${process.env.LIVE_URL}/api/v1/callback/razorpay?payment_id=${1}`, // callback url, i.e where to redirect user after payment
+      // "callback_method": "get",
+      "options": {
+        "checkout": {
+          "name": "razarpaytest",
+          "theme": {
+            "hide_topbar": true
           }
-      })
-      console.log("checkpoint 3")
-     // console.log(response)
-      console.log("checkpoint 4")
-      if (!response) throw new Error("Unable to generate payment link");
+          // "method": { // Customize payment methods visibility on checkout form
+          //     "netbanking": "1",
+          //     "card": "1",
+          //     "upi": "0",
+          //     "wallet": "0"
+          // }
+        }
+      }
+    })
+    console.log("checkpoint 3")
+    // console.log(response)
+    console.log("checkpoint 4")
+    if (!response) throw new Error("Unable to generate payment link");
 
-      //console.log(response)
-      return response
+    //console.log(response)
+    return response
   } catch (err) {
-      console.log(`PaymentService.createPaymentLinkViaRazorpay: ${err}`);
-      console.table(err)
+    console.log(`PaymentService.createPaymentLinkViaRazorpay: ${err}`);
+    console.table(err)
   }
 }
 
 export async function createQrCode() {
-    try {
-      console.log("checkpoint 1")
-        // Razorpay instance
-        const razorpay = new Razorpay({
-            key_id: process.env.RAZORPAY_KEY_ID,
-            key_secret: process.env.RAZORPAY_KEY_SECRET
-        })
-  
-        // var instance = new Razorpay({ key_id: 'YOUR_KEY_ID', key_secret: 'YOUR_SECRET' })
-        console.log('main checkpoint')
-        const currentUnixTime = Math.floor(Date.now() / 1000); // Current time in Unix timestamp (seconds)
-const threeMinutesLater = currentUnixTime + (3 * 60);
+  try {
+    console.log("checkpoint 1")
+    // Razorpay instance
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET
+    })
 
-     const response = await  razorpay.qrCode.create({
-  type: "upi_qr",
-  name: "Store Front Display",
-  usage: "single_use",
-  fixed_amount: true,
-  payment_amount: 300,
-  description: "For Store 1",
-  customer_id: "cust_1Aa00000000004",
-  close_by: threeMinutesLater,
-  notes: {
-    purpose: "Test UPI QR Code notes"
+    // var instance = new Razorpay({ key_id: 'YOUR_KEY_ID', key_secret: 'YOUR_SECRET' })
+    console.log('main checkpoint')
+    const currentUnixTime = Math.floor(Date.now() / 1000); // Current time in Unix timestamp (seconds)
+    const threeMinutesLater = currentUnixTime + (3 * 60);
+
+    const response = await razorpay.qrCode.create({
+      type: "upi_qr",
+      name: "Store Front Display",
+      usage: "single_use",
+      fixed_amount: true,
+      payment_amount: 300,
+      description: "For Store 1",
+      customer_id: "cust_1Aa00000000004",
+      close_by: threeMinutesLater,
+      notes: {
+        purpose: "Test UPI QR Code notes"
+      }
+    })
+    if (!response) throw new Error("Unable to generate payment link");
+
+    console.log(response)
+  } catch (err) {
+    console.log(`PaymentService.createPaymentLinkViaRazorpay: ${err}`);
+    console.table(err)
   }
-})
-        if (!response) throw new Error("Unable to generate payment link");
-  
-        console.log(response)
-    } catch (err) {
-        console.log(`PaymentService.createPaymentLinkViaRazorpay: ${err}`);
-        console.table(err)
+}
+
+
+//for vpa i need name,email,phone,upi and for bank i need name,email,phone,ifsc,account_number
+export async function createRazorpayPayoutService(details, type) {
+  try {
+    //expected name,email,phone
+    const contact_id = await createRazorpayContact({ name: details.name, phone: details.phone, email: details.email });
+    if (type === "vpa") {
+      const fund_account_id = await createRazorpayFundAccountForVpa({ upi: details.upi }, contact_id)
+      const payout_data = await createPayoutVpa(fund_account_id, details.amount)
+      return { code: 200, data: payout_data }
+
+    } else if (type === "bank") {
+      const fund_account_id = await createRazorpayFundAccountForBank({ name: details.name, ifsc: details.ifsc, account_number: details.account_number }, contact_id)
+      const payout_data = await createPayoutByBank(fund_account_id, details.amount)
+      return { code: 200, data: payout_data }
     }
+  } catch (err) {
+    return { code: 500, error: "Unable to do payout" }
   }
 
 
+}
 
-export const createPayout = async () => {
+export const createPayoutByBank = async (fund_account_id, amount) => {
   console.log("checkpoint 1")
   const keyId = process.env.RAZORPAY_KEY_ID
-const keySecret = process.env.RAZORPAY_KEY_SECRET
+  const keySecret = process.env.RAZORPAY_KEY_SECRET
 
-console.log("checkpoint 2")
+  console.log("checkpoint 2")
 
-const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+  const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
   const payoutData = {
     account_number: '20323508372',
-    fund_account_id: 'fa_00000000000001',
-    amount: 1000000,
+    fund_account_id: fund_account_id,
+    amount: amount,
     currency: 'INR',
     mode: 'IMPS',
     purpose: 'refund',
@@ -127,7 +148,6 @@ const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
     }
   };
 
-  console.log("checkpoint 3",basicAuth)
 
   try {
     const response = await fetch('https://api.razorpay.com/v1/payouts', {
@@ -156,42 +176,60 @@ const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
 };
 
 
-export async function createPayoutVpa()
-{
-  const apiKey =  process.env.RAZORPAY_KEY_ID;
-const apiSecret =  process.env.RAZORPAY_KEY_SECRET
+export async function createPayoutVpa(func_account_id, amount) {
+  const apiKey = process.env.RAZORPAY_KEY_ID;
+  const apiSecret = process.env.RAZORPAY_KEY_SECRET
 
-const url = 'https://api.razorpay.com/v1/payouts';
+  const url = 'https://api.razorpay.com/v1/payouts';
 
-const data = {
-  account_number: '2323230037526232',
-  fund_account_id: 'fa_O7yYdKCfb3i1Dj',
-  amount: 100,
-  currency: 'INR',
-  mode: 'IMPS',
-  purpose: 'refund',
-  queue_if_low_balance: true,
-  reference_id: 'Acme Transaction ID 12345',
-  narration: 'Acme Corp Fund Transfer',
-  notes: {
-    notes_key_1: 'Tea, Earl Grey, Hot',
-    notes_key_2: 'Tea, Earl Grey… decaf.'
+  const data = {
+    account_number: '2323230037526232',
+    fund_account_id: func_account_id,
+    amount: amount,
+    currency: 'INR',
+    mode: 'UPI',
+    purpose: 'refund',
+    queue_if_low_balance: true,
+    reference_id: 'Acme Transaction ID 12345',
+    narration: 'Acme Corp Fund Transfer',
+    notes: {
+      notes_key_1: 'Tea, Earl Grey, Hot',
+      notes_key_2: 'Tea, Earl Grey… decaf.'
+    }
+  };
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + Buffer.from(apiKey + ':' + apiSecret).toString('base64')
+    },
+    body: JSON.stringify(data)
+  };
+
+  // fetch(url, options)
+  //   .then(response => response.json())
+  //   .then(data => console.log(data))
+  //   .catch(error => console.error('Error:', error));
+  try {
+    const response = await fetch('https://api.razorpay.com/v1/payouts', options);
+
+    console.log("checkpoint 4")
+
+    if (!response.ok) {
+      console.log(response)
+      throw new Error('Network response was not ok');
+    }
+
+    console.log("checkpoint 4")
+    const data = await response.json();
+    console.log("checkpoint 5")
+    console.log('Payout created successfully:', data);
+    return data
+  } catch (error) {
+    console.error('Error creating payout:', error);
   }
-};
 
-const options = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Basic ' + Buffer.from(apiKey + ':' + apiSecret).toString('base64')
-  },
-  body: JSON.stringify(data)
-};
-
-fetch(url, options)
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
 }
 
 
@@ -201,20 +239,37 @@ fetch(url, options)
 //   createPayout
 // }
 
-export async function createRazorpayContact(){
-  try{
+// {
+//   "id": "cont_OBePK5DnoTRqPp",
+//   "entity": "contact",
+//   "name": "Gaurav Kumar",
+//   "contact": 9123456789,
+//   "email": "gauravkumar@example.com",
+//   "type": "employee",
+//   "reference_id": "Acme Contact ID 12345",
+//   "batch_id": null,
+//   "active": true,
+//   "notes": {
+//       "random_key_1": "Make it so.",
+//       "random_key_2": "Tea. Earl Grey. Hot."
+//   },
+//   "created_at": 1715968521
+// }
+
+export async function createRazorpayContact(details) {
+  try {
     const keyId = process.env.RAZORPAY_KEY_ID
     const keySecret = process.env.RAZORPAY_KEY_SECRET
 
     const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
 
     const request_body = {
-      name: "Shubhanshu tripathi",
-      email: "tshubhanshu007@gmaail.com",
-      contact: 8318089088,
+      name: details.name ? details.name : "Test",
+      email: details.email ? details.email : "test@gmail.com",
+      contact: details.phone,
       type: "employee",
       reference_id: "Acme Contact ID 12345",
-      notes:{
+      notes: {
         random_key_1: "Make it so.",
         random_key_2: "Tea. Earl Grey. Hot."
       }
@@ -238,29 +293,47 @@ export async function createRazorpayContact(){
     const data = await response.json();
     console.log("checkpoint 5")
     console.log('contact created successfully:', data);
-    
-  }catch(err){
-    console.log(`razorpayService.js-createRazorpayContact`,err);
+    return data?.contact_id
+
+  } catch (err) {
+    console.log(`razorpayService.js-createRazorpayContact`, err);
   }
 }
 
+// {
+//   "id": "fa_OBeVJNa3fCASeJ",
+//   "entity": "fund_account",
+//   "contact_id": "cont_OBePK5DnoTRqPp",
+//   "account_type": "bank_account",
+//   "bank_account": {
+//       "ifsc": "HDFC0009107",
+//       "bank_name": "HDFC Bank",
+//       "name": "Gaurav Kumar",
+//       "notes": [],
+//       "account_number": "50100102283912"
+//   },
+//   "batch_id": null,
+//   "active": true,
+//   "created_at": 1715968861
+// }
 
-export async function createRazorpayFundAccountForBank(){
-  try{
+
+export async function createRazorpayFundAccountForBank(details, contact_id) {
+  try {
     const keyId = process.env.RAZORPAY_KEY_ID
     const keySecret = process.env.RAZORPAY_KEY_SECRET
 
-const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+    const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
 
-   const request_body = {
-    "contact_id": "cont_O81BzbKgs3GCG9",
-    "account_type": "bank_account",
-    "bank_account": {
-      "name": "Subhanshu kumar tripathi",
-      "ifsc": "BARB0KASHYA",
-      "account_number": "31778100032723"
+    const request_body = {
+      "contact_id": contact_id,
+      "account_type": "bank_account",
+      "bank_account": {
+        "name": details.name,
+        "ifsc": details.ifsc,
+        "account_number": details.account_number
+      }
     }
-  }
     const response = await fetch('https://api.razorpay.com/v1/fund_accounts', {
       method: 'POST',
       headers: {
@@ -275,31 +348,32 @@ const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
       throw new Error('Network response was not ok');
     }
 
-    
+
     const data = await response.json();
-   
+
     console.log('fund account created successfully:', data);
-    
-  }catch(err){
-    console.log(`razorpayService.js-createRazorpayContact`,err);
+    return data.id
+
+  } catch (err) {
+    console.log(`razorpayService.js-createRazorpayContact`, err);
   }
 }
 
-export async function createRazorpayFundAccountForVpa(){
-  try{
+export async function createRazorpayFundAccountForVpa(details, contact_id) {
+  try {
     const keyId = process.env.RAZORPAY_KEY_ID
     const keySecret = process.env.RAZORPAY_KEY_SECRET
 
-const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+    const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
 
-   const request_body = {
-    contact_id: "cont_O81BzbKgs3GCG9",
-    account_type: "vpa",
-    vpa: {
-      address: "8318089088@ybl"
+    const request_body = {
+      contact_id: contact_id,
+      account_type: "vpa",
+      vpa: {
+        address: details?.upi
+      }
     }
-  }
-  
+
     const response = await fetch('https://api.razorpay.com/v1/fund_accounts', {
       method: 'POST',
       headers: {
@@ -314,12 +388,44 @@ const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
       throw new Error('Network response was not ok');
     }
 
-    
+
     const data = await response.json();
-   
+
     console.log('fund account created successfully:', data);
-    
-  }catch(err){
-    console.log(`razorpayService.js-createRazorpayContact`,err);
+    return data.id
+
+  } catch (err) {
+    console.log(`razorpayService.js-createRazorpayContact`, err);
+  }
+}
+
+export async function fetchPayments(transaction_id) {
+  try {
+    const keyId = process.env.RAZORPAY_KEY_ID
+    const keySecret = process.env.RAZORPAY_KEY_SECRET
+
+    const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+
+    const response = await fetch(`https://api.razorpay.com/v1/payments/${transaction_id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(request_body)
+    });
+
+    if (!response.ok) {
+      console.log(response)
+      throw new Error('Network response was not ok');
+    }
+
+
+    const data = await response.json();
+    return { code: 200, response: data }
+
+  } catch (err) {
+    return { code: 500, error: "Network response was not ok" }
+
   }
 }

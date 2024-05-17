@@ -1,4 +1,4 @@
-import {  validateTokenAndApiKey } from "../../utils/jwt.utils.js";
+import { validateTokenAndApiKey } from "../../utils/jwt.utils.js";
 import { createPaymentPageRequest } from "./payinPageServices.js";
 
 async function paymentPageRoutes(fastify, options) {
@@ -10,6 +10,9 @@ async function paymentPageRoutes(fastify, options) {
                 required: ['amount'],
                 properties: {
                     amount: { type: 'number', minimum: 0.01 },
+                    customer_emailId: { type: 'string', format: 'email' },
+                    customer_phone: { type: 'string' },
+                    customer_address: { type: 'string' },
                 }
             }
         }

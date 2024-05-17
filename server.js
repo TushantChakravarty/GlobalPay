@@ -4,16 +4,19 @@ import Fastify from 'fastify'
 import registerRoutes from './src/routes/index.js'
 import migrateDb from './src/utils/db.utils.js';
 const fastify = Fastify({
-  logger: true
+    logger: true
 })
 
 await migrateDb()
 
 
-const startServer = async ()=>{
+const startServer = async () => {
 
     try {
         registerRoutes(fastify)
+        fastify.get('/hello', async (request, reply) => {
+            return { message: 'Hello World' };
+        });
         await fastify.listen({ port: 3000 })
     } catch (err) {
         fastify.log.error(err)
