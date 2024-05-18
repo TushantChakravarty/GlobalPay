@@ -8,7 +8,7 @@ export async function generateUserToken(details, fastify) {
 
 export const validateToken = async (request, reply) => {
   try {
-    const validated = await request.jwtVerify();
+    await request.jwtVerify();
   } catch (err) {
     console.log(err);
     reply.status(401).send({ message: "invalid token" });
