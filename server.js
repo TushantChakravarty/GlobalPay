@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Fastify from 'fastify'
 import registerRoutes from './src/routes/index.js'
-import migrateDb from './src/utils/db.utils.js';
+//import migrateDb from './src/utils/db.utils.js';
 const fastify = Fastify({
     logger: true
 })
 
-await migrateDb()
+//await migrateDb()
 
 
 const startServer = async () => {
