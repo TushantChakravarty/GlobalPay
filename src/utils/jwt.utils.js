@@ -6,6 +6,12 @@ export async function generateUserToken(details, fastify) {
   return token;
 }
 
+export async function generateAdminToken(details, fastify) {
+  const { email_id } = details;
+  const token = fastify.jwt.sign({ email_id });
+  return token;
+}
+
 export const validateToken = async (request, reply) => {
   try {
     await request.jwtVerify();

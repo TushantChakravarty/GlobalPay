@@ -1,5 +1,5 @@
 import User from "../db/user/user.model.js";
-import { generateUserToken } from "../utils/jwt.utils.js";
+import { generateAdminToken, generateUserToken } from "../utils/jwt.utils.js";
 import { generatePassword,convertPass,encryptText } from "../utils/password.utils.js";
 import { createUser, findUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
@@ -46,7 +46,7 @@ export async function userRegisterService(details) {
 export async function userLoginService(details,fastify)
 {
   const { email_id, password } = details
-  const user = await findUser(email_id)
+  //const user = await findUser(email_id)
       
   // if (user && await bcrypt.compare(password, user.password)) {
   //   const token = await generateUserToken(email_id,fastify)
@@ -56,8 +56,9 @@ export async function userLoginService(details,fastify)
   const admin = process.env.adminId
   const key = process.env.apiKey
   if (admin == details?.admin && key == details?.key) {
-    const token = await generateUserToken(email_id,fastify)
-    await user.update({ token }, { where: { email_id } });
+    //const token = await generateUserToken(admin,fastify)
+    const token = await generateAdminToken(admin,fastify)
+   // await user.update({ token }, { where: { email_id } });
     return { token }
   }
 

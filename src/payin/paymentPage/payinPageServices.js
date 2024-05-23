@@ -10,7 +10,7 @@ export async function createPaymentPageRequest(details) {
                 const response = await createPaymentLinkViaRazorpay(details);
                 console.log(response)
                 if (response?.status == 'created') {
-                    await createTransactionService(details, gateway, userId, response?.id)
+                   // await createTransactionService(details, gateway, userId, response?.id)
                     const responseData = {
                         message: 'success',
                         statusCode: 200,
