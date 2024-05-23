@@ -53,7 +53,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       }
     })
     console.log("checkpoint 3")
-    // console.log(response)
+     console.log(response)
     console.log("checkpoint 4")
     if (!response) throw new Error("Unable to generate payment link");
 
@@ -233,28 +233,7 @@ export async function createPayoutVpa(func_account_id, amount) {
 }
 
 
-// module.exports={
-//   createPaymentLinkViaRazorpay,
-//   createQrCode,
-//   createPayout
-// }
 
-// {
-//   "id": "cont_OBePK5DnoTRqPp",
-//   "entity": "contact",
-//   "name": "Gaurav Kumar",
-//   "contact": 9123456789,
-//   "email": "gauravkumar@example.com",
-//   "type": "employee",
-//   "reference_id": "Acme Contact ID 12345",
-//   "batch_id": null,
-//   "active": true,
-//   "notes": {
-//       "random_key_1": "Make it so.",
-//       "random_key_2": "Tea. Earl Grey. Hot."
-//   },
-//   "created_at": 1715968521
-// }
 
 export async function createRazorpayContact(details) {
   try {
