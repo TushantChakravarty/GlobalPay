@@ -263,6 +263,8 @@ export async function createRazorpayContact(details) {
       body: JSON.stringify(request_body)
     });
 
+    const json = await response.json()
+    console.log(json)
     if (!response.ok) {
       console.log(response)
       throw new Error('Network response was not ok');

@@ -3,13 +3,23 @@ dotenv.config();
 import Fastify from 'fastify'
 import registerRoutes from './src/routes/index.js'
 import migrateDb from './src/utils/db.utils.js';
+import { createPaymentLinkViaRazorpay, createRazorpayPayoutService } from './src/gateways/razorpay/razorpayService.js';
 const fastify = Fastify({
     logger: true
 })
 
 await migrateDb()
+// createPaymentLinkViaRazorpay({
+//     amount:1000
+// })
 
-
+// createRazorpayPayoutService({
+//     name:'tushant',
+//     phone:'9340079982',
+//     email:'tushant029@gmail.com',
+//     upi:'9340079982@paytm',
+//     amount:100
+// },"vpa")
 const startServer = async () => {
 
     try {
