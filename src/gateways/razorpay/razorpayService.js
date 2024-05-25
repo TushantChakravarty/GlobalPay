@@ -359,7 +359,7 @@ export async function createRazorpayFundAccountForVpa(details, contact_id) {
     const keyId = process.env.RAZORPAY_KEY_ID
     const keySecret = process.env.RAZORPAY_KEY_SECRET
 
-    console.log(details, contact_id)
+
 
     const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
 
