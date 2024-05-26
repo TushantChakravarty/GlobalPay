@@ -1,9 +1,9 @@
 import paymentPageRoutes from "../payin/paymentPage/payinPageRoutes.js";
 import payinUpiRoutes from "../payin/upi/payinRoutes.js";
-import neftRoutes from "../payout/neft/routes.js";
 import userRoutes from "../user/routes.js";
 import fastifyJwt from "fastify-jwt";
 import adminRoutes from "../admin/routes.js";
+import payoutBankRoutes from "../payout/bank/routes.js";
 
 const registerRoutes = (fastify) => {
   fastify.register(fastifyJwt, {
@@ -16,7 +16,7 @@ const registerRoutes = (fastify) => {
       reply.send(err);
     }
   });
-  fastify.register(neftRoutes);
+  fastify.register(payoutBankRoutes,{ prefix: "/payout" });
   fastify.register(payinUpiRoutes, { prefix: "/payin/upi" });
   fastify.register(paymentPageRoutes, { prefix: "/payin/hosted" });
   fastify.register(userRoutes, { prefix: "/user" });

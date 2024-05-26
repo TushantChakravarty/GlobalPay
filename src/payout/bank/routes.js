@@ -1,7 +1,7 @@
 import { createRazorpayPayoutService } from "../../gateways/razorpay/razorpayService.js"
 import { neftTransfer } from "./neftServices.js"
 
-async function neftRoutes(fastify, options) {
+async function payoutBankRoutes(fastify, options) {
   fastify.get('/', async (request, reply) => {
     return { hello: 'neft' }
   })
@@ -58,4 +58,4 @@ async function neftRoutes(fastify, options) {
 //   }
 // }
 
-export default neftRoutes;
+export default payoutBankRoutes;
