@@ -13,6 +13,7 @@ async function paymentPageRoutes(fastify, options) {
                     customer_emailId: { type: 'string', format: 'email' },
                     customer_phone: { type: 'string' },
                     customer_address: { type: 'string' },
+                    customer_name: { type: 'string' }
                 }
             }
         }
