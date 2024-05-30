@@ -41,7 +41,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       "callback_method": "get",
       "options": {
         "checkout": {
-          "name": "PayHub",
+          "name": "GSX solutions",
           "theme": {
             "hide_topbar": true,
           }
