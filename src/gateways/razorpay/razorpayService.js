@@ -37,13 +37,14 @@ export async function createPaymentLinkViaRazorpay(details) {
         "email": true
       },
       "reminder_enable": true,
-      "callback_url": `https://server.payhub.link/callback/razorpayPayinCallbackNew?payment_id=${txId}`, // callback url, i.e where to redirect user after payment
+      "callback_url": `https://payments.payhub.link/success?payment_id=${txId}`, // callback url, i.e where to redirect user after payment
       "callback_method": "get",
       "options": {
         "checkout": {
-          "name": "PayHub Payments",
+          "name": "PayHub",
           "theme": {
             "hide_topbar": true,
+            
           }
           // "method": { // Customize payment methods visibility on checkout form
           //     "netbanking": "1",
