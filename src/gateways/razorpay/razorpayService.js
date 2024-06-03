@@ -11,9 +11,6 @@ export async function createPaymentLinkViaRazorpay(details) {
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET
     })
-
-    console.log("checkpoint 2")
-
     // generate payment link
     const response = await razorpay?.paymentLink?.create({
       // "upi_link": true, // true if you want to generate upi link
@@ -26,8 +23,8 @@ export async function createPaymentLinkViaRazorpay(details) {
       "description": "",
       "customer": {
         "name": "test_user",
-        "email": "test@gmail.com",
-        "contact": "8318089088"
+        "email": details?.customer_emailId,
+        "contact": details?.customer_phone
       },
       "notify": {
         "sms": true,
@@ -35,7 +32,8 @@ export async function createPaymentLinkViaRazorpay(details) {
       },
       "reminder_enable": true,
       // "callback_url": `${process.env.LIVE_URL}/api/v1/callback/razorpay?payment_id=${1}`, // callback url, i.e where to redirect user after payment
-      // "callback_method": "get",
+      "callback_url": `https://server.payhub.link/callback/razorpayPayinCallbackNew?transaction_id="shshshshsh1234567"`,
+      "callback_method": "get",
       "options": {
         "checkout": {
           "name": "razarpaytest",
@@ -52,7 +50,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       }
     })
     console.log("checkpoint 3")
-     console.log(response)
+    console.log(response)
     console.log("checkpoint 4")
     if (!response) throw new Error("Unable to generate payment link");
 
