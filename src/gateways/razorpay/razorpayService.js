@@ -3,6 +3,7 @@ import Razorpay from 'razorpay'
 
 //const fetch = require('node-fetch');
 import fetch from 'node-fetch'
+import { generateTransactionId } from '../../utils/password.utils.js'
 
 export async function createPaymentLinkViaRazorpay(details) {
   try {
@@ -11,6 +12,10 @@ export async function createPaymentLinkViaRazorpay(details) {
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET
     })
+
+    console.log("checkpoint 2")
+    const txId = generateTransactionId(12)
+    console.log(txId)
     // generate payment link
     const response = await razorpay?.paymentLink?.create({
       // "upi_link": true, // true if you want to generate upi link
@@ -19,7 +24,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       "accept_partial": true,
       "first_min_partial_amount": 100,
       "expire_by": new Date().getTime() + 24 * 7 * 60 * 60 * 1000, // 7 days in milliseconds
-      //"reference_id": 10,
+      "reference_id": txId,
       "description": "",
       "customer": {
         "name": "test_user",
@@ -31,14 +36,13 @@ export async function createPaymentLinkViaRazorpay(details) {
         "email": true
       },
       "reminder_enable": true,
-      // "callback_url": `${process.env.LIVE_URL}/api/v1/callback/razorpay?payment_id=${1}`, // callback url, i.e where to redirect user after payment
-      "callback_url": `https://server.payhub.link/callback/razorpayPayinCallbackNew?transaction_id="shshshshsh1234567"`,
+      "callback_url": `https://server.payhub.link/callback/razorpayPayinCallbackNew?payment_id=${txId}`, // callback url, i.e where to redirect user after payment
       "callback_method": "get",
       "options": {
         "checkout": {
-          "name": "razarpaytest",
+          "name": "GSX solutions",
           "theme": {
-            "hide_topbar": true
+            "hide_topbar": true,
           }
           // "method": { // Customize payment methods visibility on checkout form
           //     "netbanking": "1",
