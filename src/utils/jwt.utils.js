@@ -22,6 +22,7 @@ export const validateToken = async (request, reply) => {
 };
 
 export const validateTokenAndApiKey = async (request, reply) => {
+  console.log(request.headers)
   await validateToken(request, reply);
   await validateApiKey(request, reply);
 };

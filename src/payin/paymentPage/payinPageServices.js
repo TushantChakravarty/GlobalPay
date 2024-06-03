@@ -1,16 +1,20 @@
 import { cashfreePayin } from "../../gateways/cashfree/cashfree.js";
 import { createPaymentLinkViaRazorpay } from "../../gateways/razorpay/razorpayService.js";
 import { createTransactionService } from "../../transactions/transactions/transactionService.js";
+import { findUser } from "../../user/userDao.js";
 
 export async function createPaymentPageRequest(details) {
     const gateway = details?.gateway
+    const user = await findUser(details?.email_id)
+    const userId = user?.id
     try {
         switch (gateway) {
             case 'razorpay': {
                 const response = await createPaymentLinkViaRazorpay(details);
                 console.log(response)
                 if (response?.status == 'created') {
-                   // await createTransactionService(details, gateway, userId, response?.id)
+                    
+                    await createTransactionService(details, gateway, userId, response?.id)
                     const responseData = {
                         message: 'success',
                         statusCode: 200,
