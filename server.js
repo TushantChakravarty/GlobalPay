@@ -26,7 +26,8 @@ const startServer = async () => {
 
     try {
         await migrateDb()
-
+       
+          
         registerRoutes(fastify)
         fastify.get('/hello', async (request, reply) => {
             return { message: 'Hello World' };

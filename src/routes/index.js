@@ -7,6 +7,12 @@ import payoutBankRoutes from "../payout/bank/routes.js";
 import callbackRoutes from "../callbacks/routes.js";
 
 const registerRoutes = (fastify) => {
+  fastify.register(require('@fastify/cors'), { 
+    // put your options here
+    origin: '*', // allow all origins
+    methods: ['GET', 'PUT', 'POST', 'DELETE'], // allow these HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // allow these headers
+  });
   fastify.register(fastifyJwt, {
     secret: process.env.JWT_SECRET,
   });
