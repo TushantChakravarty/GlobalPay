@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 export const createUPICollectRequest = async () => {
-    const accountId = 'va_bsHcuO3YZ6y0IW4gA4KZXO63K';
+    const accountId = 'va_27Pz07VLv7IEfb2RrgXfpbjr2';
     const accessKey = 'ak_test_xXSvqD0Zr3rMFL6KR8vfAClwnP7FtHO2FvLx';
 
     const secretKey = 'sk_test_hRUubmVpN6NGJs7kBWmAMQO3tqcW1YXATLUL';
