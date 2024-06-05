@@ -37,3 +37,9 @@ export async function createTransactionService(details, gateway, userId = "", tr
         return { code: 500, error: "unable to create transaction" }
     }
 }
+
+export async function getTransaction(id)
+{
+    const user =  await Transaction.findOne({ where: { uuid:id } });
+    return user
+}

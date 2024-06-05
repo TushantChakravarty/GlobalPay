@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Fastify from 'fastify'
 import registerRoutes from './src/routes/index.js'
-import { createPaymentLinkViaRazorpay, fetchPayments } from './src/gateways/razorpay/razorpayService.js';
 import migrateDb from './src/utils/db.utils.js';
+import { createUPICollectRequest, createUPIVirtualAccount, updateUPIVirtualAccount } from './src/gateways/zwitch/zwitchServices.js';
 const fastify = Fastify({
     logger: true
 })
@@ -19,6 +19,9 @@ const fastify = Fastify({
 //     upi:'9340079982@paytm',
 //     amount:100
 // },"vpa")
+//createUPICollectRequest()
+//createUPIVirtualAccount()
+//updateUPIVirtualAccount()
 const startServer = async () => {
 
     try {

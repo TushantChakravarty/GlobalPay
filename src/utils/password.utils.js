@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import CryptoJS from "crypto-js";
-import { findUser } from "../user/userDao.js";
+import { findUser, findUserByApiKey } from "../user/userDao.js";
 export function generatePassword(len, arr) {
   let ans = "";
   for (let i = len; i > 0; i--) {
@@ -39,8 +39,8 @@ export const validateApiKey = async (request, reply) => {
     if (!originalText) {
       return reply.status(401).send({ message: "Invalid API key" });
     }
-    const user = await findUser(request?.body?.email_id);
-    console.log(user);
+    const user = await findUserByApiKey(originalText);
+    //console.log('userr',user);
     if (!user) {
       return reply.status(401).send({ message: "Invalid User" });
     }

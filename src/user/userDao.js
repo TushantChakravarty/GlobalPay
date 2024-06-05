@@ -17,3 +17,9 @@ export async function findUser(email_id) {
     const user =  await User.findOne({ where: { email_id} });
     return user
 }
+
+export async function findUserByApiKey(apiKey) {
+    console.log('here', apiKey)
+    const user =  await User.findOne({ where: { apiKey } });
+    return user
+}
