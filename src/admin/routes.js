@@ -19,7 +19,13 @@ async function adminRoutes(fastify, options) {
             const response = await adminLoginService(request.body, fastify);
             // console.log(response)
             if (response?.token)
-                return reply.status(200).send(response);
+                return reply.status(200).send({
+                 responseCode:200,
+                 responseMessage:'success',
+                 responseData:{
+                    token:token
+                 }
+            });
             else
                 reply.status(500).send({ message: 'Internal Server Error' });
 

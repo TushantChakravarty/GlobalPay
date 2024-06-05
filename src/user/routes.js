@@ -15,8 +15,25 @@ async function userRoutes(fastify, options) {
       preValidation:validateAdminTokenAndApiKey
     },
     async (request, reply) => {
-      const response = await userRegisterService(request.body);
-      return reply.send(response);
+      try{
+
+        const response = await userRegisterService(request.body);
+        return reply.status(200).send({
+          responseCode:200,
+          responseMessage:'success',
+          responseData:{
+            email:response?.email,
+            password:response?.password,
+            apiKey:response?.apiKey
+          }
+        });
+      }catch(error)
+      {
+        return reply.status(500).send({
+          responseCode:200,
+          responseMessage:"Internal Server Error"
+        });
+      }
     }
   );
   fastify.post("/login", { schema: loginSchema }, async (request, reply) => {
