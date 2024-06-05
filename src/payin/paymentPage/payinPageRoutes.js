@@ -3,7 +3,7 @@ import { validateToken, validateTokenAndApiKey } from "../../utils/jwt.utils.js"
 import { createPaymentPageRequest } from "./payinPageServices.js";
 
 async function paymentPageRoutes(fastify, options) {
-   fastify.addHook('preValidation', validateTokenAndApiKey);
+    fastify.addHook('preValidation', validateTokenAndApiKey);
     fastify.post('/hostedPage', {
         schema: {
             body: {
@@ -14,6 +14,8 @@ async function paymentPageRoutes(fastify, options) {
                     customer_emailId: { type: 'string', format: 'email' },
                     customer_phone: { type: 'string' },
                     customer_address: { type: 'string' },
+                    customer_name: { type: 'string' },
+                    transaction_id: { type: 'string' }
                 }
             }
         }

@@ -7,7 +7,6 @@ import { generateTransactionId } from '../../utils/password.utils.js'
 
 export async function createPaymentLinkViaRazorpay(details) {
   try {
-    console.log("checkpoint 1")
     // Razorpay instance
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
@@ -15,8 +14,8 @@ export async function createPaymentLinkViaRazorpay(details) {
     })
 
     console.log("checkpoint 2")
-  const txId = generateTransactionId(12)
-  console.log(txId)
+    const txId = generateTransactionId(12)
+    console.log(txId)
     // generate payment link
     const response = await razorpay?.paymentLink?.create({
       // "upi_link": true, // true if you want to generate upi link
@@ -29,8 +28,8 @@ export async function createPaymentLinkViaRazorpay(details) {
       "description": "",
       "customer": {
         "name": "test_user",
-        "email": "test@gmail.com",
-        "contact": "8318089088"
+        "email": details?.customer_emailId,
+        "contact": details?.customer_phone
       },
       "notify": {
         "sms": true,
@@ -55,7 +54,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       }
     })
     console.log("checkpoint 3")
-     console.log(response)
+    console.log(response)
     console.log("checkpoint 4")
     if (!response) throw new Error("Unable to generate payment link");
 
@@ -135,14 +134,14 @@ export const createPayoutByBank = async (fund_account_id, amount) => {
 
   const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
   const payoutData = {
-    account_number: '2323230037526232',
+    account_number: '409001863599',
     fund_account_id: fund_account_id,
-    amount: amount,
+    amount: amount * 100,
     currency: 'INR',
     mode: 'IMPS',
-    purpose: 'refund',
+    purpose: 'payout',
     queue_if_low_balance: true,
-    reference_id: 'Acme Transaction ID 12345',
+    reference_id: `${Date.now()}`,
     narration: 'Acme Corp Fund Transfer',
     notes: {
       notes_key_1: 'Tea, Earl Grey, Hot',
@@ -163,7 +162,7 @@ export const createPayoutByBank = async (fund_account_id, amount) => {
     console.log("checkpoint 4")
 
     if (!response.ok) {
-      console.log(response)
+      console.log(await response.json())
       throw new Error('Network response was not ok');
     }
 
@@ -184,16 +183,18 @@ export async function createPayoutVpa(func_account_id, amount) {
   const apiSecret = process.env.RAZORPAY_KEY_SECRET
 
   const url = 'https://api.razorpay.com/v1/payouts';
+  //409001863599
+  //2323230037526232
 
   const data = {
-    account_number: '2323230037526232',
+    account_number: '409001863599',
     fund_account_id: func_account_id,
     amount: amount,
     currency: 'INR',
     mode: 'UPI',
-    purpose: 'refund',
+    purpose: 'payout',
     queue_if_low_balance: true,
-    reference_id: 'Acme Transaction ID 12345',
+    reference_id: `${Date.now()}`,
     narration: 'Acme Corp Fund Transfer',
     notes: {
       notes_key_1: 'Tea, Earl Grey, Hot',
@@ -216,6 +217,8 @@ export async function createPayoutVpa(func_account_id, amount) {
 
     if (!response.ok) {
       console.log(response)
+      const res = await response.json()
+      console.log("this is error response", res)
       throw new Error('Network response was not ok');
     }
 
