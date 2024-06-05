@@ -13,7 +13,7 @@ fastify.register(fastifyCors, {
     // put your options here
     origin: '*', // allow all origins
     methods: ['GET', 'PUT', 'POST', 'DELETE'], // allow these HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // allow these headers
+    allowedHeaders: ['Content-Type', 'Authorization','apiKey','apikey'], // allow these headers
   });
 // createPaymentLinkViaRazorpay({
 //     amount:2000
