@@ -18,6 +18,7 @@ import Transaction from './Transaction/transaction.model.js';
 import Callbacks from './callbacks/callback.model.js';
 import User from './user/user.model.js';
 import Admin from './admin/admin.model.js';
+import PayoutTransaction from './Transaction/payout.model.js'
 
 
 
@@ -29,6 +30,7 @@ const sequelize = new Sequelize(config)
 // For example db.Challenge = Challenge(sequelize, Sequelize.DataTypes)
 
 db.Transaction = Transaction(sequelize, Sequelize.DataTypes)
+db.PayoutTransaction = PayoutTransaction(sequelize, Sequelize.DataTypes)
 db.Callbacks = Callbacks(sequelize, Sequelize.DataTypes)
 db.User = User(sequelize, Sequelize.DataTypes)
 db.Admin = Admin(sequelize, Sequelize.DataTypes)
