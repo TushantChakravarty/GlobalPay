@@ -3,11 +3,18 @@ dotenv.config();
 import Fastify from 'fastify'
 import registerRoutes from './src/routes/index.js'
 import migrateDb from './src/utils/db.utils.js';
+import fastifyCors from '@fastify/cors';
 import { createUPICollectRequest, createUPIVirtualAccount, updateUPIVirtualAccount } from './src/gateways/zwitch/zwitchServices.js';
 const fastify = Fastify({
     logger: true
 })
 
+fastify.register(fastifyCors, { 
+    // put your options here
+    origin: '*', // allow all origins
+    methods: ['GET', 'PUT', 'POST', 'DELETE'], // allow these HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // allow these headers
+  });
 // createPaymentLinkViaRazorpay({
 //     amount:2000
 // })
