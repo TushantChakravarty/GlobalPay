@@ -1,4 +1,4 @@
-import { razorpayCallbackService } from "./services";
+import { razorpayCallbackService } from "./services.js";
 
 async function callbackRoutes(fastify, options) {
   fastify.post("/razorpayPayin", async (request, reply) => {

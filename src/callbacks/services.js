@@ -1,11 +1,12 @@
 import db from "../db/index.js";
-import { encryptText } from "../utils/password.utils";
+import { getTransaction } from "../transactions/transactions/transactionService.js";
+import { encryptText } from "../utils/password.utils.js";
 
 const {User, Admin}=db
 
 
 
-export async function razorpayCallbackService()
+export async function razorpayCallbackService(details)
 {
 
         if (!details) {
@@ -20,7 +21,7 @@ export async function razorpayCallbackService()
         };
         let adminQuery = { where: { emailId: "samir123@payhub" } };
         
-        const transaction = await getTransaction(query);
+        const transaction = await getTransaction(details.id);
         const userQuery = { where: { id: transaction.id } };
         const admin = await Admin.findOne(adminQuery);
         // const gatewayData = await Gateway.findOne({ where: { name: "pgbro" } });
@@ -83,23 +84,23 @@ export async function razorpayCallbackService()
             };
             const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
     
-            let callBackDetails = {
-                transaction_id: details.id,
-                status: "success",
-                amount: amount,
-                utr: details.rrn,
-                phone: transaction.phone,
-                username: transaction.username,
-                upiId: transaction.upiId,
-                date: transaction.transaction_date,
-                encryptedData: encryptedData,
-            };
+            // let callBackDetails = {
+            //     transaction_id: details.id,
+            //     status: "success",
+            //     amount: amount,
+            //     utr: details.rrn,
+            //     phone: transaction.phone,
+            //     username: transaction.username,
+            //     upiId: transaction.upiId,
+            //     date: transaction.transaction_date,
+            //     encryptedData: encryptedData,
+            // };
     
             await Admin.update(adminUpdate, adminQuery);
             await User.update(userUpdate, query);
-            await Gateway.update(gatewayUpdate, { where: { name: "pgbro" } });
+            //await Gateway.update(gatewayUpdate, { where: { name: "pgbro" } });
     
-            callbackPayin(callBackDetails, response.callbackUrl).catch(console.error);
+            //callbackPayin(callBackDetails, response.callbackUrl).catch(console.error);
         } else if (details.status === "failed") {
             const txData = {
                 transaction_id: transaction.transactionId,
