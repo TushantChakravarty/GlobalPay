@@ -4,6 +4,7 @@ import userRoutes from "../user/routes.js";
 import fastifyJwt from "fastify-jwt";
 import adminRoutes from "../admin/routes.js";
 import payoutBankRoutes from "../payout/bank/routes.js";
+import callbackRoutes from "../callbacks/routes.js";
 
 const registerRoutes = (fastify) => {
   fastify.register(fastifyJwt, {
@@ -21,6 +22,8 @@ const registerRoutes = (fastify) => {
   fastify.register(paymentPageRoutes, { prefix: "/payin/hosted" });
   fastify.register(userRoutes, { prefix: "/user" });
   fastify.register(adminRoutes, { prefix: "/admin" });
+  fastify.register(callbackRoutes, { prefix: "/callback" });
+
 };
 
 export default registerRoutes;
