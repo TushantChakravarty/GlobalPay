@@ -1,3 +1,4 @@
+import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
 import { loginSchema } from "../utils/validationSchemas.js";
 import { userLoginService, userRegisterService } from "./userService.js";
 
@@ -11,6 +12,7 @@ async function userRoutes(fastify, options) {
           additionalProperties: true,
         },
       },
+      preValidation:validateAdminTokenAndApiKey
     },
     async (request, reply) => {
       const response = await userRegisterService(request.body);

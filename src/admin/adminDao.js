@@ -17,7 +17,11 @@ export async function findAdmin(emailId) {
     const admin = await Admin.findOne({ where: { emailId } });
     return admin
 }
-
+export async function findAdminByApiKey(apiKey) {
+    console.log('here', apiKey)
+    const user =  await Admin.findOne({ where: { apiKey } });
+    return user
+}
 export async function updateGateway(emailId) {
 
     const admin = await Admin.findOne({ where: { emailId } });

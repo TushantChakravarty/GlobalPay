@@ -8,3 +8,14 @@ export const loginSchema = {
       }
     }
   };
+
+  export const adminLoginSchema = {
+    body: {
+      type: 'object',
+      required: ['emailId', 'password'],
+      properties: {
+        username: { type: 'string' },
+        password: { type: 'string' }
+      }
+    }
+  };

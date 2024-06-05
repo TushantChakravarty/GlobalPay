@@ -1,6 +1,5 @@
-import { loginSchema } from "../utils/validationSchemas.js";
-
-import { adminLogin, adminRegister, adminUpdateGateway } from "./adminFacade.js";
+import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
+import { adminLoginService, adminRegisterService, adminUpdateGatewayService } from "./adminService.js";
 
 
 async function adminRoutes(fastify, options) {
@@ -12,12 +11,12 @@ async function adminRoutes(fastify, options) {
             }
         }
     }, async (request, reply) => {
-        const response = await adminRegister(request.body);
+        const response = await adminRegisterService(request.body);
         return reply.send(response);
     });
-    fastify.post('/login', { schema: loginSchema }, async (request, reply) => {
+    fastify.post('/login', { schema: adminLoginSchema }, async (request, reply) => {
         try {
-            const response = await adminLogin(request.body, fastify);
+            const response = await adminLoginService(request.body, fastify);
             // console.log(response)
             if (response?.token)
                 return reply.status(200).send(response);
@@ -41,7 +40,7 @@ async function adminRoutes(fastify, options) {
     }, async (request, reply) => {
         try {
             //1.emailId,apiKey,id
-            const response = await adminUpdateGateway(request.body, fastify);
+            const response = await adminUpdateGatewayService(request.body, fastify);
             // console.log(response)
             if (response?.token)
                 return reply.status(200).send(response);
