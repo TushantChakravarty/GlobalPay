@@ -23,7 +23,7 @@ async function adminRoutes(fastify, options) {
                  responseCode:200,
                  responseMessage:'success',
                  responseData:{
-                    token:token
+                    token:response?.token
                  }
             });
             else
