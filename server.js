@@ -20,7 +20,7 @@ const fastify = Fastify({
 //     upi:'9340079982@paytm',
 //     amount:100
 // },"vpa")
-createUPICollectRequest()
+//createUPICollectRequest()
 //createUPIVirtualAccount()
 //updateUPIVirtualAccount()
 const startServer = async () => {

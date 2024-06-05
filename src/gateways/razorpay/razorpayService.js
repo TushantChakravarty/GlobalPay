@@ -20,7 +20,7 @@ export async function createPaymentLinkViaRazorpay(details) {
     // generate payment link
     const response = await razorpay?.paymentLink?.create({
       // "upi_link": true, // true if you want to generate upi link
-      "amount": details?.amount,
+      "amount": Number(details?.amount)*100,
       "currency": "INR",
       "accept_partial": true,
       "first_min_partial_amount": 100,

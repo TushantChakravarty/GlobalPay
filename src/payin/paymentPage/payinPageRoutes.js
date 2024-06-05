@@ -1,3 +1,4 @@
+import { findUser, findUserByApiKey } from "../../user/userDao.js";
 import { validateToken, validateTokenAndApiKey } from "../../utils/jwt.utils.js";
 import { createPaymentPageRequest } from "./payinPageServices.js";
 
@@ -17,6 +18,11 @@ async function paymentPageRoutes(fastify, options) {
             }
         }
     }, async (request, reply) => {
+        const apiKey  = request?.apiKeyDetails
+        //console.log(apiKey)
+        const user = await findUserByApiKey(apiKey)
+        //console.log('userrr',user?.dataValues?.email_id)
+        request.body.email_id = user?.dataValues?.email_id
         const response = await createPaymentPageRequest(request.body);
         return reply.send(response);
     });
