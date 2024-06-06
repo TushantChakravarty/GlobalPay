@@ -7,6 +7,7 @@ import payoutBankRoutes from "../payout/bank/routes.js";
 import callbackRoutes from "../callbacks/routes.js";
 
 const registerRoutes = (fastify) => {
+  
   fastify.register(fastifyJwt, {
     secret: process.env.JWT_SECRET,
   });

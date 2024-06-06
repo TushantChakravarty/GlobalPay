@@ -26,7 +26,7 @@ export async function adminRegisterService(details) {
         details.balance = 0;
         const createdAdmin = await createAdmin(details)
         let responseData = {}
-        if (createUser) {
+        if (createdAdmin) {
             responseData = {
                 email: createdAdmin.emailId,
                 password: password,

@@ -1,4 +1,4 @@
-import { validateApiKey } from "./password.utils.js";
+import { validateAdminApiKey, validateApiKey } from "./password.utils.js";
 
 export async function generateUserToken(details, fastify) {
   const { email_id } = details;
@@ -25,4 +25,10 @@ export const validateTokenAndApiKey = async (request, reply) => {
   console.log(request.headers)
   await validateToken(request, reply);
   await validateApiKey(request, reply);
+};
+
+export const validateAdminTokenAndApiKey = async (request, reply) => {
+  //console.log(request.headers)
+  await validateToken(request, reply);
+  await validateAdminApiKey(request, reply);
 };
