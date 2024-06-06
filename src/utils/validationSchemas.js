@@ -19,3 +19,18 @@ export const loginSchema = {
       }
     }
   };
+
+  export const payinPageSchema ={
+    body: {
+        type: 'object',
+        required: ['amount','customer_emailId','customer_phone','customer_address','customer_name','transaction_id'],
+        properties: {
+            amount: { type: 'number', minimum: 0.01 },
+            customer_emailId: { type: 'string', format: 'email' },
+            customer_phone: { type: 'string' },
+            customer_address: { type: 'string' },
+            customer_name: { type: 'string' },
+            transaction_id: { type: 'string' }
+        }
+    }
+}
