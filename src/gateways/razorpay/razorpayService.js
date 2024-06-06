@@ -126,15 +126,14 @@ export async function createRazorpayPayoutService(details, type, user) {
         customer_email: details.email || "",
         business_name: user.name,
         payoutAmount: details.amount,
-        upiId: details.vpa,
+        upiId: details.upi,
         method: "vpa"
       })
       const fund_account_id = await createRazorpayFundAccountForVpa({ upi: details.upi }, contact_id)
       const payout_data = await createPayoutVpa(fund_account_id, details.amount)
       payout.transactionId = payout_data.id
       await payout.save()
-      return { code: 200, data: payout_data }
-
+      return payout
     } else if (type === "bank") {
       let payout = await PayoutTransaction.create({
         uuid: user.id,
@@ -159,7 +158,7 @@ export async function createRazorpayPayoutService(details, type, user) {
       const payout_data = await createPayoutByBank(fund_account_id, details.amount)
       payout.transactionId = payout_data.id
       await payout.save()
-      return { code: 200, data: payout_data }
+      return payout
     }
   } catch (err) {
     throw new Error('Unable to do payout')

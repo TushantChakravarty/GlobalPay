@@ -1,5 +1,11 @@
 import { createRazorpayPayoutService } from "../../gateways/razorpay/razorpayService.js"
 import { createZwitchPayoutService } from "../../gateways/zwitch/zwitchService.js"
+import { CODES, MESSAGES } from "../../utils/constants.js";
+import {
+    responseMapping,
+    responseMappingWithData,
+} from "../../utils/mapper.js";
+
 
 /**
  * This controller is to do payout using bank
@@ -7,41 +13,68 @@ import { createZwitchPayoutService } from "../../gateways/zwitch/zwitchService.j
 export async function payoutBankController(request) {
     try {
         const gateway = request.user.payoutGateway
-        let response
+        let response = null
         switch (gateway) {
             case "razorpay":
                 response = await createRazorpayPayoutService(request.body, "bank", request.user)
-                return response
+                if (response) {
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                } else {
+                    return responseMapping(
+                        CODES.INTRNLSRVR,
+                        MESSAGES.INTERNAL_SERVER_ERROR
+                    );
+                }
             case "zwitch":
                 response = await createZwitchPayoutService(request.body, "bank", request.user)
-                return response
+                if (response) {
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                } else {
+                    return responseMapping(
+                        CODES.INTRNLSRVR,
+                        MESSAGES.INTERNAL_SERVER_ERROR
+                    );
+                }
             default:
-                return { code: 500, error: "Unable to do payout" }
+                throw new Error("Internal server error")
         }
     } catch (error) {
-        return { code: 500, error: "Unable to do payout" }
+        throw new Error("Internal server error")
     }
 }
 
 /**
  * This controller is to do payout using vpa
  */
-expor
 export async function payoutUpiController(request) {
     try {
         const gateway = request.user.payoutGateway
-        let response
+        let response = null
         switch (gateway) {
             case "razorpay":
                 response = await createRazorpayPayoutService(request.body, "vpa", request.user)
-                return response
+                if (response) {
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                } else {
+                    return responseMapping(
+                        CODES.INTRNLSRVR,
+                        MESSAGES.INTERNAL_SERVER_ERROR
+                    );
+                }
             case "zwitch":
                 response = await createZwitchPayoutService(request.body, "vpa", request.user)
-                return response
+                if (response) {
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                } else {
+                    return responseMapping(
+                        CODES.INTRNLSRVR,
+                        MESSAGES.INTERNAL_SERVER_ERROR
+                    );
+                }
             default:
-                return { code: 500, error: "Unable to do payout" }
+                throw new Error('Internal server error')
         }
     } catch (error) {
-        return { code: 500, error: "Unable to do payout" }
+        throw new Error('Internal server error')
     }
 }
