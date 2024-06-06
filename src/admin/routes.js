@@ -1,3 +1,4 @@
+import { responseMappingWithData } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
 import { adminLoginService, adminRegisterService, adminUpdateGatewayService } from "./adminService.js";
 
@@ -12,26 +13,24 @@ async function adminRoutes(fastify, options) {
         }
     }, async (request, reply) => {
         const response = await adminRegisterService(request.body);
-        return reply.send(response);
+        return reply.status(200).send(responseMappingWithData(200,'success',
+            response
+        ));
     });
     fastify.post('/login', { schema: adminLoginSchema }, async (request, reply) => {
         try {
             const response = await adminLoginService(request.body, fastify);
             // console.log(response)
             if (response?.token)
-                return reply.status(200).send({
-                 responseCode:200,
-                 responseMessage:'success',
-                 responseData:{
-                    token:response?.token
-                 }
-            });
+                return reply.status(200).send(responseMappingWithData(200,'success',{
+                token:response?.token
+            }));
             else
-                reply.status(500).send({ message: 'Internal Server Error' });
+                reply.status(500).send(responseMapping(500,'Internal Server Error'));
 
         } catch (err) {
             fastify.log.error(err);
-            return reply.status(500).send({ message: 'Internal Server Error' });
+            return reply.status(500).send(responseMapping(500,'Internal Server Error'));
         }
     });
 
