@@ -61,7 +61,7 @@ export async function createZwitchPayoutService(details, type, user = { id: 1, n
             return { code: 200, data: payout }
         }
     } catch (error) {
-        return { code: 500, error: error.message }
+        throw new Error('Unable to do payout')
     }
 }
 
