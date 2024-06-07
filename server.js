@@ -16,9 +16,9 @@ fastify.register(fastifyCors, {
     methods: ['GET', 'PUT', 'POST', 'DELETE'], // allow these HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization','apiKey','apikey'], // allow these headers
   });
-createPaymentLinkViaRazorpay({
-    amount:2000
-})
+// createPaymentLinkViaRazorpay({
+//     amount:2000
+// })
 //fetchPayments('gjoI9dQke60Y')
 // createRazorpayPayoutService({
 //     name:'tushant',

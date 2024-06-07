@@ -12,14 +12,14 @@ async function paymentPageRoutes(fastify, options) {
     }, async (request, reply) => {
         try{
 
-            // const apiKey  = request?.apiKeyDetails
-            // //console.log(apiKey)
-            // const user = await findUserByApiKey(apiKey)
-            // //console.log('userrr',user?.dataValues?.email_id)
-            // request.body.email_id = user?.dataValues?.email_id
+            const apiKey  = request?.apiKeyDetails
+            //console.log(apiKey)
+            const user = await findUserByApiKey(apiKey)
+            //console.log('userrr',user?.dataValues?.email_id)
+            request.body.email_id = user?.dataValues?.email_id
             
-            // const response = await createPaymentPageRequest(request.body);
-            // return reply.status(200).send(response);
+            const response = await createPaymentPageRequest(request.body);
+            return reply.status(200).send(response);
         }catch(error)
         {
             console.log('payin page',error)

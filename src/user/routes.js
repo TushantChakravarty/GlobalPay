@@ -41,7 +41,7 @@ async function userRoutes(fastify, options) {
       const response = await userLoginService(request.body, fastify);
       // console.log(response)
       if (response?.token) return reply.status(200).send(response);
-      else reply.status(500).send({ message: "Internal Server Error" });
+      else reply.status(500).send({ message: response?.message });
     } catch (err) {
       fastify.log.error(err);
       return reply.status(500).send({ message: "Internal Server Error" });

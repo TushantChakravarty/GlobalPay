@@ -27,7 +27,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       "reference_id": txId,
       "description": "",
       "customer": {
-        "name": "test_user",
+        "name": details?.customer_name,
         "email": details?.customer_emailId,
         "contact": details?.customer_phone
       },

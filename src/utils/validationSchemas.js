@@ -23,7 +23,7 @@ export const loginSchema = {
   export const payinPageSchema ={
     body: {
         type: 'object',
-        required: ['amount','customer_emailId','customer_phone','customer_address','customer_name','transaction_id'],
+        required: ['amount','customer_emailId','customer_phone','customer_address','customer_name'],
         properties: {
             amount: { type: 'number', minimum: 0.01 },
             customer_emailId: { type: 'string', format: 'email' },
