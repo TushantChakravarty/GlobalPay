@@ -5,6 +5,7 @@ import registerRoutes from './src/routes/index.js'
 import migrateDb from './src/utils/db.utils.js';
 import fastifyCors from '@fastify/cors';
 import { createUPICollectRequest, createUPIVirtualAccount, updateUPIVirtualAccount } from './src/gateways/zwitch/zwitchServices.js';
+import { createPaymentLinkViaRazorpay } from './src/gateways/razorpay/razorpayService.js';
 const fastify = Fastify({
     logger: true
 })
@@ -15,9 +16,9 @@ fastify.register(fastifyCors, {
     methods: ['GET', 'PUT', 'POST', 'DELETE'], // allow these HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization','apiKey','apikey'], // allow these headers
   });
-// createPaymentLinkViaRazorpay({
-//     amount:2000
-// })
+createPaymentLinkViaRazorpay({
+    amount:2000
+})
 //fetchPayments('gjoI9dQke60Y')
 // createRazorpayPayoutService({
 //     name:'tushant',
