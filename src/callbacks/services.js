@@ -22,11 +22,13 @@ export async function razorpayCallbackService(details)
         let adminQuery = { where: { emailId: "samir123@gsxsolutions.com" } };
         
         const transaction = await getTransaction(details.id);
+        console.log('tx',transaction)
         const userQuery = { where: { id: transaction.uuid } };
         const admin = await Admin.findOne(adminQuery);
+        console.log('admin',admin)
         // const gatewayData = await Gateway.findOne({ where: { name: "pgbro" } });
         const response = await User.findOne(userQuery);
-    
+        console.log('user',response)
         if (!transaction || !admin  || !response) {
             return { status: 404, message: "Not found" };
         }
@@ -39,14 +41,14 @@ export async function razorpayCallbackService(details)
             const admin24hr = admin.last24hr;
             const adminBalance = admin.balance;
     
-            let adminUpdate = {
-                last24hr: Number(admin24hr) + amount,
-                balance: Number(adminBalance) + amount,
-                totalTransactions: Number(admin.totalTransactions) + 1,
-                successfulTransactions: Number(admin.successfulTransactions) + 1,
-                last24hrSuccess: Number(admin.last24hrSuccess) + 1,
-                last24hrTotal: Number(admin.last24hrTotal) + 1,
-            };
+            
+                admin.last24hr= Number(admin24hr) + amount
+                admin.balance= Number(adminBalance) + amount
+                admin.totalTransactions=Number(admin.totalTransactions) + 1
+                admin.successfulTransactions= Number(admin.successfulTransactions) + 1
+                admin.last24hrSuccess =Number(admin.last24hrSuccess) + 1
+                admin.last24hrTotal = Number(admin.last24hrTotal) + 1
+        
     
             const platformFee = response.platformFee > 0 ? amount * (response.platformFee / 100) : 0;
             // const feeCollected = Number(gatewayData.feeCollected24hr) + platformFee;
@@ -61,28 +63,28 @@ export async function razorpayCallbackService(details)
             //     totalFeeCollected: totalFeeCollected,
             // };
     
-            let userUpdate = {
-                balance: Number(amount) + Number(balance),
-                utr: details.rrn,
-                last24hr: Number(user24hr) + amount,
-                totalTransactions: Number(response.totalTransactions) + 1,
-                successfulTransactions: Number(response.successfulTransactions) + 1,
-                last24hrSuccess: Number(response.last24hrSuccess) + 1,
-                last24hrTotal: Number(response.last24hrTotal) + 1,
-                todayFee: response.platformFee > 0 ? Number(response.todayFee) + platformFee : 0,
-            };
+            
+                response.balance= Number(amount) + Number(balance)
+                response.utr= details.rrn
+                response.last24hr= Number(user24hr) + amount
+                response.totalTransactions= Number(response.totalTransactions) + 1
+                response.successfulTransactions= Number(response.successfulTransactions) + 1
+                response.last24hrSuccess= Number(response.last24hrSuccess) + 1
+                response.last24hrTotal= Number(response.last24hrTotal) + 1
+                response.todayFee= response.platformFee > 0 ? Number(response.todayFee) + platformFee : 0
+            
     
-            const txData = {
-                transaction_id: transaction.transactionId,
-                amount: transaction.amount,
-                status: "success",
-                phone: transaction.phone,
-                username: transaction.username,
-                upiId: transaction.upiId,
-                utr: details.rrn,
-                transaction_date: transaction.transaction_date,
-            };
-            const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
+            // const txData = {
+            //     transaction_id: transaction.transactionId,
+            //     amount: transaction.amount,
+            //     status: "success",
+            //     phone: transaction.phone,
+            //     username: transaction.username,
+            //     upiId: transaction.upiId,
+            //     utr: details.rrn,
+            //     transaction_date: transaction.transaction_date,
+            // };
+            // const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
     
             // let callBackDetails = {
             //     transaction_id: details.id,
@@ -96,8 +98,8 @@ export async function razorpayCallbackService(details)
             //     encryptedData: encryptedData,
             // };
     
-            await Admin.update(adminUpdate, adminQuery);
-            await User.update(userUpdate, query);
+            await admin.save()
+            await response.save()
             //await Gateway.update(gatewayUpdate, { where: { name: "pgbro" } });
     
             //callbackPayin(callBackDetails, response.callbackUrl).catch(console.error);
