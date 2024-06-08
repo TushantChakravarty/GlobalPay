@@ -19,7 +19,7 @@ async function callbackRoutes(fastify, options) {
         return reply.status(200).send(response);
       } catch (err) {
         fastify.log.error(err);
-        return reply.status(500).send({ message: "Internal Server Error" });
+        return reply.status(500).send({ message: err });
       }
     } else {
       return reply.status(500).send({ message: "Internal Server Error" });
