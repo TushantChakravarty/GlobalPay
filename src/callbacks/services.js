@@ -23,7 +23,6 @@ export async function razorpayCallbackService(details)
         
         const transaction = await getTransaction(details.id);
         const userQuery = { where: { id: transaction.uuid } };
-        const txQuery = { where: { id: details.id } };
         const admin = await Admin.findOne(adminQuery);
         // const gatewayData = await Gateway.findOne({ where: { name: "pgbro" } });
         const response = await User.findOne(userQuery);
