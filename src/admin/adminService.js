@@ -88,7 +88,7 @@ export async function adminUpdatePayinGatewayService(details, fastify) {
 export async function adminUpdatePayoutGatewayService(details, fastify) {
     try {
         const { email_Id, apiKey, gateway } = details
-        const user = await User.findOne({ where: { email_Id: email_Id, apiKey: apiKey } })
+        const user = await User.findOne({ where: { email_Id: email_Id} })
         if (!user) {
             return { message: 'User not exist' }
         }
