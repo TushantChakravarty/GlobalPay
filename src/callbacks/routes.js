@@ -2,6 +2,7 @@ import { razorpayCallbackService } from "./services.js";
 
 async function callbackRoutes(fastify, options) {
   fastify.post("/razorpayPayin", async (request, reply) => {
+    let details = request?.body
     if (
       details?.payload?.payment_link?.entity &&
       details?.payload?.payment?.entity?.acquirer_data?.rrn &&
