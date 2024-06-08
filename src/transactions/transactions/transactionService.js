@@ -38,7 +38,7 @@ export async function createTransactionService(details, gateway, userId = "", tr
 
 
     } catch (err) {
-        return { code: 500, error: "unable to create transaction" }
+        throw err
     }
 }
 
