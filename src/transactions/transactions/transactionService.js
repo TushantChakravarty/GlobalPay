@@ -1,6 +1,6 @@
 import db from "../../db/index.js";
 import { v4 as uuidv4 } from 'uuid';
-
+import { convertToIST } from "../../utils/utils.js";
 const { Transaction } = db
 
 export async function createTransactionService(details, gateway, userId = "", transactionId = "") {

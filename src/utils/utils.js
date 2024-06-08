@@ -1,4 +1,4 @@
-function convertToIST(date) {
+export function convertToIST(date) {
     // Create a new Date object using the UTC timestamp
     const utcDate = new Date(date);
 
