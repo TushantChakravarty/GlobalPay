@@ -59,7 +59,7 @@ export default (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            modelName: "Transaction",
+            modelName: "PayoutTransaction",
         }
     );
     return PayoutTransaction;
