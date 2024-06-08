@@ -2,7 +2,7 @@ import db from "../db/index.js";
 import { getTransaction } from "../transactions/transactions/transactionService.js";
 import { encryptText } from "../utils/password.utils.js";
 
-const {User, Admin}=db
+const {User, Admin,Transaction}=db
 
 
 
@@ -23,6 +23,7 @@ export async function razorpayCallbackService(details)
         
         const transaction = await getTransaction(details.id);
         const userQuery = { where: { id: transaction.uuid } };
+        const txQuery = { where: { id: details.id } };
         const admin = await Admin.findOne(adminQuery);
         // const gatewayData = await Gateway.findOne({ where: { name: "pgbro" } });
         const response = await User.findOne(userQuery);
@@ -139,6 +140,10 @@ export async function razorpayCallbackService(details)
             callbackPayin(callBackDetails, response.callbackUrl);
         }
     
-        saveCallback(details.id, 'pgbro', details);
-        return updateTransactionStatus(details.id, updateObj);
+       // saveCallback(details.id, 'pgbro', details);
+       transaction.status = details.status === 'paid' ? 'success' : 'failed'
+       transaction.utr = details.rrn
+       transaction.save()
+        return {message:'success'}
+           
     }
