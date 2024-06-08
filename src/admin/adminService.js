@@ -108,7 +108,8 @@ export async function adminUpdatePayoutGatewayService(details, fastify) {
 export async function addGateway(details) {
     try {
         const gateway = await Gateway.create({
-            gatewayName: details.gatewayName
+            gatewayName: details.gatewayName,
+            abbr:details?.abbr
         })
         return gateway
 
