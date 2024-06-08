@@ -19,7 +19,7 @@ export async function razorpayCallbackService(details)
             status: details.status === 'paid' ? 'success' : 'failed',
             utr: details.rrn
         };
-        let adminQuery = { where: { emailId: "samir123@payhub" } };
+        let adminQuery = { where: { emailId: "samir123@gsxsolutions.com" } };
         
         const transaction = await getTransaction(details.id);
         const userQuery = { where: { id: transaction.id } };

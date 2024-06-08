@@ -1,4 +1,4 @@
-import { responseMappingWithData } from "../utils/mapper.js";
+import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
 import { adminLoginService, adminRegisterService, adminUpdateGatewayService } from "./adminService.js";
 
