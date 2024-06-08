@@ -18,7 +18,7 @@ export async function createTransactionService(details, gateway, userId = "", tr
             hash: "",
             payout_type: "PAYIN",
             message: "IN-PROCESS",
-            transaction_date: convertToIST(now),
+            transaction_date: now?.toString(),
             gateway: gateway,
             utr: "",
             phone: details.phone ? details.phone : "",
