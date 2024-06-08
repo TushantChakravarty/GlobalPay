@@ -1,3 +1,4 @@
+import { responseMapping } from "./mapper.js";
 import { validateAdminApiKey, validateApiKey } from "./password.utils.js";
 
 export async function generateUserToken(details, fastify) {
@@ -17,7 +18,7 @@ export const validateToken = async (request, reply) => {
     await request.jwtVerify();
   } catch (err) {
     console.log(err);
-    reply.status(401).send({ message: "invalid token" });
+    reply.status(403).send(responseMapping(403,'Your session expired'));
   }
 };
 

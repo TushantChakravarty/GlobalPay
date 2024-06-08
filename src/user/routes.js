@@ -33,7 +33,7 @@ async function userRoutes(fastify, options) {
         });
       } catch (error) {
         return reply.status(500).send({
-          responseCode: 200,
+          responseCode: 500,
           responseMessage: "Internal Server Error"
         });
       }
