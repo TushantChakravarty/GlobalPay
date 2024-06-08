@@ -40,6 +40,6 @@ export async function createTransactionService(details, gateway, userId = "", tr
 
 export async function getTransaction(id)
 {
-    const user =  await Transaction.findOne({ where: { id:id } });
+    const user =  await Transaction.findOne({ where: { transactionId:id } });
     return user
 }
