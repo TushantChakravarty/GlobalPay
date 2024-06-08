@@ -9,6 +9,7 @@ import { createPaymentLinkViaRazorpay } from './src/gateways/razorpay/razorpaySe
 const fastify = Fastify({
     logger: true
 })
+console.log(Date.now())
 
 fastify.register(fastifyCors, { 
     // put your options here

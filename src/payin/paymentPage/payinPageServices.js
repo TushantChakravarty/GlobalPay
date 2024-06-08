@@ -3,7 +3,7 @@ import { createPaymentLinkViaRazorpay } from "../../gateways/razorpay/razorpaySe
 import { createTransactionService } from "../../transactions/transactions/transactionService.js";
 import { findUser } from "../../user/userDao.js";
 import { CODES, MESSAGES } from "../../utils/constants.js";
-import { responseMappingWithData } from "../../utils/mapper.js";
+import { responseMapping, responseMappingWithData } from "../../utils/mapper.js";
 
 export async function createPaymentPageRequest(details) {
     const gateway = details?.gateway

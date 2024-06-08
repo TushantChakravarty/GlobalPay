@@ -5,6 +5,7 @@ const { Transaction } = db
 
 export async function createTransactionService(details, gateway, userId = "", transactionId = "") {
     try {
+        const now = Date.now();
         console.log("coming to service")
         const data_to_create = {
             uuid: userId.toString(),
@@ -17,7 +18,7 @@ export async function createTransactionService(details, gateway, userId = "", tr
             hash: "",
             payout_type: "PAYIN",
             message: "IN-PROCESS",
-            transaction_date: new Date.now(),
+            transaction_date: convertToIST(now),
             gateway: gateway,
             utr: "",
             phone: details.phone ? details.phone : "",
