@@ -8,7 +8,7 @@ const { PayoutTransaction } = db
  * @param {*} details for upi email,phone,name,vpa,amount,remark,
  * @param {*} type -bank or vpa
  */
-export async function createZwitchPayoutService(details, type, user = { id: 1, name: "test" }) {
+export async function createZwitchPayoutService(details, type, user) {
     try {
         if (type === "bank") {
             let payout = await PayoutTransaction.create({
@@ -34,7 +34,7 @@ export async function createZwitchPayoutService(details, type, user = { id: 1, n
             const payout_data = await createTransferAccount(details, beneficiary_id)
             payout.transactionId = payout_data.id
             await payout.save()
-            return { code: 200, data: payout }
+            return payout
         } else if (type === "vpa") {
             let payout = await PayoutTransaction.create({
                 uuid: user.id,
@@ -51,17 +51,17 @@ export async function createZwitchPayoutService(details, type, user = { id: 1, n
                 customer_email: details.email || "",
                 business_name: user.name,
                 payoutAmount: details.amount,
-                upiId: details.vpa,
+                upiId: details.upi,
                 method: "vpa"
             })
             const beneficiary_id = await createVpaBeneificiary(details)
             const payout_data = await createTransferVpa(details, beneficiary_id)
             payout.transactionId = payout_data.id
             await payout.save()
-            return { code: 200, data: payout }
+            return payout
         }
     } catch (error) {
-        return { code: 500, error: error.message }
+        throw new Error('Unable to do payout')
     }
 }
 
@@ -113,7 +113,7 @@ export async function createBankAccountBeneificiary(details) {
  */
 export async function createVpaBeneificiary(details) {
     try {
-        const { email = null, phone = null, name, vpa } = details
+        const { email = null, phone = null, name, upi } = details
         let data = { type: "vpa" }
         data.name_of_account_holder = name
         if (email !== null) {
@@ -122,7 +122,7 @@ export async function createVpaBeneificiary(details) {
         if (phone !== null) {
             data.phone = phone
         }
-        data.vpa = vpa
+        data.vpa = upi
         const url = `https://api.zwitch.io/v1/accounts/${process.env.ZWITCH_ACCOUNT_ID}/beneficiaries`;
         const options = {
             method: 'POST',
@@ -135,7 +135,6 @@ export async function createVpaBeneificiary(details) {
         };
 
         const res = await fetch(url, options);
-        console.log("coming to this ajkhdjkahkdh")
         if (!res.ok) {
             console.log(await res.json())
             throw new Error('Network response was not ok');

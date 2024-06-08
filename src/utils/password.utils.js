@@ -46,11 +46,11 @@ export const validateApiKey = async (request, reply) => {
       return reply.status(401).send({ message: "Invalid User" });
     }
     if (user?.apiKey == originalText) {
-      //console.log(user?.apiKey == originalText)
       request.apiKeyDetails = originalText;
     } else {
       return reply.status(401).send({ message: "Invalid API key" });
     }
+    request.user = user
     // You can perform additional checks here if needed
     // Storing the decrypted details in request for further use
   } catch (error) {
@@ -95,9 +95,9 @@ export function generateTransactionId(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let transactionId = '';
   for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      transactionId += characters.charAt(randomIndex);
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    transactionId += characters.charAt(randomIndex);
   }
- // console.log(transactionId)
+  // console.log(transactionId)
   return transactionId;
 }
