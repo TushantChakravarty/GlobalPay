@@ -31,7 +31,7 @@ export const validateApiKey = async (request, reply) => {
   const apiKey = request.headers["apikey"];
   console.log("apiKey", apiKey);
   if (!apiKey) {
-    return reply.status(401).send({ message: "Missing API key" });
+    return reply.status(401).send(responseMapping( 400,"Api Key is required" ));
   }
 
   try {
@@ -39,23 +39,23 @@ export const validateApiKey = async (request, reply) => {
     var originalText = bytes.toString(CryptoJS.enc.Utf8);
     console.log(originalText);
     if (!originalText) {
-      return reply.status(401).send({ message: "Invalid API key" });
+      return reply.status(401).send(responseMapping( 403,"Invalid API key" ));
     }
     const user = await findUserByApiKey(originalText);
     //console.log('userr',user);
     if (!user) {
-      return reply.status(401).send({ message: "Invalid User" });
+      return reply.status(401).send(responseMapping( 400,"User Does Not exist" ));
     }
     if (user?.apiKey == originalText) {
       request.apiKeyDetails = originalText;
     } else {
-      return reply.status(401).send({ message: "Invalid API key" });
+      return reply.status(401).send(responseMapping( 403,"Invalid API key" ));
     }
     request.user = user
     // You can perform additional checks here if needed
     // Storing the decrypted details in request for further use
   } catch (error) {
-    return reply.status(401).send({ message: "Invalid API key" });
+    return reply.status(401).send(responseMapping( 400,"Invalid API key" ));
   }
 };
 
