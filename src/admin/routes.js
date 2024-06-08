@@ -12,10 +12,17 @@ async function adminRoutes(fastify, options) {
             }
         }
     }, async (request, reply) => {
-        const response = await adminRegisterService(request.body);
-        return reply.status(200).send(responseMappingWithData(200,'success',
+        try{
+
+            const response = await adminRegisterService(request.body);
+            return reply.status(200).send(responseMappingWithData(200,'success',
             response
-        ));
+            ));
+        }catch(e)
+        {
+            reply.status(500).send(responseMapping(500,'Internal Server Error'));
+
+        }
     });
     fastify.post('/login', { schema: adminLoginSchema }, async (request, reply) => {
         try {
