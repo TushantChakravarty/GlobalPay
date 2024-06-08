@@ -1,12 +1,12 @@
 import { createRazorpayPayoutService } from "../../gateways/razorpay/razorpayService.js";
 import { neftYesbank } from "../../gateways/yesbank/neftServiceYesbank.js";
 import { createZwitchPayoutService } from "../../gateways/zwitch/zwitchService.js";
+import { createTransactionService } from "../../transactions/transactions/transactionService.js";
 import { CODES, MESSAGES } from "../../utils/constants.js";
 import {
   responseMapping,
   responseMappingWithData,
 } from "../../utils/mapper.js";
-
 export async function neftTransfer() {
   const response = await neftYesbank();
   return response;
@@ -25,7 +25,7 @@ export async function bankPayouts(details) {
         );
         console.log(response);
         if (response) {
-          //await createTransactionService(details, gateway, userId, response?.id)
+          await createTransactionService(details, gateway, userId, response?.id)
 
           return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
             transaction_id: response?.id,
