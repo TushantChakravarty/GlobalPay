@@ -48,7 +48,11 @@ async function adminRoutes(fastify, options) {
         schema: {
             body: {
                 type: 'object',
-                additionalProperties: true
+                properties: {
+                    email_Id: { type: "string", format: "email" },
+                    gateway: { type: "string" }
+                },
+                required: ["email_Id", "gateway"]
             }
         },
         preValidation: validateAdminTokenAndApiKey
@@ -70,7 +74,11 @@ async function adminRoutes(fastify, options) {
         schema: {
             body: {
                 type: 'object',
-                additionalProperties: true
+                properties: {
+                    email_Id: { type: "string", format: "email" },
+                    gateway: { type: "string" }
+                },
+                required: ["email_Id", "gateway"]
             }
         },
         preValidation: validateAdminTokenAndApiKey
@@ -93,7 +101,11 @@ async function adminRoutes(fastify, options) {
         schema: {
             body: {
                 type: 'object',
-                additionalProperties: true
+                properties: {
+                    gatewayName: {
+                        type: "string", minLength: 3, maxLength: 50
+                    }
+                }
             }
         },
         preValidation: validateAdminTokenAndApiKey
@@ -111,12 +123,6 @@ async function adminRoutes(fastify, options) {
      * get all gateway route
      */
     fastify.post('/getAllGateway', {
-        schema: {
-            body: {
-                type: 'object',
-                additionalProperties: true
-            }
-        },
         preValidation: validateAdminTokenAndApiKey
     }, async (request, reply) => {
         try {

@@ -64,21 +64,22 @@ export async function userLoginService(details, fastify) {
 
 export async function addPayinCallbackUrl(details, user) {
   try {
-    const user = await User.findOne({ where: { id: user.id } })
-    user.callbackUrl = details.payinCallbackUrl
-    await user.save()
-    return user
+    const new_user = await User.findOne({ where: { id: user.id } })
+    new_user.callbackUrl = details.payinCallbackUrl
+    await new_user.save()
+    return new_user
   } catch (error) {
+    console.log(error)
     throw new Error("Internal server error")
   }
 }
 
 export async function addPayoutCallbackUrl(details, user) {
   try {
-    const user = await User.findOne({ where: { id: user.id } })
-    user.payoutCallbackUrl = details.payoutCallbackUrl
-    await user.save()
-    return user
+    const new_user = await User.findOne({ where: { id: user.id } })
+    new_user.payoutCallbackUrl = details.payoutCallbackUrl
+    await new_user.save()
+    return new_user
   } catch (error) {
     throw new Error("Intenal server error")
   }
