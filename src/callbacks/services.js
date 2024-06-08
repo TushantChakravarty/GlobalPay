@@ -22,7 +22,7 @@ export async function razorpayCallbackService(details)
         let adminQuery = { where: { emailId: "samir123@gsxsolutions.com" } };
         
         const transaction = await getTransaction(details.id);
-        const userQuery = { where: { id: transaction.id } };
+        const userQuery = { where: { id: transaction.uuid } };
         const admin = await Admin.findOne(adminQuery);
         // const gatewayData = await Gateway.findOne({ where: { name: "pgbro" } });
         const response = await User.findOne(userQuery);
