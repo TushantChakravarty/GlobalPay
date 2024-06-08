@@ -5,7 +5,7 @@ const { Transaction } = db
 
 export async function createTransactionService(details, gateway, userId = "", transactionId = "") {
     try {
-
+        console.log("coming to service")
         const data_to_create = {
             uuid: userId.toString(),
             transactionId: transactionId.toString(),
@@ -28,7 +28,7 @@ export async function createTransactionService(details, gateway, userId = "", tr
             reason: details.reason ? details.reason : "",
             code: details.code ? details.code : "",
         }
-
+        console.log("below coming to service")
         const transaction = await Transaction.create(data_to_create)
         console.log("tran",transaction)
         if(transaction){
