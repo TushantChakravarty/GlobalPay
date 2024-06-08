@@ -106,41 +106,41 @@ export async function razorpayCallbackService(details)
                         
                         //callbackPayin(callBackDetails, response.callbackUrl).catch(console.error);
                     } else if (details.status === "failed") {
-                        const txData = {
-                            transaction_id: transaction.transactionId,
-                            amount: transaction.amount,
-                            status: "failed",
-                            phone: transaction.phone,
-                            username: transaction.username,
-                            upiId: transaction.upiId,
-                            utr: details.rrn,
-                            transaction_date: transaction.transaction_date,
-                        };
-                        const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
+                        // const txData = {
+                        //     transaction_id: transaction.transactionId,
+                        //     amount: transaction.amount,
+                        //     status: "failed",
+                        //     phone: transaction.phone,
+                        //     username: transaction.username,
+                        //     upiId: transaction.upiId,
+                        //     utr: details.rrn,
+                        //     transaction_date: transaction.transaction_date,
+                        // };
+                        // const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
                         
-                        let callBackDetails = {
-                            transaction_id: details.id,
-                            status: "failed",
-                            amount: amount,
-                            utr: details.rrn || "",
-                            phone: transaction.phone,
-                            username: transaction.username,
-                            upiId: transaction.upiId,
-                            date: transaction.transaction_date,
-                            encryptedData: encryptedData,
-                        };
+                        // let callBackDetails = {
+                        //     transaction_id: details.id,
+                        //     status: "failed",
+                        //     amount: amount,
+                        //     utr: details.rrn || "",
+                        //     phone: transaction.phone,
+                        //     username: transaction.username,
+                        //     upiId: transaction.upiId,
+                        //     date: transaction.transaction_date,
+                        //     encryptedData: encryptedData,
+                        // };
                         
-                        let adminUpdate = {
-                            totalTransactions: Number(admin.totalTransactions) + 1,
-                            last24hrTotal: Number(admin.last24hrTotal) + 1,
-                        };
+                      
+                            admin.totalTransactions= Number(admin.totalTransactions) + 1
+                            admin.last24hrTotal =Number(admin.last24hrTotal) + 1
                         
-                        updateObj.totalTransactions = Number(response.totalTransactions) + 1;
-                        updateObj.last24hrTotal = Number(response.last24hrTotal) + 1;
                         
-                        await Admin.update(adminUpdate, adminQuery);
-                        await User.update(updateObj, query);
-                        callbackPayin(callBackDetails, response.callbackUrl);
+                        response.totalTransactions = Number(response.totalTransactions) + 1;
+                        response.last24hrTotal = Number(response.last24hrTotal) + 1;
+                        
+                        await admin.save()
+                        await response.save()
+                        //callbackPayin(callBackDetails, response.callbackUrl);
                     }
                     
                     // saveCallback(details.id, 'pgbro', details);
