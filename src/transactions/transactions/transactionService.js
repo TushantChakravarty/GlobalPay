@@ -30,7 +30,11 @@ export async function createTransactionService(details, gateway, userId = "", tr
         }
 
         const transaction = await Transaction.create(data_to_create)
-        return { code: 200, data: transaction }
+        console.log("tran",transaction)
+        if(transaction){
+
+            return { code: 200, data: transaction }
+        }
 
 
     } catch (err) {
