@@ -1,9 +1,7 @@
 import { findUser, findUserByApiKey } from "../../user/userDao.js"
 import { validateToken, validateTokenAndApiKey } from "../../utils/jwt.utils.js"
 import { payoutBankController, payoutUpiController } from "./payoutController.js"
-import { findUserByApiKey } from "../../user/userDao.js"
 import { CODES, MESSAGES } from "../../utils/constants.js"
-import { validateTokenAndApiKey } from "../../utils/jwt.utils.js"
 import { responseMapping, responseMappingWithData } from "../../utils/mapper.js"
 
 const bankSchema = {
@@ -97,14 +95,14 @@ async function payoutBankRoutes(fastify, options) {
    * Route for doing payout through bank
    * data:- name,email,phone,bank_name,ifsc,account_number
    */
-  fastify.post('/bank', { schema: bankSchema }, async (request, reply) => {
+  fastify.post('/bank', async (request, reply) => {
     try {
       const apiKey = request?.apiKeyDetails
       const user = await findUserByApiKey(apiKey)
       request.body.email_id = user?.dataValues?.email_id
       request.user = user
       const response = await payoutBankController(request)
-      return reply.status(200).send(responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response))
+      return reply.status(200).send(response)
     } catch (error) {
       return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
     }
@@ -113,14 +111,14 @@ async function payoutBankRoutes(fastify, options) {
  * Route for doing payout through upi
  * data:- name,email,phone,upi
  */
-  fastify.post('/upi', { schema: upiSchema }, async (request, reply) => {
+  fastify.post('/upi', async (request, reply) => {
     try {
       const apiKey = request?.apiKeyDetails
       const user = await findUserByApiKey(apiKey)
       request.body.email_id = user?.dataValues?.email_id
       request.user = user
       const response = await payoutUpiController(request)
-      return reply.status(200).send(responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response))
+      return reply.status(200).send(response)
     } catch (error) {
       return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
     }

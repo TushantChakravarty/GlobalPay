@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 
 import db from "../db/index.js";
 
-const { Admin, User } = db
+const { Admin, User, Gateway } = db
 
 
 export async function adminRegisterService(details) {
@@ -57,15 +57,75 @@ export async function adminLoginService(details, fastify) {
     return { message: 'Invalid email or password' }
 }
 
-export async function adminUpdateGatewayService(details, fastify) {
-
-    const { email_Id, apiKey, gateway } = details
-    const user = await User.findOne({ where: { email_Id: email_Id, apiKey: apiKey } })
-    if (!user) {
-        return { message: 'User not exist' }
+/**
+ * this service is to update payin gateway 
+ * @param {*} details 
+ * @param {*} fastify 
+ * @returns 
+ */
+export async function adminUpdatePayinGatewayService(details, fastify) {
+    try {
+        const { email_Id, apiKey, gateway } = details
+        const user = await User.findOne({ where: { email_Id: email_Id, apiKey: apiKey } })
+        if (!user) {
+            return { message: 'User not exist' }
+        }
+        user.gateway = gateway
+        await user.save()
+        return { message: 'Success' }
+    } catch (error) {
+        throw new Error("Internal server error")
     }
-    user.gateway = gateway
-    await user.save()
 
-    return { message: 'Success' }
+
+}
+/**
+ * This service to update payout gateway
+ * @param {*} details 
+ * @param {*} fastify 
+ * @returns 
+ */
+export async function adminUpdatePayoutGatewayService(details, fastify) {
+    try {
+        const { email_Id, apiKey, gateway } = details
+        const user = await User.findOne({ where: { email_Id: email_Id, apiKey: apiKey } })
+        if (!user) {
+            return { message: 'User not exist' }
+        }
+        user.payoutGateway = gateway
+        await user.save()
+
+        return { message: 'Success' }
+
+    } catch (error) {
+        throw new Error("Internal server error")
+    }
+}
+
+/**
+ * add gateway service
+ */
+export async function addGateway(details) {
+    try {
+        const gateway = await Gateway.create({
+            gatewayName: details.gatewayName
+        })
+        return gateway
+
+    } catch (error) {
+        throw new Error("Internal server error")
+    }
+}
+
+/**
+ * get all gateway service
+ */
+export async function getAllGateway(details) {
+    try {
+        const gateway = await Gateway.findAll({})
+        return gateway
+
+    } catch (error) {
+        throw new Error("Internal server error")
+    }
 }

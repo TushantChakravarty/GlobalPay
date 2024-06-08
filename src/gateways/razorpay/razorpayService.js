@@ -108,8 +108,10 @@ export async function createQrCode() {
 //for vpa i need name,email,phone,upi and for bank i need name,email,phone,ifsc,account_number
 export async function createRazorpayPayoutService(details, type, user) {
   try {
+    console.table(details)
     //expected name,email,phone
     const contact_id = await createRazorpayContact({ name: details.name, phone: details.phone, email: details.email });
+    console.log("after the error")
     if (type === "vpa") {
       let payout = await PayoutTransaction.create({
         uuid: user.id,
@@ -244,6 +246,7 @@ export async function createPayoutVpa(func_account_id, amount) {
     const response = await fetch('https://api.razorpay.com/v1/payouts', options);
     if (!response.ok) {
       const res = await response.json()
+      console.log("this is response", res)
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
@@ -283,11 +286,13 @@ export async function createRazorpayContact(details) {
       body: JSON.stringify(request_body)
     });
 
-    const json = await response.json()
+
     if (!response.ok) {
+      console.log("coming inside this")
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
+    console.log("returning datat id", data)
     return data?.id
   } catch (err) {
     console.log(`razorpayService.js-createRazorpayContact`, err);
