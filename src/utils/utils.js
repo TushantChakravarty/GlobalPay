@@ -8,5 +8,5 @@ export function convertToIST(date) {
     // Adjust the UTC date by the IST offset
     const istDate = new Date(utcDate.getTime() + istOffset);
 
-    return istDate;
+    return istDate?.toDateString;
 }

@@ -6,10 +6,12 @@ import migrateDb from './src/utils/db.utils.js';
 import fastifyCors from '@fastify/cors';
 import { createUPICollectRequest, createUPIVirtualAccount, updateUPIVirtualAccount } from './src/gateways/zwitch/zwitchServices.js';
 import { createPaymentLinkViaRazorpay } from './src/gateways/razorpay/razorpayService.js';
+import { convertToIST } from './src/utils/utils.js';
 const fastify = Fastify({
     logger: true
 })
-console.log(Date.now())
+convertToIST
+console.log(convertToIST(Date.now()))
 
 fastify.register(fastifyCors, { 
     // put your options here
