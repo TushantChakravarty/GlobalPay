@@ -15,7 +15,6 @@ export async function createTransactionService(details, gateway, userId = "", tr
             currency: "inr",
             country: "in",
             status: "pending",
-            hash: "",
             payout_type: "PAYIN",
             message: "IN-PROCESS",
             transaction_date: now?.toString(),
