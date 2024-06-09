@@ -66,7 +66,7 @@ export async function adminLoginService(details, fastify) {
 export async function adminUpdatePayinGatewayService(details, fastify) {
     try {
         const { email_Id, apiKey, gateway } = details
-        const user = await User.findOne({ where: { email_Id: email_Id, apiKey: apiKey } })
+        const user = await User.findOne({ where: { email_id: email_Id } })
         if (!user) {
             return { message: 'User not exist' }
         }
@@ -74,6 +74,7 @@ export async function adminUpdatePayinGatewayService(details, fastify) {
         await user.save()
         return { message: 'Success' }
     } catch (error) {
+        console.log(error)
         throw new Error("Internal server error")
     }
 
@@ -87,8 +88,8 @@ export async function adminUpdatePayinGatewayService(details, fastify) {
  */
 export async function adminUpdatePayoutGatewayService(details, fastify) {
     try {
-        const { email_Id, apiKey, gateway } = details
-        const user = await User.findOne({ where: { email_Id: email_Id} })
+        const { email_Id, gateway } = details
+        const user = await User.findOne({ where: { email_id: email_Id } })
         if (!user) {
             return { message: 'User not exist' }
         }
@@ -98,6 +99,7 @@ export async function adminUpdatePayoutGatewayService(details, fastify) {
         return { message: 'Success' }
 
     } catch (error) {
+        console.log(error)
         throw new Error("Internal server error")
     }
 }

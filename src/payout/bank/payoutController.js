@@ -12,13 +12,29 @@ import {
  */
 export async function payoutBankController(request) {
     try {
-        const gateway = "razorpay"
+        const gateway = request.user.payoutGateway
         let response = null
         switch (gateway) {
             case "razorpay":
                 response = await createRazorpayPayoutService(request.body, "bank", request.user)
                 if (response) {
-                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
+                        txId: response.txId,
+                        amount: response.amount,
+                        currency: response.currency,
+                        country: response.country,
+                        transaction_type: response.transaction_type,
+                        transaction_date: response.transaction_date,
+                        status: response.status,
+                        phone: response.phone,
+                        name: response.customer_name,
+                        email: response.customer_email,
+                        method: response.method,
+                        account_number: response.account_number,
+                        ifsc: response.ifsc_code,
+                        bank_name: response.bank_name,
+                        created_at: response.createdAt
+                    });
                 } else {
                     return responseMapping(
                         CODES.INTRNLSRVR,
@@ -28,7 +44,23 @@ export async function payoutBankController(request) {
             case "zwitch":
                 response = await createZwitchPayoutService(request.body, "bank", request.user)
                 if (response) {
-                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
+                        txId: response.txId,
+                        amount: response.amount,
+                        currency: response.currency,
+                        country: response.country,
+                        transaction_type: response.transaction_type,
+                        transaction_date: response.transaction_date,
+                        status: response.status,
+                        phone: response.phone,
+                        name: response.customer_name,
+                        email: response.customer_email,
+                        method: response.method,
+                        account_number: response.account_number,
+                        ifsc: response.ifsc_code,
+                        bank_name: response.bank_name,
+                        created_at: response.createdAt
+                    });
                 } else {
                     return responseMapping(
                         CODES.INTRNLSRVR,
@@ -48,13 +80,27 @@ export async function payoutBankController(request) {
  */
 export async function payoutUpiController(request) {
     try {
-        const gateway = "razorpay"
+        const gateway = request.user.payoutGateway
         let response = null
         switch (gateway) {
             case "razorpay":
                 response = await createRazorpayPayoutService(request.body, "vpa", request.user)
                 if (response) {
-                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
+                        txId: response.txId,
+                        amount: response.amount,
+                        currency: response.currency,
+                        country: response.country,
+                        transaction_type: response.transaction_type,
+                        transaction_date: response.transaction_date,
+                        status: response.status,
+                        phone: response.phone,
+                        name: response.customer_name,
+                        email: response.customer_email,
+                        method: response.method,
+                        upi: response.upiId,
+                        created_at: response.createdAt
+                    });
                 } else {
                     return responseMapping(
                         CODES.INTRNLSRVR,
@@ -64,7 +110,21 @@ export async function payoutUpiController(request) {
             case "zwitch":
                 response = await createZwitchPayoutService(request.body, "vpa", request.user)
                 if (response) {
-                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, response);
+                    return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
+                        txId: response.txId,
+                        amount: response.amount,
+                        currency: response.currency,
+                        country: response.country,
+                        transaction_type: response.transaction_type,
+                        transaction_date: response.transaction_date,
+                        status: response.status,
+                        phone: response.phone,
+                        name: response.customer_name,
+                        email: response.customer_email,
+                        method: response.method,
+                        upi: response.upiId,
+                        created_at: response.createdAt
+                    });
                 } else {
                     return responseMapping(
                         CODES.INTRNLSRVR,

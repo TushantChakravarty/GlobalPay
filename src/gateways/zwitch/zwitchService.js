@@ -21,6 +21,7 @@ export async function createZwitchPayoutService(details, type, user) {
                 transaction_date: Date.now(),
                 gateway: 'zwitch',
                 phone: details.phone || "",
+                customer_name: details.name || "",
                 account_number: details.account_number,
                 account_name: details.name || "",
                 ifsc_code: details.ifsc || "",

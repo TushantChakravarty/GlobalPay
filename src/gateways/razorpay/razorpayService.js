@@ -121,7 +121,7 @@ export async function createRazorpayPayoutService(details, type, user) {
         status: "in-process",
         transaction_type: "payout",
         transaction_date: Date.now(),
-        gateway: 'zwitch',
+        gateway: 'razorpay',
         phone: details.phone || "",
         customer_name: details.name || "",
         account_name: details.name || "",

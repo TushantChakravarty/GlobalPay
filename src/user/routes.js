@@ -57,6 +57,18 @@ async function userRoutes(fastify, options) {
   * add payin callback url
   */
   fastify.post("/addPayinCallbackUrl", {
+    schema: {
+      body: {
+        type: 'object',
+        properties: {
+          payinCallbackUrl: {
+            type: "string", minLength: 3, maxLength: 50
+          }
+        },
+        required: ["payinCallbackUrl"]
+
+      }
+    },
     preValidation: validateTokenAndApiKey
   }, async (request, reply) => {
     try {
@@ -76,6 +88,17 @@ async function userRoutes(fastify, options) {
  * add payout callback url
  */
   fastify.post("/addPayoutCallbackUrl", {
+    schema: {
+      body: {
+        type: 'object',
+        properties: {
+          payoutCallbackUrl: {
+            type: "string", minLength: 3, maxLength: 50
+          }
+        },
+        required: ["payoutCallbackUrl"]
+      }
+    },
     preValidation: validateTokenAndApiKey
   }, async (request, reply) => {
     try {
