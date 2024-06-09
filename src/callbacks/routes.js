@@ -1,4 +1,4 @@
-import { razorpayCallbackService } from "./services.js";
+import { razorpayCallbackService, razorpayPayoutCallbackService } from "./services.js";
 
 async function callbackRoutes(fastify, options) {
    //payin callbacks
@@ -32,13 +32,9 @@ async function callbackRoutes(fastify, options) {
     if (
       details?.event=='payout.processed'
     ) {
-      // let paymentData = details?.payload?.payment_link?.entity;
-      // paymentData.rrn = details?.payload?.payment?.entity?.acquirer_data?.rrn;
-      // paymentData.upi_transaction_id =
-      //   details?.payload?.payment?.entity?.acquirer_data?.upi_transaction_id;
-      // console.log(paymentData);
+      
       try {
-        //const response = await razorpayCallbackService(details);
+        const response = await razorpayPayoutCallbackService(details?.payload?.payout?.entity)
         return reply.status(200).send(response);
       } catch (err) {
         fastify.log.error(err);
