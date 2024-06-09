@@ -31,7 +31,7 @@ async function callbackRoutes(fastify, options) {
      //console.log('detailssssssss payout',details?.payload?.payout?.entity)
      console.log(details)
     if (
-      details?.event=='payout.processed'
+      details?.status=='processed'
     ) {
       
       try {
