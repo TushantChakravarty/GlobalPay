@@ -2,143 +2,227 @@ import db from "../db/index.js";
 import { getTransaction } from "../transactions/transactions/transactionService.js";
 import { encryptText } from "../utils/password.utils.js";
 
-const {User, Admin}=db
+const { User, Admin, PayoutTransaction } = db;
 
-
-
-export async function razorpayCallbackService(details)
-{
-
-        if (!details) {
-            return { status: 400, message: "Invalid details" };
-        }
-    
-        const query = { where: { transactionId: details.id } };
-        
-        let updateObj = {
-            status: details.status === 'paid' ? 'success' : 'failed',
-            utr: details.rrn
-        };
-        let adminQuery = { where: { emailId: "samir123@payhub" } };
-        
-        const transaction = await getTransaction(details.id);
-        const userQuery = { where: { id: transaction.id } };
-        const admin = await Admin.findOne(adminQuery);
-        // const gatewayData = await Gateway.findOne({ where: { name: "pgbro" } });
-        const response = await User.findOne(userQuery);
-    
-        if (!transaction || !admin  || !response) {
-            return { status: 404, message: "Not found" };
-        }
-    
-        const amount = Number(details.amount) / 100;
-    
-        if (details.amount && details.status === 'paid') {
-            const balance = response.balance;
-            const user24hr = response.last24hr;
-            const admin24hr = admin.last24hr;
-            const adminBalance = admin.balance;
-    
-            let adminUpdate = {
-                last24hr: Number(admin24hr) + amount,
-                balance: Number(adminBalance) + amount,
-                totalTransactions: Number(admin.totalTransactions) + 1,
-                successfulTransactions: Number(admin.successfulTransactions) + 1,
-                last24hrSuccess: Number(admin.last24hrSuccess) + 1,
-                last24hrTotal: Number(admin.last24hrTotal) + 1,
-            };
-    
-            const platformFee = response.platformFee > 0 ? amount * (response.platformFee / 100) : 0;
-            // const feeCollected = Number(gatewayData.feeCollected24hr) + platformFee;
-            // const totalFeeCollected = Number(gatewayData.totalFeeCollected) + platformFee;
-    
-            // let gatewayUpdate = {
-            //     last24hr: Number(gatewayData.last24hr) + amount,
-            //     last24hrSuccess: Number(gatewayData.last24hrSuccess) + 1,
-            //     successfulTransactions: Number(gatewayData.successfulTransactions) + 1,
-            //     totalVolume: Number(gatewayData.totalVolume) + amount,
-            //     feeCollected24hr: feeCollected,
-            //     totalFeeCollected: totalFeeCollected,
-            // };
-    
-            let userUpdate = {
-                balance: Number(amount) + Number(balance),
-                utr: details.rrn,
-                last24hr: Number(user24hr) + amount,
-                totalTransactions: Number(response.totalTransactions) + 1,
-                successfulTransactions: Number(response.successfulTransactions) + 1,
-                last24hrSuccess: Number(response.last24hrSuccess) + 1,
-                last24hrTotal: Number(response.last24hrTotal) + 1,
-                todayFee: response.platformFee > 0 ? Number(response.todayFee) + platformFee : 0,
-            };
-    
-            const txData = {
-                transaction_id: transaction.transactionId,
-                amount: transaction.amount,
-                status: "success",
-                phone: transaction.phone,
-                username: transaction.username,
-                upiId: transaction.upiId,
-                utr: details.rrn,
-                transaction_date: transaction.transaction_date,
-            };
-            const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
-    
-            // let callBackDetails = {
-            //     transaction_id: details.id,
-            //     status: "success",
-            //     amount: amount,
-            //     utr: details.rrn,
-            //     phone: transaction.phone,
-            //     username: transaction.username,
-            //     upiId: transaction.upiId,
-            //     date: transaction.transaction_date,
-            //     encryptedData: encryptedData,
-            // };
-    
-            await Admin.update(adminUpdate, adminQuery);
-            await User.update(userUpdate, query);
-            //await Gateway.update(gatewayUpdate, { where: { name: "pgbro" } });
-    
-            //callbackPayin(callBackDetails, response.callbackUrl).catch(console.error);
-        } else if (details.status === "failed") {
-            const txData = {
-                transaction_id: transaction.transactionId,
-                amount: transaction.amount,
-                status: "failed",
-                phone: transaction.phone,
-                username: transaction.username,
-                upiId: transaction.upiId,
-                utr: details.rrn,
-                transaction_date: transaction.transaction_date,
-            };
-            const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
-    
-            let callBackDetails = {
-                transaction_id: details.id,
-                status: "failed",
-                amount: amount,
-                utr: details.rrn || "",
-                phone: transaction.phone,
-                username: transaction.username,
-                upiId: transaction.upiId,
-                date: transaction.transaction_date,
-                encryptedData: encryptedData,
-            };
-    
-            let adminUpdate = {
-                totalTransactions: Number(admin.totalTransactions) + 1,
-                last24hrTotal: Number(admin.last24hrTotal) + 1,
-            };
-    
-            updateObj.totalTransactions = Number(response.totalTransactions) + 1;
-            updateObj.last24hrTotal = Number(response.last24hrTotal) + 1;
-    
-            await Admin.update(adminUpdate, adminQuery);
-            await User.update(updateObj, query);
-            callbackPayin(callBackDetails, response.callbackUrl);
-        }
-    
-        saveCallback(details.id, 'pgbro', details);
-        return updateTransactionStatus(details.id, updateObj);
+export async function razorpayCallbackService(details) {
+  try {
+    if (!details) {
+      return { status: 400, message: "Invalid details" };
     }
+
+    const query = { where: { transactionId: details.id } };
+
+    let updateObj = {
+      status: details.status === "paid" ? "success" : "failed",
+      utr: details.rrn,
+    };
+    let adminQuery = { where: { emailId: "samir123@gsxsolutions.com" } };
+
+    const transaction = await getTransaction(details.id);
+    console.log("tx", transaction);
+    const userQuery = { where: { id: transaction.uuid } };
+    const admin = await Admin.findOne(adminQuery);
+    console.log("admin", admin);
+    // const gatewayData = await Gateway.findOne({ where: { name: "pgbro" } });
+    const response = await User.findOne(userQuery);
+    console.log("user", response);
+    if (!transaction || !admin || !response) {
+      return { status: 404, message: "Not found" };
+    }
+
+    const amount = Number(details.amount) / 100;
+
+    if (details.amount && details.status === "paid") {
+      const balance = response.balance;
+      const user24hr = response.last24hr;
+      const admin24hr = admin.last24hr;
+      const adminBalance = admin.balance;
+
+      admin.last24hr = Number(admin24hr) + amount;
+      admin.balance = Number(adminBalance) + amount;
+      admin.totalTransactions = Number(admin.totalTransactions) + 1;
+      admin.successfulTransactions = Number(admin.successfulTransactions) + 1;
+      admin.last24hrSuccess = Number(admin.last24hrSuccess) + 1;
+      admin.last24hrTotal = Number(admin.last24hrTotal) + 1;
+
+      const platformFee =
+        response.platformFee > 0 ? amount * (response.platformFee / 100) : 0;
+      // const feeCollected = Number(gatewayData.feeCollected24hr) + platformFee;
+      // const totalFeeCollected = Number(gatewayData.totalFeeCollected) + platformFee;
+
+      // let gatewayUpdate = {
+      //     last24hr: Number(gatewayData.last24hr) + amount,
+      //     last24hrSuccess: Number(gatewayData.last24hrSuccess) + 1,
+      //     successfulTransactions: Number(gatewayData.successfulTransactions) + 1,
+      //     totalVolume: Number(gatewayData.totalVolume) + amount,
+      //     feeCollected24hr: feeCollected,
+      //     totalFeeCollected: totalFeeCollected,
+      // };
+
+      response.balance = Number(amount) + Number(balance);
+      response.utr = details.rrn;
+      response.last24hr = Number(user24hr) + amount;
+      response.totalTransactions = Number(response.totalTransactions) + 1;
+      response.successfulTransactions =
+        Number(response.successfulTransactions) + 1;
+      response.last24hrSuccess = Number(response.last24hrSuccess) + 1;
+      response.last24hrTotal = Number(response.last24hrTotal) + 1;
+      response.todayFee =
+        response.platformFee > 0 ? Number(response.todayFee) + platformFee : 0;
+
+      // const txData = {
+      //     transaction_id: transaction.transactionId,
+      //     amount: transaction.amount,
+      //     status: "success",
+      //     phone: transaction.phone,
+      //     username: transaction.username,
+      //     upiId: transaction.upiId,
+      //     utr: details.rrn,
+      //     transaction_date: transaction.transaction_date,
+      // };
+      // const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
+
+      // let callBackDetails = {
+      //     transaction_id: details.id,
+      //     status: "success",
+      //     amount: amount,
+      //     utr: details.rrn,
+      //     phone: transaction.phone,
+      //     username: transaction.username,
+      //     upiId: transaction.upiId,
+      //     date: transaction.transaction_date,
+      //     encryptedData: encryptedData,
+      // };
+
+      await admin.save();
+      await response.save();
+      //await Gateway.update(gatewayUpdate, { where: { name: "pgbro" } });
+
+      //callbackPayin(callBackDetails, response.callbackUrl).catch(console.error);
+    } else if (details.status === "failed") {
+      // const txData = {
+      //     transaction_id: transaction.transactionId,
+      //     amount: transaction.amount,
+      //     status: "failed",
+      //     phone: transaction.phone,
+      //     username: transaction.username,
+      //     upiId: transaction.upiId,
+      //     utr: details.rrn,
+      //     transaction_date: transaction.transaction_date,
+      // };
+      // const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
+
+      // let callBackDetails = {
+      //     transaction_id: details.id,
+      //     status: "failed",
+      //     amount: amount,
+      //     utr: details.rrn || "",
+      //     phone: transaction.phone,
+      //     username: transaction.username,
+      //     upiId: transaction.upiId,
+      //     date: transaction.transaction_date,
+      //     encryptedData: encryptedData,
+      // };
+
+      admin.totalTransactions = Number(admin.totalTransactions) + 1;
+      admin.last24hrTotal = Number(admin.last24hrTotal) + 1;
+
+      response.totalTransactions = Number(response.totalTransactions) + 1;
+      response.last24hrTotal = Number(response.last24hrTotal) + 1;
+
+      await admin.save();
+      await response.save();
+      //callbackPayin(callBackDetails, response.callbackUrl);
+    }
+
+    // saveCallback(details.id, 'pgbro', details);
+    transaction.status = details.status === "paid" ? "success" : "failed";
+    transaction.utr = details.rrn;
+    transaction.save();
+    return { message: "success" };
+  } catch (error) {
+    throw error;
+  }
+}
+export async function razorpayPayoutCallbackService(details) {
+  if (!details) {
+    return { status: 400, message: "Invalid details" };
+  }
+
+  try {
+    const transaction = await PayoutTransaction.findOne({
+      where: { transactionId: details?.id },
+    });
+    //   if (!transaction) {
+    //     await callbackPayin(details, "https://payhubsandbox.onrender.com/callback/cashfreePayoutStatus");
+    //     return { message: 'forwarded to sandbox' };
+    //   }
+
+    const updateObj = {
+      status:
+        details?.status?.toLowerCase() === "processed" ? "success" : "failed",
+      utr: details?.utr || "",
+    };
+
+    const adminQuery = { where: { emailId: "samir123@gsxsolutions.com" } };
+    const user = await User.findOne({ where: { id: transaction.uuid } });
+    const admin = await Admin.findOne(adminQuery);
+
+    if (!user || !admin) {
+      return { status: 404, message: "Not found" };
+    }
+
+    const transactionAmount = Number(transaction.amount);
+
+    if (details?.status?.toLowerCase() === "processed") {
+      user.payoutBalance = user.payoutBalance - transactionAmount;
+      user.payoutsData.last24hr = user.payoutsData.last24hr + transactionAmount;
+      user.payoutsData.last24hrSuccess = user.payoutsData.last24hrSuccess + 1;
+      user.payoutsData.last24hrTotal = user.payoutsData.last24hrTotal + 1;
+      user.payoutsData.totalTransactions =
+        user.payoutsData.totalTransactions + 1;
+      user.payoutsData.successfulTransactions =
+        user.payoutsData.successfulTransactions + 1;
+
+      admin.payoutsBalance = admin.payoutsBalance - transactionAmount;
+      admin.payouts.last24hr = admin.payouts.last24hr + transactionAmount;
+      admin.payouts.last24hrSuccess = admin.payouts.last24hrSuccess + 1;
+      admin.payouts.last24hrTotal = admin.payouts.last24hrTotal + 1;
+      admin.payouts.totalTransactions = admin.payouts.totalTransactions + 1;
+      admin.payouts.successfulTransactions =
+        admin.payouts.successfulTransactions + 1;
+    } else {
+      user.payoutsData.last24hrTotal = user.payoutsData.last24hrTotal + 1;
+      user.payoutsData.totalTransactions =
+        user.payoutsData.totalTransactions + 1;
+
+      (admin.payouts.last24hrTotal = admin.payouts.last24hrTotal + 1),
+        (admin.payouts.totalTransactions = admin.payouts.totalTransactions + 1);
+    }
+
+    if (user.payoutCallbackUrl) {
+      const callBackDetails = {
+        transaction_id: details?.transferId,
+        amount: transactionAmount,
+        status:
+          details?.event?.toLowerCase() === "transfer_success"
+            ? "success"
+            : "failed",
+        transaction_date: transaction.transaction_date,
+      };
+      await callbackPayin(callBackDetails, user.payoutCallbackUrl);
+    }
+
+    transaction.status =
+      details?.status?.toLowerCase() === "processed" ? "success" : "failed";
+    transaction.utr = details?.utr || "";
+    await user.save();
+    await admin.save();
+
+    await transaction.save();
+    return { status: 200, message: "success" };
+  } catch (error) {
+    console.error(error);
+    return { status: 500, message: "Internal Server Error" };
+  }
+}

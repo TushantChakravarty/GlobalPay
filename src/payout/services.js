@@ -1,25 +1,27 @@
-import { createRazorpayPayoutService } from "../../gateways/razorpay/razorpayService.js"
-import { createZwitchPayoutService } from "../../gateways/zwitch/zwitchService.js"
-import { CODES, MESSAGES } from "../../utils/constants.js";
+import { createRazorpayPayoutService } from "../gateways/razorpay/razorpayService.js"
+import { createZwitchPayoutService } from "../gateways/zwitch/zwitchService.js"
+import { CODES, MESSAGES } from "../utils/constants.js";
 import {
     responseMapping,
     responseMappingWithData,
-} from "../../utils/mapper.js";
-
+} from "../utils/mapper.js";
+import db from "../db/index.js";
+const { PayoutTransaction } = db
 
 /**
  * This controller is to do payout using bank
  */
 export async function payoutBankController(request) {
     try {
-        const gateway = request.user.payoutGateway
+        const gateway = "razorpay"//request.user.payoutGateway
         let response = null
         switch (gateway) {
             case "razorpay":
                 response = await createRazorpayPayoutService(request.body, "bank", request.user)
+               // console.log('resp check',response)
                 if (response) {
                     return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
-                        txId: response.txId,
+                        txId: response.transactionId,
                         amount: response.amount,
                         currency: response.currency,
                         country: response.country,
@@ -137,4 +139,10 @@ export async function payoutUpiController(request) {
     } catch (error) {
         throw new Error('Internal server error')
     }
+}
+
+export async function getPayoutTransactions()
+{
+    const response = await PayoutTransaction.findAll()
+    return response
 }

@@ -1,11 +1,12 @@
 import db from "../../db/index.js";
 import { v4 as uuidv4 } from 'uuid';
-
+import { convertToIST } from "../../utils/utils.js";
 const { Transaction } = db
 
 export async function createTransactionService(details, gateway, userId = "", transactionId = "") {
     try {
-
+        const now = Date.now();
+        console.log("coming to service")
         const data_to_create = {
             uuid: userId.toString(),
             transactionId: transactionId.toString(),
@@ -14,10 +15,9 @@ export async function createTransactionService(details, gateway, userId = "", tr
             currency: "inr",
             country: "in",
             status: "pending",
-            hash: "",
             payout_type: "PAYIN",
             message: "IN-PROCESS",
-            transaction_date: new Date.now(),
+            transaction_date: now?.toString(),
             gateway: gateway,
             utr: "",
             phone: details.phone ? details.phone : "",
@@ -28,18 +28,22 @@ export async function createTransactionService(details, gateway, userId = "", tr
             reason: details.reason ? details.reason : "",
             code: details.code ? details.code : "",
         }
-
+        console.log("below coming to service")
         const transaction = await Transaction.create(data_to_create)
-        return { code: 200, data: transaction }
+        console.log("tran",transaction)
+        if(transaction){
+
+            return { code: 200, data: transaction }
+        }
 
 
     } catch (err) {
-        return { code: 500, error: "unable to create transaction" }
+        throw err
     }
 }
 
 export async function getTransaction(id)
 {
-    const user =  await Transaction.findOne({ where: { uuid:id } });
+    const user =  await Transaction.findOne({ where: { transactionId:id } });
     return user
 }

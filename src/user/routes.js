@@ -34,7 +34,7 @@ async function userRoutes(fastify, options) {
         });
       } catch (error) {
         return reply.status(500).send({
-          responseCode: 200,
+          responseCode: 500,
           responseMessage: "Internal Server Error"
         });
       }
@@ -46,12 +46,9 @@ async function userRoutes(fastify, options) {
   fastify.post("/login", { schema: loginSchema }, async (request, reply) => {
     try {
       const response = await userLoginService(request.body, fastify);
-      if (response?.token)
-        return reply.status(200).send(responseMappingWithData(200, 'success', {
-          token: response?.token
-        }));
-      else
-        reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+      // console.log(response)
+      if (response?.token) return reply.status(200).send(response);
+      else reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     } catch (err) {
       fastify.log.error(err);
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
