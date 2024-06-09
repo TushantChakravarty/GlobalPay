@@ -143,7 +143,7 @@ export async function createRazorpayPayoutService(details, type, user) {
       const payout_data = await createPayoutByBank(fund_account_id, details.amount, details?.method)
       let payout = await PayoutTransaction.create({
         uuid: user.id,
-        amount: details.amount,
+        amount: Number(details.amount),
         currency: "inr",
         country: "ind",
         status: "in-process",

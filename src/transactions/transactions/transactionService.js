@@ -6,12 +6,12 @@ const { Transaction } = db
 export async function createTransactionService(details, gateway, userId = "", transactionId = "") {
     try {
         const now = Date.now();
-        console.log("coming to service")
+        //console.log("coming to service")
         const data_to_create = {
             uuid: userId.toString(),
             transactionId: transactionId.toString(),
             merchant_ref_no: transactionId.toString(),
-            amount: details.amount,
+            amount: Number(details.amount),
             currency: "inr",
             country: "in",
             status: "pending",
@@ -28,7 +28,7 @@ export async function createTransactionService(details, gateway, userId = "", tr
             reason: details.reason ? details.reason : "",
             code: details.code ? details.code : "",
         }
-        console.log("below coming to service")
+        //console.log("below coming to service")
         const transaction = await Transaction.create(data_to_create)
         console.log("tran",transaction)
         if(transaction){

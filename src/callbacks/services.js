@@ -85,7 +85,6 @@ export async function razorpayCallbackService(details) {
 
       response.totalTransactions = Number(response.totalTransactions) + 1;
       response.last24hrTotal = Number(response.last24hrTotal) + 1;
-
       await admin.save();
       await response.save();
       //callbackPayin(callBackDetails, response.callbackUrl);
@@ -170,11 +169,12 @@ export async function razorpayPayoutCallbackService(details) {
         admin.payouts.successfulTransactions + 1;
     } else {
       user.payoutsData.last24hrTotal = user.payoutsData.last24hrTotal + 1;
-      user.payoutsData.totalTransactions =
-        user.payoutsData.totalTransactions + 1;
+      user.payoutsData.totalTransactions = user.payoutsData.totalTransactions + 1;
+      user?.payoutBalance = Number(user?.payoutBalance) + Number(transactionAmount)
 
-      (admin.payouts.last24hrTotal = admin.payouts.last24hrTotal + 1),
-        (admin.payouts.totalTransactions = admin.payouts.totalTransactions + 1);
+      admin.payouts.last24hrTotal = admin.payouts.last24hrTotal + 1
+      admin.payouts.totalTransactions = admin.payouts.totalTransactions + 1;
+      
     }
 
     if (user.payoutCallbackUrl) {
