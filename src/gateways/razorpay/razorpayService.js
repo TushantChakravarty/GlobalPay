@@ -200,6 +200,7 @@ export const createPayoutByBank = async (fund_account_id, amount, method) => {
       },
       body: JSON.stringify(payoutData)
     });
+    console.log(response)
     if (!response.ok) {
       console.log(await response.json())
       throw new Error('Network response was not ok');

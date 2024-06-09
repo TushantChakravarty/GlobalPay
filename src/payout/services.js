@@ -12,7 +12,7 @@ import {
  */
 export async function payoutBankController(request) {
     try {
-        const gateway = request.user.payoutGateway
+        const gateway = "razorpay"//request.user.payoutGateway
         let response = null
         switch (gateway) {
             case "razorpay":
