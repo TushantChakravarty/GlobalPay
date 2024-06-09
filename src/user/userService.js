@@ -3,8 +3,9 @@ import { generatePassword, convertPass, encryptText } from "../utils/password.ut
 import { createUser, findUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
+import { responseMappingWithData } from "../utils/mapper.js";
 
-const { User } = db
+const { User, Transaction, PayoutTransaction } = db
 
 
 export async function userRegisterService(details) {
@@ -82,5 +83,39 @@ export async function addPayoutCallbackUrl(details, user) {
     return new_user
   } catch (error) {
     throw new Error("Intenal server error")
+  }
+}
+
+
+export async function getAllPayinTransaction(details, user) {
+  try {
+    const { limit = 10, skip = 0 } = details.query
+    const all_payin_transaction = await Transaction.findAll({
+      where: {
+        uuid: user.id.toString()
+      },
+      limit: limit,
+      offset: skip
+    })
+    return all_payin_transaction
+  } catch (error) {
+    console.log(error)
+    throw new Error("Internal server error")
+  }
+}
+
+export async function getAllPayoutTransaction(details, user) {
+  try {
+    const { limit = 10, skip = 0 } = details.query
+    const all_payout_transaction = await PayoutTransaction.findAll({
+      where: {
+        uuid: user.id.toString()
+      },
+      limit: limit,
+      offset: skip
+    })
+    return all_payout_transaction
+  } catch (error) {
+    throw new Error("Internal server error")
   }
 }

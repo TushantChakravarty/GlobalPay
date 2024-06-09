@@ -1,7 +1,8 @@
 import { validateAdminTokenAndApiKey, validateTokenAndApiKey } from "../utils/jwt.utils.js";
 import { loginSchema } from "../utils/validationSchemas.js";
-import { addPayinCallbackUrl, addPayoutCallbackUrl, userLoginService, userRegisterService } from "./userService.js";
+import { addPayinCallbackUrl, addPayoutCallbackUrl, getAllPayinTransaction, getAllPayoutTransaction, userLoginService, userRegisterService } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
+import commonSchemas from "../utils/common.schemas.js";
 
 async function userRoutes(fastify, options) {
   /**
@@ -117,6 +118,77 @@ async function userRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
+
+  /**
+ * get all payin transaction
+ */
+  fastify.get("/getAllPayinTransaction", {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          skip: { type: 'integer', minimum: 0 },
+          limit: { type: 'integer', minimum: 1, maximum: 100 },
+        },
+        required: ["limit", "skip"]
+      },
+      response: {
+        200: {
+          type: 'object',
+          additionalProperties: true
+        },
+        ...commonSchemas.errorResponse
+      },
+    },
+    preValidation: validateTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getAllPayinTransaction(request, request.user);
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  /**
+* get all payout transaction
+*/
+  fastify.get("/getAllPayoutTransaction", {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          skip: { type: 'integer', minimum: 0 },
+          limit: { type: 'integer', minimum: 1, maximum: 100 },
+        },
+        required: ["limit", "skip"]
+      },
+      response: {
+        200: {
+          type: 'object',
+          additionalProperties: true
+        },
+        ...commonSchemas.errorResponse
+      },
+    },
+    preValidation: validateTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getAllPayoutTransaction(request, request.user);
+      if (response)
+        return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+      else
+        return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+
+
 }
+
+
+
 
 export default userRoutes;
