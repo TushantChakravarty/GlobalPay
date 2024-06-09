@@ -29,6 +29,7 @@ async function callbackRoutes(fastify, options) {
   fastify.post("/razorpayPayout", async (request, reply) => {
     let details = request?.body
      //console.log('detailssssssss payout',details?.payload?.payout?.entity)
+     console.log(details)
     if (
       details?.event=='payout.processed'
     ) {
