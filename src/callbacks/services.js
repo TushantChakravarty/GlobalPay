@@ -170,11 +170,11 @@ export async function razorpayPayoutCallbackService(details) {
     } else {
       user.payoutsData.last24hrTotal = user.payoutsData.last24hrTotal + 1;
       user.payoutsData.totalTransactions = user.payoutsData.totalTransactions + 1;
-      user?.payoutBalance = Number(user?.payoutBalance) + Number(transactionAmount)
+      user.payoutBalance = Number(user?.payoutBalance) + Number(transactionAmount)
 
       admin.payouts.last24hrTotal = admin.payouts.last24hrTotal + 1
       admin.payouts.totalTransactions = admin.payouts.totalTransactions + 1;
-      
+
     }
 
     if (user.payoutCallbackUrl) {
@@ -188,8 +188,7 @@ export async function razorpayPayoutCallbackService(details) {
       await callbackPayin(callBackDetails, user.payoutCallbackUrl);
     }
 
-    transaction.status =
-      details?.status?.toLowerCase() === "processed" ? "success" : "failed";
+    transaction.status =details?.status?.toLowerCase() === "processed" ? "success" : "failed";
     transaction.utr = details?.utr || "";
     await user.save();
     await admin.save();
