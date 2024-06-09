@@ -3,13 +3,13 @@ import { validateAdminApiKey, validateApiKey } from "./password.utils.js";
 
 export async function generateUserToken(details, fastify) {
   const { email_id } = details;
-  const token = fastify.jwt.sign({ email_id });
+  const token = fastify.jwt.sign({ email_id }, { expiresIn: '1h' });
   return token;
 }
 
 export async function generateAdminToken(details, fastify) {
   const { email_id } = details;
-  const token = fastify.jwt.sign({ email_id });
+  const token = fastify.jwt.sign({ email_id }, { expiresIn: '30d' });
   return token;
 }
 
