@@ -94,7 +94,7 @@ async function userRoutes(fastify, options) {
         type: 'object',
         properties: {
           payoutCallbackUrl: {
-            type: "string", minLength: 3, maxLength: 50
+            type: "string", minLength: 3
           }
         },
         required: ["payoutCallbackUrl"]
