@@ -4,7 +4,7 @@ async function callbackRoutes(fastify, options) {
    //payin callbacks
   fastify.post("/razorpayPayin", async (request, reply) => {
     let details = request?.body
-    // console.log('detailssssssss',details)
+    console.log('detailssssssss',details)
     if (
       details?.id
     ) {
