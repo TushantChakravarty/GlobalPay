@@ -17,9 +17,10 @@ export async function payoutBankController(request) {
         switch (gateway) {
             case "razorpay":
                 response = await createRazorpayPayoutService(request.body, "bank", request.user)
+               // console.log('resp check',response)
                 if (response) {
                     return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
-                        txId: response.txId,
+                        txId: response.transactionId,
                         amount: response.amount,
                         currency: response.currency,
                         country: response.country,
