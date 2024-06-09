@@ -179,13 +179,25 @@ export async function razorpayPayoutCallbackService(details) {
     }
 
     if (user.payoutCallbackUrl) {
-      const callBackDetails = {
+     
+      const callBackDetailsEncrypted = {
         transaction_id: details?.id,
         amount: transactionAmount,
         status: details?.status?.toLowerCase() === "processed" ? "success" : "failed",
         transaction_date: transaction.transaction_date,
         utr:details?.utr
       };
+      const encryptedData = encryptText(JSON.stringify(callBackDetailsEncrypted), response.encryptionKey);
+      const callBackDetails = {
+        transaction_id: details?.id,
+        amount: transactionAmount,
+        status: details?.status?.toLowerCase() === "processed" ? "success" : "failed",
+        transaction_date: transaction.transaction_date,
+        utr:details?.utr,
+        encryptedData
+
+      };
+
       await callbackPayin(callBackDetails, user.payoutCallbackUrl);
     }
 
