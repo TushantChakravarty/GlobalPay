@@ -21,6 +21,15 @@ async function payoutRoutes(fastify, options) {
       try {
         const apiKey = request?.apiKeyDetails
         const user = await findUserByApiKey(apiKey)
+        if (!user) {
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+        }
+        if (!user.payoutsActive) {
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Payout not active"))
+        }
+        if (user.payoutsBalance < request.body.amount) {
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Insufficient balance"))
+        }
         request.body.email_id = user?.dataValues?.email_id
         const response = await payoutBankController(request)
         return reply.status(200).send(response)
@@ -40,6 +49,15 @@ async function payoutRoutes(fastify, options) {
       try {
         const apiKey = request?.apiKeyDetails
         const user = await findUserByApiKey(apiKey)
+        if (!user) {
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+        }
+        if (!user.payoutsActive) {
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Payout not active"))
+        }
+        if (user.payoutsBalance < request.body.amount) {
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Insufficient balance"))
+        }
         request.body.email_id = user?.dataValues?.email_id
         request.user = user
         const response = await payoutUpiController(request)

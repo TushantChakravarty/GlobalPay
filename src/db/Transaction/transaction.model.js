@@ -9,7 +9,7 @@
  */
 
 "use strict";
-import { Model } from "sequelize";
+import { Model, UUIDV4 } from "sequelize";
 
 export default (sequelize, DataTypes) => {
     class Transaction extends Model {
@@ -24,8 +24,14 @@ export default (sequelize, DataTypes) => {
     }
     Transaction.init(
         {
-            uuid: { type: DataTypes.STRING },
+            uuid: { type: DataTypes.INTEGER },
             transactionId: { type: DataTypes.STRING },
+            txId: {
+                type: DataTypes.UUID,
+                defaultValue: UUIDV4,
+                allowNull: false,
+                unique: true
+            },
             merchant_ref_no: { type: DataTypes.STRING },
             amount: { type: DataTypes.FLOAT },
             currency: { type: DataTypes.STRING },

@@ -26,7 +26,7 @@ export default (sequelize, DataTypes) => {
     PayoutTransaction.init(
         {
             uuid: {
-                type: DataTypes.STRING
+                type: DataTypes.INTEGER
             },
             transactionId: { type: DataTypes.STRING },
             merchant_ref_no: { type: DataTypes.STRING },
