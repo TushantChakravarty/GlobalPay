@@ -206,6 +206,7 @@ export const createPayoutByBank = async (fund_account_id, amount, method) => {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
+    console.log(data)
     return data
   } catch (error) {
     console.error('Error creating payout:', error);
