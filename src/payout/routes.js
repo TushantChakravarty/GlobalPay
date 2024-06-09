@@ -50,22 +50,7 @@ async function payoutRoutes(fastify, options) {
 
     })
 
-    fastify.get('/getAllPayouts', {
-      //preValidation: validateTokenAndApiKey
-    },
-      async (request, reply) => {
-        try {
-          // const apiKey = request?.apiKeyDetails
-          // const user = await findUserByApiKey(apiKey)
-          // request.body.email_id = user?.dataValues?.email_id
-          // request.user = user
-          const response = await getPayoutTransactions()
-          return reply.status(200).send(response)
-        } catch (error) {
-          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
-        }
-  
-      })
+   
 
 }
 

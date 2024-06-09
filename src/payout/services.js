@@ -6,7 +6,6 @@ import {
     responseMappingWithData,
 } from "../utils/mapper.js";
 import db from "../db/index.js";
-const { PayoutTransaction } = db
 
 /**
  * This controller is to do payout using bank
@@ -141,8 +140,3 @@ export async function payoutUpiController(request) {
     }
 }
 
-export async function getPayoutTransactions()
-{
-    const response = await PayoutTransaction.findAll()
-    return response
-}

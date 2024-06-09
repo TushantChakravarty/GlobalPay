@@ -70,29 +70,7 @@ export async function razorpayCallbackService(details) {
       response.todayFee =
         response.platformFee > 0 ? Number(response.todayFee) + platformFee : 0;
 
-      // const txData = {
-      //     transaction_id: transaction.transactionId,
-      //     amount: transaction.amount,
-      //     status: "success",
-      //     phone: transaction.phone,
-      //     username: transaction.username,
-      //     upiId: transaction.upiId,
-      //     utr: details.rrn,
-      //     transaction_date: transaction.transaction_date,
-      // };
-      // const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
-
-      // let callBackDetails = {
-      //     transaction_id: details.id,
-      //     status: "success",
-      //     amount: amount,
-      //     utr: details.rrn,
-      //     phone: transaction.phone,
-      //     username: transaction.username,
-      //     upiId: transaction.upiId,
-      //     date: transaction.transaction_date,
-      //     encryptedData: encryptedData,
-      // };
+     
 
       await admin.save();
       await response.save();
@@ -100,29 +78,7 @@ export async function razorpayCallbackService(details) {
 
       //callbackPayin(callBackDetails, response.callbackUrl).catch(console.error);
     } else if (details.status === "failed") {
-      // const txData = {
-      //     transaction_id: transaction.transactionId,
-      //     amount: transaction.amount,
-      //     status: "failed",
-      //     phone: transaction.phone,
-      //     username: transaction.username,
-      //     upiId: transaction.upiId,
-      //     utr: details.rrn,
-      //     transaction_date: transaction.transaction_date,
-      // };
-      // const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
 
-      // let callBackDetails = {
-      //     transaction_id: details.id,
-      //     status: "failed",
-      //     amount: amount,
-      //     utr: details.rrn || "",
-      //     phone: transaction.phone,
-      //     username: transaction.username,
-      //     upiId: transaction.upiId,
-      //     date: transaction.transaction_date,
-      //     encryptedData: encryptedData,
-      // };
 
       admin.totalTransactions = Number(admin.totalTransactions) + 1;
       admin.last24hrTotal = Number(admin.last24hrTotal) + 1;
@@ -133,6 +89,27 @@ export async function razorpayCallbackService(details) {
       await admin.save();
       await response.save();
       //callbackPayin(callBackDetails, response.callbackUrl);
+    }
+    if (response.callbackUrl) {
+       const txData = {
+          transaction_id:details.id,
+          amount: transaction.amount,
+          status: details.status === "paid" ? "success" : "failed",         
+          utr: details.rrn,
+          transaction_date: transaction.transaction_date,
+      };
+      const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
+
+      let callBackDetails = {
+          transaction_id: details.id,
+          status: details.status === "paid" ? "success" : "failed",
+          amount: amount,
+          utr: details.rrn || "",
+          date: transaction.transaction_date,
+          encryptedData: encryptedData,
+      };
+
+      callbackPayin(callBackDetails, response.callbackUrl);
     }
 
     // saveCallback(details.id, 'pgbro', details);
@@ -202,13 +179,11 @@ export async function razorpayPayoutCallbackService(details) {
 
     if (user.payoutCallbackUrl) {
       const callBackDetails = {
-        transaction_id: details?.transferId,
+        transaction_id: details?.id,
         amount: transactionAmount,
-        status:
-          details?.event?.toLowerCase() === "transfer_success"
-            ? "success"
-            : "failed",
+        status: details?.status?.toLowerCase() === "processed" ? "success" : "failed",
         transaction_date: transaction.transaction_date,
+        utr:details?.utr
       };
       await callbackPayin(callBackDetails, user.payoutCallbackUrl);
     }

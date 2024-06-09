@@ -1,6 +1,6 @@
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
-import { addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway } from "./adminService.js";
+import { addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, adminUpdateUserPayoutBalanceService, getAllGateway, getPayoutTransactions } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
 
 
@@ -140,6 +140,34 @@ async function adminRoutes(fastify, options) {
             return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
         }
     });
+
+    fastify.get('/getAllPayouts', {
+        preValidation: validateAdminTokenAndApiKey
+      },
+        async (request, reply) => {
+          try {
+           
+            
+            const response = await getPayoutTransactions(request)
+            return reply.status(200).send(response)
+          } catch (error) {
+            return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+          }
+    
+        })
+
+        fastify.post('/updateUserPayoutBalance', {
+            preValidation: validateAdminTokenAndApiKey
+          },
+            async (request, reply) => {
+              try {
+                const response = await adminUpdateUserPayoutBalanceService(request)
+                return reply.status(200).send(response)
+              } catch (error) {
+                return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+              }
+        
+            })
 
 
 

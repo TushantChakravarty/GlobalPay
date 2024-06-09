@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 
 import db from "../db/index.js";
 
-const { Admin, User, Gateway } = db
+const { Admin, User, Gateway , PayoutTransaction} = db
 
 
 export async function adminRegisterService(details) {
@@ -129,6 +129,35 @@ export async function getAllGateway(details) {
         return gateway
 
     } catch (error) {
+        throw new Error("Internal server error")
+    }
+}
+
+export async function getPayoutTransactions(details)
+{
+    const { limit = 10, skip = 0 } = details.query
+
+    const response = await PayoutTransaction.findAll({
+        limit: limit,
+        offset: skip
+      })
+    return response
+}
+
+export async function adminUpdateUserPayoutBalanceService(details, fastify) {
+    try {
+        const { email_Id, amount } = details
+        const user = await User.findOne({ where: { email_id: email_Id } })
+        if (!user) {
+            return { message: 'User not exist' }
+        }
+        user.payoutBalance = user.payoutBalance+amount
+        await user.save()
+
+        return { message: 'Success' }
+
+    } catch (error) {
+        console.log(error)
         throw new Error("Internal server error")
     }
 }
