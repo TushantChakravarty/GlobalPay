@@ -113,6 +113,9 @@ export async function createRazorpayPayoutService(details, type, user) {
     const contact_id = await createRazorpayContact({ name: details.name, phone: details.phone, email: details.email });
     console.log("after the error")
     if (type === "vpa") {
+     
+      const fund_account_id = await createRazorpayFundAccountForVpa({ upi: details.upi }, contact_id)
+      const payout_data = await createPayoutVpa(fund_account_id, details.amount)
       let payout = await PayoutTransaction.create({
         uuid: user.id,
         amount: details.amount,
@@ -129,14 +132,15 @@ export async function createRazorpayPayoutService(details, type, user) {
         business_name: user.name,
         payoutAmount: details.amount,
         upiId: details.upi,
-        method: "vpa"
+        method: "vpa",
+        transactionId:payout_data.id
       })
-      const fund_account_id = await createRazorpayFundAccountForVpa({ upi: details.upi }, contact_id)
-      const payout_data = await createPayoutVpa(fund_account_id, details.amount)
-      payout.transactionId = payout_data.id
       await payout.save()
       return payout
     } else if (type === "bank") {
+     
+      const fund_account_id = await createRazorpayFundAccountForBank({ name: details.name, ifsc: details.ifsc, account_number: details.account_number }, contact_id)
+      const payout_data = await createPayoutByBank(fund_account_id, details.amount, details?.method)
       let payout = await PayoutTransaction.create({
         uuid: user.id,
         amount: details.amount,
@@ -154,11 +158,9 @@ export async function createRazorpayPayoutService(details, type, user) {
         customer_email: details.email || "",
         business_name: user.name,
         payoutAmount: details.amount,
-        method: "bank"
+        method: "bank",
+        transactionId:payout_data.id
       })
-      const fund_account_id = await createRazorpayFundAccountForBank({ name: details.name, ifsc: details.ifsc, account_number: details.account_number }, contact_id)
-      const payout_data = await createPayoutByBank(fund_account_id, details.amount)
-      payout.transactionId = payout_data.id
       await payout.save()
       return payout
     }
@@ -169,7 +171,7 @@ export async function createRazorpayPayoutService(details, type, user) {
 
 }
 
-export const createPayoutByBank = async (fund_account_id, amount) => {
+export const createPayoutByBank = async (fund_account_id, amount, method) => {
   const keyId = process.env.RAZORPAY_KEY_ID
   const keySecret = process.env.RAZORPAY_KEY_SECRET
   const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
@@ -178,7 +180,7 @@ export const createPayoutByBank = async (fund_account_id, amount) => {
     fund_account_id: fund_account_id,
     amount: amount * 100,
     currency: 'INR',
-    mode: 'IMPS',
+    mode: method,
     purpose: 'payout',
     queue_if_low_balance: true,
     reference_id: `${Date.now()}`,

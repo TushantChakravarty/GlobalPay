@@ -6,8 +6,8 @@ import { CODES, MESSAGES } from "../../utils/constants.js";
 import { responseMapping, responseMappingWithData } from "../../utils/mapper.js";
 
 export async function createPaymentPageRequest(details) {
-    const gateway = details?.gateway
     const user = await findUser(details?.email_id)
+    const gateway = user?.gateway
     const userId = user?.id
     try {
         switch (gateway) {

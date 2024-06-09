@@ -1,10 +1,10 @@
-import { createRazorpayPayoutService } from "../../gateways/razorpay/razorpayService.js"
-import { createZwitchPayoutService } from "../../gateways/zwitch/zwitchService.js"
-import { CODES, MESSAGES } from "../../utils/constants.js";
+import { createRazorpayPayoutService } from "../gateways/razorpay/razorpayService.js"
+import { createZwitchPayoutService } from "../gateways/zwitch/zwitchService.js"
+import { CODES, MESSAGES } from "../utils/constants.js";
 import {
     responseMapping,
     responseMappingWithData,
-} from "../../utils/mapper.js";
+} from "../utils/mapper.js";
 
 
 /**
