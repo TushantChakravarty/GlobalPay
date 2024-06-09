@@ -30,12 +30,13 @@ async function callbackRoutes(fastify, options) {
     let details = request?.body
      //console.log('detailssssssss payout',details?.payload?.payout?.entity)
      console.log(details)
+     let data =details?.payload?.payout?.entity
     if (
-      details?.status=='processed'
+      data?.status=='processed'||"failed"
     ) {
       
       try {
-        const response = await razorpayPayoutCallbackService(details)
+        const response = await razorpayPayoutCallbackService(data)
         return reply.status(200).send(response);
       } catch (err) {
         fastify.log.error(err);
