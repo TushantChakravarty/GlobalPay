@@ -18,7 +18,7 @@ export async function payoutBankController(request) {
         switch (gateway) {
             case "razorpay":
                 response = await createRazorpayPayoutService(request.body, "bank", request.user)
-               // console.log('resp check',response)
+                // console.log('resp check',response)
                 if (response) {
                     return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
                         txId: response.transactionId,
@@ -141,8 +141,7 @@ export async function payoutUpiController(request) {
     }
 }
 
-export async function getPayoutTransactions()
-{
+export async function getPayoutTransactions() {
     const response = await PayoutTransaction.findAll()
     return response
 }

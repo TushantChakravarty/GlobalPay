@@ -1,7 +1,7 @@
 //const Razorpay = require("razorpay")
 import Razorpay from 'razorpay'
 import db from '../../db/index.js'
-const { PayoutTransaction } = db
+const { PayoutTransaction, User } = db
 
 //const fetch = require('node-fetch');
 import fetch from 'node-fetch'
@@ -113,7 +113,7 @@ export async function createRazorpayPayoutService(details, type, user) {
     const contact_id = await createRazorpayContact({ name: details.name, phone: details.phone, email: details.email });
     console.log("after the error")
     if (type === "vpa") {
-     
+
       const fund_account_id = await createRazorpayFundAccountForVpa({ upi: details.upi }, contact_id)
       const payout_data = await createPayoutVpa(fund_account_id, details.amount)
       let payout = await PayoutTransaction.create({
@@ -133,12 +133,15 @@ export async function createRazorpayPayoutService(details, type, user) {
         payoutAmount: details.amount,
         upiId: details.upi,
         method: "vpa",
-        transactionId:payout_data.id
+        transactionId: payout_data.id
       })
+      const payout_user = await User.findOne({ where: { id: user.id } })
+      payout_user.payoutsBalance -= details.amount
+      await payout_user.save()
       await payout.save()
       return payout
     } else if (type === "bank") {
-     
+
       const fund_account_id = await createRazorpayFundAccountForBank({ name: details.name, ifsc: details.ifsc, account_number: details.account_number }, contact_id)
       const payout_data = await createPayoutByBank(fund_account_id, details.amount, details?.method)
       let payout = await PayoutTransaction.create({
@@ -159,8 +162,12 @@ export async function createRazorpayPayoutService(details, type, user) {
         business_name: user.name,
         payoutAmount: details.amount,
         method: "bank",
-        transactionId:payout_data.id
+        transactionId: payout_data.id
       })
+      const payout_user = await User.findOne({ where: { id: request.user.id } })
+      payout_user.payoutsBalance -= details.amount
+      await payout_user.save()
+      await payout.save()
       await payout.save()
       return payout
     }

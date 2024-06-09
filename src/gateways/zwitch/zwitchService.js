@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import db from '../../db/index.js'
-const { PayoutTransaction } = db
+const { PayoutTransaction, User } = db
 
 /**
  * 
@@ -33,6 +33,10 @@ export async function createZwitchPayoutService(details, type, user) {
             })
             const beneficiary_id = await createBankAccountBeneificiary(details)
             const payout_data = await createTransferAccount(details, beneficiary_id)
+            const payout_user = await User.findOne({ where: { id: request.user.id } })
+            payout_user.payoutsBalance -= details.amount
+            await payout_user.save()
+            await payout.save()
             payout.transactionId = payout_data.id
             await payout.save()
             return payout
@@ -57,6 +61,10 @@ export async function createZwitchPayoutService(details, type, user) {
             })
             const beneficiary_id = await createVpaBeneificiary(details)
             const payout_data = await createTransferVpa(details, beneficiary_id)
+            const payout_user = await User.findOne({ where: { id: request.user.id } })
+            payout_user.payoutsBalance -= details.amount
+            await payout_user.save()
+            await payout.save()
             payout.transactionId = payout_data.id
             await payout.save()
             return payout
