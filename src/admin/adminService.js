@@ -111,7 +111,7 @@ export async function addGateway(details) {
     try {
         const gateway = await Gateway.create({
             gatewayName: details.gatewayName,
-            abbr:details?.abbr
+            abbr: details?.abbr
         })
         return gateway
 

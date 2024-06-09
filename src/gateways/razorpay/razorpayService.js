@@ -136,7 +136,7 @@ export async function createRazorpayPayoutService(details, type, user) {
         transactionId: payout_data.id
       })
       const payout_user = await User.findOne({ where: { id: user.id } })
-      payout_user.payoutsBalance -= details.amount
+      payout_user.payoutBalance -= details.amount
       await payout_user.save()
       await payout.save()
       return payout
@@ -165,7 +165,7 @@ export async function createRazorpayPayoutService(details, type, user) {
         transactionId: payout_data.id
       })
       const payout_user = await User.findOne({ where: { id: request.user.id } })
-      payout_user.payoutsBalance -= details.amount
+      payout_user.payoutBalance -= details.amount
       await payout_user.save()
       await payout.save()
       await payout.save()

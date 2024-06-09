@@ -54,11 +54,12 @@ async function adminRoutes(fastify, options) {
         schema: {
             body: {
                 type: 'object',
-                properties: {
-                    email_Id: { type: "string", format: "email" },
-                    gateway: { type: "string" }
-                },
-                required: ["email_Id", "gateway"]
+                // properties: {
+                //     email_Id: { type: "string", format: "email" },
+                //     gateway: { type: "string" }
+                // },
+                // required: ["email_Id", "gateway"]
+                additionalProperties: true
             }
         },
         preValidation: validateAdminTokenAndApiKey

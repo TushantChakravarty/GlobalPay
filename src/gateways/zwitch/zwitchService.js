@@ -33,8 +33,8 @@ export async function createZwitchPayoutService(details, type, user) {
             })
             const beneficiary_id = await createBankAccountBeneificiary(details)
             const payout_data = await createTransferAccount(details, beneficiary_id)
-            const payout_user = await User.findOne({ where: { id: request.user.id } })
-            payout_user.payoutsBalance -= details.amount
+            const payout_user = await User.findOne({ where: { id: user.id } })
+            payout_user.payoutBalance -= details.amount
             await payout_user.save()
             await payout.save()
             payout.transactionId = payout_data.id
@@ -61,8 +61,10 @@ export async function createZwitchPayoutService(details, type, user) {
             })
             const beneficiary_id = await createVpaBeneificiary(details)
             const payout_data = await createTransferVpa(details, beneficiary_id)
-            const payout_user = await User.findOne({ where: { id: request.user.id } })
-            payout_user.payoutsBalance -= details.amount
+            const payout_user = await User.findOne({ where: { id: user.id } })
+            console.log("coming to this payout place",)
+            payout_user.payoutBalance -= details.amount
+            console.log("payout balance", payout_user)
             await payout_user.save()
             await payout.save()
             payout.transactionId = payout_data.id
