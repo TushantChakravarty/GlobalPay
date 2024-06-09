@@ -30,7 +30,7 @@ async function callbackRoutes(fastify, options) {
     let details = request?.body
      //console.log('detailssssssss payout',details?.payload?.payout?.entity)
      console.log(details)
-     let data =details?.payload?.payout?.entity
+     let data =details
     if (
       data?.status=='processed'||data?.status=="failed"
     ) {
