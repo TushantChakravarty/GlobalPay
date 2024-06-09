@@ -63,7 +63,7 @@ async function userRoutes(fastify, options) {
         type: 'object',
         properties: {
           payinCallbackUrl: {
-            type: "string", minLength: 3, maxLength: 50
+            type: "string", minLength: 3
           }
         },
         required: ["payinCallbackUrl"]
