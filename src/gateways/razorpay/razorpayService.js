@@ -108,12 +108,9 @@ export async function createQrCode() {
 //for vpa i need name,email,phone,upi and for bank i need name,email,phone,ifsc,account_number
 export async function createRazorpayPayoutService(details, type, user) {
   try {
-    console.table(details)
     //expected name,email,phone
     const contact_id = await createRazorpayContact({ name: details.name, phone: details.phone, email: details.email });
-    console.log("after the error")
     if (type === "vpa") {
-
       const fund_account_id = await createRazorpayFundAccountForVpa({ upi: details.upi }, contact_id)
       const payout_data = await createPayoutVpa(fund_account_id, details.amount)
       let payout = await PayoutTransaction.create({
@@ -167,7 +164,6 @@ export async function createRazorpayPayoutService(details, type, user) {
       const payout_user = await User.findOne({ where: { id: request.user.id } })
       payout_user.payoutBalance -= details.amount
       await payout_user.save()
-      await payout.save()
       await payout.save()
       return payout
     }
