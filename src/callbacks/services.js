@@ -1,6 +1,7 @@
 import db from "../db/index.js";
 import { getTransaction } from "../transactions/transactions/transactionService.js";
 import { encryptText } from "../utils/password.utils.js";
+import { callbackPayin } from "../utils/utils.js";
 
 const { User, Admin, PayoutTransaction } = db;
 
