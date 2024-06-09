@@ -28,6 +28,10 @@ export default {
     idle: 5000 // The maximum time, in milliseconds, that a connection can be idle before being released
   },
   dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false // Use with caution, for development only
+    },
     // dateStrings: true,
     useUTC: false, // for reading from database
     // typeCast: function (field, next) { // for reading from database
