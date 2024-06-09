@@ -1,6 +1,6 @@
 import { findUser, findUserByApiKey } from "../user/userDao.js"
 import { validateToken, validateTokenAndApiKey } from "../utils/jwt.utils.js"
-import { getPayoutTransactions, payoutBankController, payoutUpiController } from "./services.js"
+import {  payoutBankController, payoutUpiController } from "./services.js"
 import { CODES, MESSAGES } from "../utils/constants.js"
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js"
 import { bankSchema, upiSchema } from "../utils/validationSchemas.js";

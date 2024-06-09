@@ -10,8 +10,7 @@ import { convertToIST } from './src/utils/utils.js';
 const fastify = Fastify({
     logger: true
 })
-convertToIST
-console.log(convertToIST(Date.now()))
+
 
 fastify.register(fastifyCors, { 
     // put your options here
@@ -19,20 +18,7 @@ fastify.register(fastifyCors, {
     methods: ['GET', 'PUT', 'POST', 'DELETE'], // allow these HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization','apiKey','apikey'], // allow these headers
   });
-// createPaymentLinkViaRazorpay({
-//     amount:2000
-// })
-//fetchPayments('gjoI9dQke60Y')
-// createRazorpayPayoutService({
-//     name:'tushant',
-//     phone:'9340079982',
-//     email:'tushant029@gmail.com',
-//     upi:'9340079982@paytm',
-//     amount:100
-// },"vpa")
-//createUPICollectRequest()
-//createUPIVirtualAccount()
-//updateUPIVirtualAccount()
+
 const startServer = async () => {
 
     try {
