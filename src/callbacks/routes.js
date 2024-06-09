@@ -6,15 +6,15 @@ async function callbackRoutes(fastify, options) {
     let details = request?.body
     console.log('detailssssssss',details)
     if (
-      details?.id
+      details?.payload?.payment?.entity?.acquirer_data?.upi_transaction_id
     ) {
-      // let paymentData = details?.payload?.payment_link?.entity;
-      // paymentData.rrn = details?.payload?.payment?.entity?.acquirer_data?.rrn;
-      // paymentData.upi_transaction_id =
-      //   details?.payload?.payment?.entity?.acquirer_data?.upi_transaction_id;
-      // console.log(paymentData);
+      let paymentData = details?.payload?.payment_link?.entity;
+      paymentData.rrn = details?.payload?.payment?.entity?.acquirer_data?.rrn;
+      paymentData.upi_transaction_id =
+        details?.payload?.payment?.entity?.acquirer_data?.upi_transaction_id;
+      console.log(paymentData);
       try {
-        const response = await razorpayCallbackService(details);
+        const response = await razorpayCallbackService(paymentData);
         return reply.status(200).send(response);
       } catch (err) {
         fastify.log.error(err);
