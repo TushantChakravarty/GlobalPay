@@ -1,6 +1,6 @@
 import { validateAdminTokenAndApiKey, validateTokenAndApiKey } from "../utils/jwt.utils.js";
 import { loginSchema } from "../utils/validationSchemas.js";
-import { addPayinCallbackUrl, addPayoutCallbackUrl, getAllPayinTransaction, getAllPayoutTransaction, getPayinTransactionStatus, userLoginService, userRegisterService } from "./userService.js";
+import { addPayinCallbackUrl, addPayoutCallbackUrl, getAllPayinTransaction, getAllPayoutTransaction, getPayinTransactionStatus, getPayoutTransactionStatus, userLoginService, userRegisterService } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
 
@@ -209,6 +209,32 @@ async function userRoutes(fastify, options) {
     }
   });
 
+  fastify.post("/getPayoutStatus", {
+    schema: {
+      body: {
+        type: 'object',
+        properties: {
+          transaction_id: {
+            type: "string", minLength: 3
+          }
+        },
+        required: ["transaction_id"]
+
+      }
+    },
+    preValidation: validateTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getPayoutTransactionStatus(request.body, request.user);
+      if (response?.transaction_id)
+        return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+      else
+        return reply.status(500).send(responseMapping(500, response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
 
 }
 

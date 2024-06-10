@@ -138,3 +138,22 @@ export async function getPayinTransactionStatus(details, user) {
     throw new Error("Intenal server error")
   }
 }
+
+export async function getPayoutTransactionStatus(details, user) {
+  try {
+    const transaction = await PayoutTransaction.findOne({
+      where: { uuid: user.id ,transactionId:details?.transaction_id}
+    })
+    console.log(transaction)
+    if (!transaction) {
+      return  'Transaction not found';
+    }
+    return {
+      transaction_id:transaction?.transactionId,
+      status:transaction?.status
+    }
+  } catch (error) {
+    console.log(error)
+    throw new Error("Intenal server error")
+  }
+}
