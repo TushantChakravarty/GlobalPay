@@ -28,12 +28,12 @@ export async function userRegisterService(details) {
     details.balance = 0;
     const createdUser = await createUser(details)
     let responseData = {}
-    if (createUser) {
+    if (createdUser) {
       responseData = {
         email: createdUser.email_id,
         password: password,
         apiKey: encrytedKey,
-        encryptionKey:createUser.encryptionKey
+        encryptionKey:createdUser.encryptionKey
       };
     }
 
