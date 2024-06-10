@@ -29,7 +29,8 @@ async function userRoutes(fastify, options) {
           responseData: {
             email: response?.email,
             password: response?.password,
-            apiKey: response?.apiKey
+            apiKey: response?.apiKey,
+            encryptionKey:response?.encryptionKey
           }
         });
       } catch (error) {

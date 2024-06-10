@@ -3,7 +3,6 @@ import { generatePassword, convertPass, encryptText } from "../utils/password.ut
 import { createUser, findUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
-import crypto from "crypto";
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
 
 const { User, Transaction, PayoutTransaction } = db
@@ -25,19 +24,16 @@ export async function userRegisterService(details) {
 
     const encrytedKey = encryptText(apiKey);
     console.log("encrypted key", encrytedKey);
-    const encryptionKey = crypto.randomBytes(32).toString('hex');
     details.apiKey = apiKey;
     details.balance = 0;
-    details.encryptionKey = encryptionKey
     const createdUser = await createUser(details)
-    console.log('created user',createdUser)
     let responseData = {}
     if (createdUser) {
       responseData = {
         email: createdUser.email_id,
         password: password,
         apiKey: encrytedKey,
-        encryptionKey:encryptionKey
+        encryptionKey:createdUser.encryptionKey
       };
     }
 
