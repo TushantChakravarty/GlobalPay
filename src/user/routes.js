@@ -199,7 +199,7 @@ async function userRoutes(fastify, options) {
   }, async (request, reply) => {
     try {
       const response = await getPayinTransactionStatus(request.body, request.user);
-      if (response?.responseCode==200)
+      if (response?.transaction_id)
         return reply.status(200).send(responseMappingWithData(200, 'Success', response));
       else
         return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
