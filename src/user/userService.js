@@ -3,7 +3,7 @@ import { generatePassword, convertPass, encryptText } from "../utils/password.ut
 import { createUser, findUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
-import { responseMappingWithData } from "../utils/mapper.js";
+import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
 
 const { User, Transaction, PayoutTransaction } = db
 
@@ -117,5 +117,22 @@ export async function getAllPayoutTransaction(details, user) {
     return all_payout_transaction
   } catch (error) {
     throw new Error("Internal server error")
+  }
+}
+
+export async function getPayinTransactionStatus(details, user) {
+  try {
+    const transaction = await Transaction.findOne({
+      where: { uuid: user.id ,transactionId:details?.transaction_id}
+    })
+    if (!transaction) {
+      return responseMapping(400, 'Transaction not found');
+    }
+    return responseMappingWithData(200,'success',{
+      transaction_id:transaction?.transactionId,
+      status:transaction?.status
+    })
+  } catch (error) {
+    throw new Error("Intenal server error")
   }
 }
