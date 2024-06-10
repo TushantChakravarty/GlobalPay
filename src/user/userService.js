@@ -125,6 +125,7 @@ export async function getPayinTransactionStatus(details, user) {
     const transaction = await Transaction.findOne({
       where: { uuid: user.id ,transactionId:details?.transaction_id}
     })
+    console.log(transaction)
     if (!transaction) {
       return responseMapping(400, 'Transaction not found');
     }
