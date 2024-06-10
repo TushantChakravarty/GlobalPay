@@ -127,12 +127,12 @@ export async function getPayinTransactionStatus(details, user) {
     })
     console.log(transaction)
     if (!transaction) {
-      return responseMapping(400, 'Transaction not found');
+      return  'Transaction not found';
     }
-    return responseMappingWithData(200,'success',{
+    return {
       transaction_id:transaction?.transactionId,
       status:transaction?.status
-    })
+    }
   } catch (error) {
     console.log(error)
     throw new Error("Intenal server error")
