@@ -11,7 +11,6 @@
 "use strict";
 import { Model } from "sequelize";
 import { DB_MODEL_REF } from "../../utils/constants.js";
-import crypto from "crypto";  // Import the crypto module
 
 export default (sequelize, DataTypes) => {
   class User extends Model {
@@ -86,13 +85,6 @@ export default (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: DB_MODEL_REF.USER,
-      hooks: {
-        beforeCreate: (user, options) => {
-          if (!user.encryptionKey) {
-            user.encryptionKey = crypto.randomBytes(32).toString('hex');
-          }
-        },
-      },
     }
   );
 
