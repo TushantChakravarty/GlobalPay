@@ -198,7 +198,7 @@ async function userRoutes(fastify, options) {
     preValidation: validateTokenAndApiKey
   }, async (request, reply) => {
     try {
-      const response = await getPayinTransactionStatus(request, request.user);
+      const response = await getPayinTransactionStatus(request.body, request.user);
       if (response?.responseCode==200)
         return reply.status(200).send(responseMappingWithData(200, 'Success', response));
       else
