@@ -24,7 +24,7 @@ export const validateToken = async (request, reply) => {
 
 export const validateTokenAndApiKey = async (request, reply) => {
   console.log(request.headers)
-  if(!request.headers.Authorization)
+  if(!request.headers.authorization)
   {
     return reply.status(403).send(responseMapping(403,'Token is required'));
 
