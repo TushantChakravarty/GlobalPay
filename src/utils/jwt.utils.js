@@ -24,12 +24,32 @@ export const validateToken = async (request, reply) => {
 
 export const validateTokenAndApiKey = async (request, reply) => {
   console.log(request.headers)
+  if(!request.headers.Authorization)
+  {
+    return reply.status(403).send(responseMapping(403,'Token is required'));
+
+  }
+  if(!request.headers.apikey)
+  {
+    return reply.status(403).send(responseMapping(403,'Apikey is required'));
+
+  }
   await validateToken(request, reply);
   await validateApiKey(request, reply);
 };
 
 export const validateAdminTokenAndApiKey = async (request, reply) => {
   //console.log(request.headers)
+  if(!request.headers.Authorization)
+  {
+    return reply.status(403).send(responseMapping(403,'Token is required'));
+
+  }
+  if(!request.headers.apikey)
+  {
+    return reply.status(403).send(responseMapping(403,'Apikey is required'));
+
+  }
   await validateToken(request, reply);
   await validateAdminApiKey(request, reply);
 };
