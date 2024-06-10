@@ -134,6 +134,7 @@ export async function getPayinTransactionStatus(details, user) {
       status:transaction?.status
     })
   } catch (error) {
+    console.log(error)
     throw new Error("Intenal server error")
   }
 }
