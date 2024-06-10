@@ -33,6 +33,7 @@ export async function userRegisterService(details) {
         email: createdUser.email_id,
         password: password,
         apiKey: encrytedKey,
+        encryptionKey:createUser.encryptionKey
       };
     }
 
