@@ -27,6 +27,7 @@ export async function userRegisterService(details) {
     details.apiKey = apiKey;
     details.balance = 0;
     const createdUser = await createUser(details)
+    console.log('created user',createdUser)
     let responseData = {}
     if (createdUser) {
       responseData = {
