@@ -25,7 +25,7 @@ export const loginSchema = {
         type: 'object',
         required: ['amount','customer_emailId','customer_phone','customer_address','customer_name'],
         properties: {
-            amount: { type: 'number', minimum: 0.01 },
+            amount: { type: 'number', minimum: 100 },
             customer_emailId: { type: 'string', format: 'email' },
             customer_phone: { type: 'string' },
             customer_address: { type: 'string' },
