@@ -123,9 +123,9 @@ export async function addGateway(details) {
 /**
  * get all gateway service
  */
-export async function getAllGateway(details) {
+export async function getAllGateway() {
     try {
-        const gateway = await Gateway.findAll({})
+        const gateway = await Gateway.findAll()
         return gateway
 
     } catch (error) {

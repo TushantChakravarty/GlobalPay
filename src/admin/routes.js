@@ -134,7 +134,7 @@ async function adminRoutes(fastify, options) {
         preValidation: validateAdminTokenAndApiKey
     }, async (request, reply) => {
         try {
-            const response = await getAllGateway(request.body, fastify);
+            const response = await getAllGateway();
             return reply.status(200).send(responseMappingWithData(200, 'success', response));
         } catch (err) {
             fastify.log.error(err);
