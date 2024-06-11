@@ -1,6 +1,6 @@
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
-import { addGateway, adminGetPayinStats, adminGetPayoutStats, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, adminUpdateUserPayoutBalanceService, getAllGateway, getAllPayinTransactions, getAllPayoutTransactions } from "./adminService.js";
+import { addGateway, adminGetPayinStats, adminGetPayoutStats, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, adminUpdateUserPayoutBalanceService, getAllGateway, getAllMerchants, getAllPayinTransactions, getAllPayoutTransactions } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
 import { CODES, MESSAGES } from "../utils/constants.js";
 
@@ -141,7 +141,17 @@ async function adminRoutes(fastify, options) {
             return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
         }
     });
-
+    fastify.get('/getAllMerchants', {
+      preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+      try {
+          const response = await getAllMerchants(request);
+          return reply.status(200).send(responseMappingWithData(200, 'success', response));
+      } catch (err) {
+          fastify.log.error(err);
+          return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+      }
+  });
     
 
         fastify.post('/updateUserPayoutBalance', {

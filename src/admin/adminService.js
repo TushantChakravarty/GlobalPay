@@ -164,7 +164,7 @@ export async function getAllPayoutTransactions(details) {
     return 'Transaction not found'
 }
 export async function getAllPayinTransactions(details) {
-    const {limit, skip} = details.query
+    const { limit = 10, skip = 0 } = details.query
     const response = await Transaction.findAll({
         limit: limit,
         offset: skip
@@ -173,6 +173,18 @@ export async function getAllPayinTransactions(details) {
     return response
     else 
     return 'Transaction not found'
+}
+
+export async function getAllMerchants(details) {
+    const { limit = 10, skip = 0 } = details.query
+    const response = await User.findAll({
+        limit: limit,
+        offset: skip
+    })
+    if(response)
+    return response
+    else 
+    return 'Users not found'
 }
 
 export async function adminGetPayinStats(details, fastify) {
