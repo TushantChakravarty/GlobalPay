@@ -9,6 +9,10 @@ export async function createPaymentPageRequest(details) {
     const user = await findUser(details?.email_id)
     const gateway = user?.gateway
     const userId = user?.id
+    const updatedUser ={
+        ...details,
+        business_name:user.business_name
+    }
     try {
         switch (gateway) {
             case 'razorpay': {
@@ -16,7 +20,7 @@ export async function createPaymentPageRequest(details) {
                 console.log(response)
                 if (response?.status == 'created') {
                     
-                    await createTransactionService(details, gateway, userId, response?.id)
+                    await createTransactionService(updatedUser, gateway, userId, response?.id)
                    
                     return responseMappingWithData(CODES.Success,MESSAGES.SUCCESS,{
                         transaction_id: response?.id,

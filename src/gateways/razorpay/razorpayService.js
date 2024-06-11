@@ -126,7 +126,7 @@ export async function createRazorpayPayoutService(details, type, user) {
         customer_name: details.name || "",
         account_name: details.name || "",
         customer_email: details.email || "",
-        business_name: user.name,
+        business_name: user.business_name,
         payoutAmount: details.amount,
         upiId: details.upi,
         method: "vpa",
