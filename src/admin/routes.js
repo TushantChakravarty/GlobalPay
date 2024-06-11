@@ -1,7 +1,8 @@
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
-import { addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, adminUpdateUserPayoutBalanceService, getAllGateway, getAllPayoutTransactions } from "./adminService.js";
+import { addGateway, adminGetPayinStats, adminGetPayoutStats, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, adminUpdateUserPayoutBalanceService, getAllGateway, getAllPayinTransactions, getAllPayoutTransactions } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
+import { CODES, MESSAGES } from "../utils/constants.js";
 
 
 async function adminRoutes(fastify, options) {
@@ -175,6 +176,7 @@ async function adminRoutes(fastify, options) {
                   },
                     async (request, reply) => {
                       try {
+                        
                         const response = await getAllPayinTransactions(request)
                         return reply.status(200).send(responseMappingWithData(200,"success",response))
                       } catch (error) {
@@ -188,6 +190,7 @@ async function adminRoutes(fastify, options) {
                   },
                     async (request, reply) => {
                       try {
+                        
                         const response = await adminGetPayinStats(request)
                         return reply.status(200).send(responseMappingWithData(200,"success",response))
                       } catch (error) {
