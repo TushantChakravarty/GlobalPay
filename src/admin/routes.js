@@ -59,7 +59,7 @@ async function adminRoutes(fastify, options) {
             })
           );
         else
-          reply.status(500).send(responseMapping(500, "Internal Server Error"));
+          reply.status(500).send(responseMapping(500, response));
       } catch (err) {
         fastify.log.error(err);
         return reply

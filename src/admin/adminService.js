@@ -49,7 +49,7 @@ export async function adminLoginService(details, fastify) {
     return { token };
   }
 
-  return { message: "Invalid email or password" };
+  return "Invalid email or password" 
 }
 
 /**
