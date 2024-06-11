@@ -161,12 +161,20 @@ export async function getAllPayinTransactions(details) {
 
 export async function getAllMerchants(details) {
   const { limit = 10, skip = 0 } = details.query;
-  const response = await User.findAll({
-    limit: limit,
-    offset: skip,
-  });
-  if (response) return response;
-  else return "Users not found";
+  try {
+    const response = await User.findAll({
+      limit: limit,
+      offset: skip,
+      order: [['createdAt', 'ASC']], // Change 'ASC' to 'DESC' for descending order
+    });
+    if (response.length > 0) {
+      return response;
+    } else {
+      return "Users not found";
+    }
+  } catch (error) {
+    return `Error fetching users: ${error.message}`;
+  }
 }
 
 export async function adminGetPayinStats(details, fastify) {
