@@ -130,7 +130,7 @@ async function adminRoutes(fastify, options) {
     /**
      * get all gateway route
      */
-    fastify.post('/getAllGateway', {
+    fastify.get('/getAllGateway', {
         preValidation: validateAdminTokenAndApiKey
     }, async (request, reply) => {
         try {
