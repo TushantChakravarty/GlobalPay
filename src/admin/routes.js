@@ -1,6 +1,6 @@
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
-import { addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, adminUpdateUserPayoutBalanceService, getAllGateway, getPayoutTransactions } from "./adminService.js";
+import { addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, adminUpdateUserPayoutBalanceService, getAllGateway, getAllPayoutTransactions } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
 
 
@@ -141,20 +141,7 @@ async function adminRoutes(fastify, options) {
         }
     });
 
-    fastify.get('/getAllPayouts', {
-        preValidation: validateAdminTokenAndApiKey
-      },
-        async (request, reply) => {
-          try {
-           
-            
-            const response = await getPayoutTransactions(request)
-            return reply.status(200).send(response)
-          } catch (error) {
-            return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
-          }
     
-        })
 
         fastify.post('/updateUserPayoutBalance', {
             preValidation: validateAdminTokenAndApiKey
@@ -168,6 +155,63 @@ async function adminRoutes(fastify, options) {
               }
         
             })
+
+            fastify.get('/getAllPayouts', {
+                preValidation: validateAdminTokenAndApiKey
+              },
+                async (request, reply) => {
+                  try {
+                    
+                    const response = await getAllPayoutTransactions(request)
+                    return reply.status(200).send(responseMappingWithData(200,"success",response))
+                  } catch (error) {
+                    return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+                  }
+            
+                })
+            
+                fastify.get('/getAllPayins', {
+                    preValidation: validateAdminTokenAndApiKey
+                  },
+                    async (request, reply) => {
+                      try {
+                        const response = await getAllPayinTransactions(request)
+                        return reply.status(200).send(responseMappingWithData(200,"success",response))
+                      } catch (error) {
+                        return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+                      }
+                
+                    })
+                
+                fastify.get('/getPayinStats', {
+                    preValidation: validateAdminTokenAndApiKey
+                  },
+                    async (request, reply) => {
+                      try {
+                        const response = await adminGetPayinStats(request)
+                        return reply.status(200).send(responseMappingWithData(200,"success",response))
+                      } catch (error) {
+                        return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+                      }
+                
+                    })
+            
+                    fastify.get('/getPayoutStats', {
+                        preValidation: validateAdminTokenAndApiKey
+                      },
+                        async (request, reply) => {
+                          try {
+                            const response = await adminGetPayoutStats(request)
+                            return reply.status(200).send(responseMappingWithData(200,"success",response))
+                          } catch (error) {
+                            return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
+                          }
+                    
+                        })
+                
+                
+            
+            
 
 
 

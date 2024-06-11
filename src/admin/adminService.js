@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 
 import db from "../db/index.js";
 
-const { Admin, User, Gateway , PayoutTransaction} = db
+const { Admin, User, Gateway , PayoutTransaction, Transaction} = db
 
 
 export async function adminRegisterService(details) {
@@ -133,16 +133,6 @@ export async function getAllGateway(details) {
     }
 }
 
-export async function getPayoutTransactions(details)
-{
-    const { limit = 10, skip = 0 } = details.query
-
-    const response = await PayoutTransaction.findAll({
-        limit: limit,
-        offset: skip
-      })
-    return response
-}
 
 export async function adminUpdateUserPayoutBalanceService(details, fastify) {
     try {
@@ -155,6 +145,80 @@ export async function adminUpdateUserPayoutBalanceService(details, fastify) {
         await user.save()
 
         return { message: 'Success' }
+
+    } catch (error) {
+        console.log(error)
+        throw new Error("Internal server error")
+    }
+}
+
+export async function getAllPayoutTransactions(details) {
+    const { limit = 10, skip = 0 } = details.query
+    const response = await PayoutTransaction.findAll({
+        limit: limit,
+        offset: skip
+    })
+    if(response)
+    return response
+    else 
+    return 'Transaction not found'
+}
+export async function getAllPayinTransactions(details) {
+    const {limit, skip} = details.query
+    const response = await Transaction.findAll({
+        limit: limit,
+        offset: skip
+    })
+    if(response)
+    return response
+    else 
+    return 'Transaction not found'
+}
+
+export async function adminGetPayinStats(details, fastify) {
+    try {
+        
+        const user = details.user
+        if (!user) {
+            return  'User not exist' 
+        }
+         const data ={
+            balance: user.balance ,
+            last24hr: user.last24hr,
+            yesterday: user.yesterday,
+            totalVolume:user.totalVolume ,
+            successfulTransactions: user.successfulTransactions,
+            last24hrSuccess:user.last24hrSuccess ,
+            last24hrTotal:user.last24hrTotal,
+            totalTransactions: user.totalTransactions,
+         }
+
+        return data
+
+    } catch (error) {
+        console.log(error)
+        throw new Error("Internal server error")
+    }
+}
+
+export async function adminGetPayoutStats(details, fastify) {
+    try {
+        
+        const user = details.user
+        if (!user) {
+            return  'User not exist' 
+        }
+         const data ={
+            balance: user.payoutsBalance,
+            last24hr: user.payouts.last24hr,
+            yesterday: user.payouts.yesterday,
+            successfulTransactions: user.payouts.successfulTransactions,
+            last24hrSuccess:user.payouts.last24hrSuccess ,
+            last24hrTotal:user.payouts.last24hrTotal,
+            totalTransactions: user.payouts.totalTransactions,
+         }
+
+        return data
 
     } catch (error) {
         console.log(error)

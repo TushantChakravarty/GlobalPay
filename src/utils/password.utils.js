@@ -81,6 +81,8 @@ export const validateAdminApiKey = async (request, reply) => {
     if (user?.apiKey == originalText) {
       //console.log(user?.apiKey == originalText)
       request.apiKeyDetails = originalText;
+      request.user = user
+
     } else {
       return reply.status(401).send(responseMapping( 400,"Invalid API key" ));
     }
