@@ -145,6 +145,7 @@ export async function getAllPayoutTransactions(details) {
   const response = await PayoutTransaction.findAll({
     limit: limit,
     offset: skip,
+    order: [['createdAt', 'ASC']],
   });
   if (response) return response;
   else return "Transaction not found";
@@ -154,6 +155,7 @@ export async function getAllPayinTransactions(details) {
   const response = await Transaction.findAll({
     limit: limit,
     offset: skip,
+    order: [['createdAt', 'ASC']],
   });
   if (response) return response;
   else return "Transaction not found";
