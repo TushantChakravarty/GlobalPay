@@ -10,20 +10,22 @@ async function paymentPageRoutes(fastify, options) {
     fastify.post('/hostedPage', {
         schema: payinPageSchema
     }, async (request, reply) => {
-        try{
+        try {
 
-            const apiKey  = request?.apiKeyDetails
+            const apiKey = request?.apiKeyDetails
             //console.log(apiKey)
             const user = await findUserByApiKey(apiKey)
+            if (user.isBanned) {
+                return responseMapping(CODES.INTRNLSRVR, "Your Payin service has been temporarily suspended, Please contact us to resolve the issue")
+            }
             //console.log('userrr',user?.dataValues?.email_id)
             request.body.email_id = user?.dataValues?.email_id
-            
+
             const response = await createPaymentPageRequest(request.body);
             return reply.status(200).send(response);
-        }catch(error)
-        {
-            console.log('payin page',error)
-            return responseMapping(CODES.INTRNLSRVR,MESSAGES.INTERNAL_SERVER_ERROR)
+        } catch (error) {
+            console.log('payin page', error)
+            return responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR)
         }
     });
 }

@@ -109,6 +109,10 @@ export async function adminUpdatePayoutGatewayService(details, fastify) {
  */
 export async function addGateway(details) {
     try {
+        const gateway_exist = await Gateway.findOne({ where: { gatewayName: details.gatewayName } })
+        if (gateway_exist) {
+            return false
+        }
         const gateway = await Gateway.create({
             gatewayName: details.gatewayName,
             abbr: details?.abbr
@@ -128,6 +132,44 @@ export async function getAllGateway(details) {
         const gateway = await Gateway.findAll({})
         return gateway
 
+    } catch (error) {
+        throw new Error("Internal server error")
+    }
+}
+
+/**
+ * Ban user payin
+ */
+export async function BanUserPayin(details) {
+    try {
+        const { id } = request.params
+        const { isBanned } = request.body
+        const user = await User.findOne({ where: { id: id } })
+        if (!user) {
+
+        }
+        user.isBanned = isBanned
+        await user.save()
+        return user
+    } catch (error) {
+        throw new Error("Internal server error")
+    }
+}
+
+/**
+ * Ban user payin
+ */
+export async function BanUserPayout(details) {
+    try {
+        const { id } = request.params
+        const { payoutsActive } = request.body
+        const user = await User.findOne({ where: { id: id } })
+        if (!user) {
+
+        }
+        user.payoutsActive = payoutsActive
+        await user.save()
+        return user
     } catch (error) {
         throw new Error("Internal server error")
     }

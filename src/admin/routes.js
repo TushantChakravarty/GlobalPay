@@ -1,6 +1,6 @@
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
-import { addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway } from "./adminService.js";
+import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
 
 
@@ -119,6 +119,9 @@ async function adminRoutes(fastify, options) {
     }, async (request, reply) => {
         try {
             const response = await addGateway(request.body, fastify);
+            if (!response) {
+                return reply.status(500).send(responseMapping(500, 'Gateway already exist'));
+            }
             return reply.status(200).send(responseMappingWithData(200, 'success', response));
         } catch (err) {
             fastify.log.error(err);
@@ -142,7 +145,35 @@ async function adminRoutes(fastify, options) {
     });
 
 
+    /**
+     * get all gateway route
+     */
+    fastify.post('/banUserPayin/:id', {
+        preValidation: validateAdminTokenAndApiKey
+    }, async (request, reply) => {
+        try {
+            const response = await BanUserPayin(request.body, fastify);
+            return reply.status(200).send(responseMappingWithData(200, 'success', response));
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+        }
+    });
 
+    /**
+   * get all gateway route
+   */
+    fastify.post('/banUserPayout/:id', {
+        preValidation: validateAdminTokenAndApiKey
+    }, async (request, reply) => {
+        try {
+            const response = await BanUserPayout(request.body, fastify);
+            return reply.status(200).send(responseMappingWithData(200, 'success', response));
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+        }
+    });
 
 }
 
