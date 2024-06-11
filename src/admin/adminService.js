@@ -1,4 +1,4 @@
-import { generateUserToken } from "../utils/jwt.utils.js";
+import { generateAdminToken, generateUserToken } from "../utils/jwt.utils.js";
 import {
   generatePassword,
   convertPass,
@@ -44,7 +44,7 @@ export async function adminLoginService(details, fastify) {
   const admin = await findAdmin(emailId);
 
   if (admin && (await bcrypt.compare(password, admin.password))) {
-    const token = await generateUserToken(emailId, fastify);
+    const token = await generateAdminToken(emailId, fastify);
     await admin.update({ token }, { where: { emailId } });
     return { token };
   }
