@@ -257,7 +257,7 @@ async function adminRoutes(fastify, options) {
         preValidation: validateAdminTokenAndApiKey
     }, async (request, reply) => {
         try {
-            const response = await BanUserPayin(request.body, fastify);
+            const response = await BanUserPayin(request, fastify);
             return reply.status(200).send(responseMappingWithData(200, 'success', response));
         } catch (err) {
             fastify.log.error(err);
@@ -272,7 +272,7 @@ async function adminRoutes(fastify, options) {
         preValidation: validateAdminTokenAndApiKey
     }, async (request, reply) => {
         try {
-            const response = await BanUserPayout(request.body, fastify);
+            const response = await BanUserPayout(request, fastify);
             return reply.status(200).send(responseMappingWithData(200, 'success', response));
         } catch (err) {
             fastify.log.error(err);
