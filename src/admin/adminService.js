@@ -245,7 +245,7 @@ export async function BanUserPayin(request) {
         }
         user.isBanned = isBanned
         await user.save()
-        return user
+        return 'success'
     } catch (error) {
         throw new Error("Internal server error")
     }
@@ -264,7 +264,7 @@ export async function BanUserPayout(request) {
         }
         user.payoutsActive = payoutsActive
         await user.save()
-        return user
+        return 'success'
     } catch (error) {
         throw new Error("Internal server error")
     }
