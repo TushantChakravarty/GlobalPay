@@ -1,15 +1,10 @@
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
 import {
-  addGateway,
   adminGetPayinStats,
   adminGetPayoutStats,
-  adminLoginService,
-  adminRegisterService,
-  adminUpdatePayinGatewayService,
-  adminUpdatePayoutGatewayService,
+  
   adminUpdateUserPayoutBalanceService,
-  getAllGateway,
   getAllMerchants,
   getAllPayinTransactions,
   getAllPayoutTransactions,
@@ -128,7 +123,7 @@ async function adminRoutes(fastify, options) {
     },
     async (request, reply) => {
       try {
-        const response = await addGateway(request.body, fastify);
+        const response = await adminUpdatePayoutGatewayService(request.body, fastify);
         if (!response) {
           return reply.status(500).send(responseMapping(500, 'Gateway already exists'));
         }
