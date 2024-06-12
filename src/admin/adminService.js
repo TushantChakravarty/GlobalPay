@@ -235,7 +235,7 @@ export async function adminGetPayoutStats(details, fastify) {
 /**
  * Ban user payin
  */
-export async function BanUserPayin(details) {
+export async function BanUserPayin(request) {
     try {
         const { id } = request.params
         const { isBanned } = request.body
@@ -254,7 +254,7 @@ export async function BanUserPayin(details) {
 /**
  * Ban user payin
  */
-export async function BanUserPayout(details) {
+export async function BanUserPayout(request) {
     try {
         const { id } = request.params
         const { payoutsActive } = request.body
