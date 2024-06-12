@@ -153,7 +153,7 @@ export async function getAllPayoutTransactions(details) {
     order: [['createdAt', 'ASC']],
   });
   if (response) return response;
-  else return "Transaction not found";
+  else return [];
 }
 export async function getAllPayinTransactions(details) {
   const { limit = 10, skip = 0 } = details.query;
@@ -163,7 +163,7 @@ export async function getAllPayinTransactions(details) {
     order: [['createdAt', 'ASC']],
   });
   if (response) return response;
-  else return "Transaction not found";
+  else return [];
 }
 
 export async function getAllMerchants(details) {
@@ -177,7 +177,7 @@ export async function getAllMerchants(details) {
     if (response.length > 0) {
       return response;
     } else {
-      return "Users not found";
+      return [];
     }
   } catch (error) {
     return `Error fetching users: ${error.message}`;
