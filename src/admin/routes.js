@@ -14,6 +14,7 @@ import {
   getAllPayinTransactions,
   getAllPayoutTransactions,
 } from "./adminService.js";
+import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
 import { CODES, MESSAGES } from "../utils/constants.js";
 
@@ -127,24 +128,17 @@ async function adminRoutes(fastify, options) {
     },
     async (request, reply) => {
       try {
-        //1.emailId,apiKey,id
-        const response = await adminUpdatePayoutGatewayService(
-          request.body,
-          fastify
-        );
-        // console.log(response)
-        return reply
-          .status(200)
-          .send(responseMappingWithData(200, "success", response));
+        const response = await addGateway(request.body, fastify);
+        if (!response) {
+          return reply.status(500).send(responseMapping(500, 'Gateway already exists'));
+        }
+        return reply.status(200).send(responseMappingWithData(200, 'success', response));
       } catch (err) {
         fastify.log.error(err);
-        return reply
-          .status(500)
-          .send(responseMapping(500, "Internal Server Error"));
+        return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
       }
     }
   );
-
   /**
    * add gateway route
    */
@@ -261,6 +255,35 @@ async function adminRoutes(fastify, options) {
       }
     }
   );
+    /**
+     * get all gateway route
+     */
+    fastify.post('/banUserPayin/:id', {
+        preValidation: validateAdminTokenAndApiKey
+    }, async (request, reply) => {
+        try {
+            const response = await BanUserPayin(request.body, fastify);
+            return reply.status(200).send(responseMappingWithData(200, 'success', response));
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+        }
+    });
+
+    /**
+   * get all gateway route
+   */
+    fastify.post('/banUserPayout/:id', {
+        preValidation: validateAdminTokenAndApiKey
+    }, async (request, reply) => {
+        try {
+            const response = await BanUserPayout(request.body, fastify);
+            return reply.status(200).send(responseMappingWithData(200, 'success', response));
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+        }
+    });
 
   fastify.get(
     "/getAllPayins",

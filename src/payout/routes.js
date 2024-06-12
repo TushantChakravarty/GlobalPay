@@ -25,7 +25,7 @@ async function payoutRoutes(fastify, options) {
           return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
         }
         if (!user.payoutsActive) {
-          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Payout not active"))
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Your Payout service has been temporarily suspended, Please contact us to resolve the issue "))
         }
         if (user.payoutsBalance < request.body.amount) {
           return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Insufficient balance"))
@@ -53,7 +53,7 @@ async function payoutRoutes(fastify, options) {
           return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR))
         }
         if (!user.payoutsActive) {
-          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Payout not active"))
+          return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Your Payout service has been temporarily suspended, Please contact us to resolve the issue"))
         }
         if (user.payoutsBalance < request.body.amount) {
           return reply.status(500).send(responseMapping(CODES.INTRNLSRVR, "Insufficient balance"))

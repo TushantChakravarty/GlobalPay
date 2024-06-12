@@ -3,6 +3,7 @@ import { loginSchema } from "../utils/validationSchemas.js";
 import { addPayinCallbackUrl, addPayoutCallbackUrl, getAllPayinTransaction, getAllPayoutTransaction, getPayinTransactionStatus, getPayoutTransactionStatus, userLoginService, userRegisterService } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
+import { findUser } from "./userDao.js";
 
 async function userRoutes(fastify, options) {
   /**
@@ -21,7 +22,13 @@ async function userRoutes(fastify, options) {
     },
     async (request, reply) => {
       try {
-
+        const user = await findUser(request.body.email_id)
+        if (user) {
+          return reply.status(500).send({
+            responseCode: 500,
+            responseMessage: "User already exist"
+          });
+        }
         const response = await userRegisterService(request.body);
         return reply.status(200).send({
           responseCode: 200,
