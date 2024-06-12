@@ -241,7 +241,7 @@ export async function BanUserPayin(details) {
         const { isBanned } = request.body
         const user = await User.findOne({ where: { id: id } })
         if (!user) {
-
+          return "User not exist";
         }
         user.isBanned = isBanned
         await user.save()
@@ -260,7 +260,7 @@ export async function BanUserPayout(details) {
         const { payoutsActive } = request.body
         const user = await User.findOne({ where: { id: id } })
         if (!user) {
-
+          return "User not exist";
         }
         user.payoutsActive = payoutsActive
         await user.save()
