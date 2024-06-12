@@ -150,7 +150,7 @@ export async function getAllPayoutTransactions(details) {
   const response = await PayoutTransaction.findAll({
     limit: limit,
     offset: skip,
-    order: [['createdAt', 'ASC']],
+    order: [['createdAt', 'DESC']],
   });
   if (response) return response;
   else return [];
@@ -160,7 +160,7 @@ export async function getAllPayinTransactions(details) {
   const response = await Transaction.findAll({
     limit: limit,
     offset: skip,
-    order: [['createdAt', 'ASC']],
+    order: [['createdAt', 'DESC']],
   });
   if (response) return response;
   else return [];
