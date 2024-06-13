@@ -9,7 +9,7 @@ import bcrypt from "bcryptjs";
 
 import db from "../db/index.js";
 
-const { Admin, User, Gateway, PayoutTransaction, Transaction } = db;
+const { Admin, User, Gateway, PayoutTransaction, Transaction, UsdtRate } = db;
 
 export async function adminRegisterService(details) {
   try {
@@ -272,7 +272,7 @@ export async function BanUserPayout(request) {
 
 export async function updateUsdtRate(request) {
   try {
-      const { usdtRate } = request.body
+      const { usdtRate, notes } = request.body
       const admin = await Admin.findOne({ where: { id: request.user.id } })
       if (!admin) {
         return "User not exist";
@@ -282,12 +282,28 @@ export async function updateUsdtRate(request) {
       admin.usdtRate = usdtRate
       await updateAdminUsdtRate({
         usdtRate,
-        date:now.toString()
+        date:now.toString(),
+        notes: notes
       })
       await admin.save()
       return 'success'
   } catch (error) {
     console.log('update usdt service',error)
+      throw new Error("Internal server error")
+  }
+}
+
+export async function getUsdtRates(request) {
+  try {
+    const {limit, skip} = request.query
+    const rates = await UsdtRate.findAll({
+      limit: limit,
+      offset: skip,
+      order: [['createdAt', 'DESC']],
+    })      
+      return rates
+  } catch (error) {
+    console.log('get usdt service',error)
       throw new Error("Internal server error")
   }
 }

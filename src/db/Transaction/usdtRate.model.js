@@ -26,6 +26,7 @@ export default (sequelize, DataTypes) => {
     {
       usdtRate: { type: DataTypes.FLOAT, defaultValue: 0.0 },
       date: { type: DataTypes.STRING },
+      notes: { type: DataTypes.STRING , allowNull:true},
     },
     {
       sequelize,

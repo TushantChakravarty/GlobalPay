@@ -8,6 +8,7 @@ import {
   getAllMerchants,
   getAllPayinTransactions,
   getAllPayoutTransactions,
+  getUsdtRates,
   updateUsdtRate,
 } from "./adminService.js";
 import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway } from "./adminService.js";
@@ -352,6 +353,26 @@ async function adminRoutes(fastify, options) {
     async (request, reply) => {
       try {
         const response = await updateUsdtRate(request);
+        return reply
+          .status(200)
+          .send(responseMappingWithData(200, "success", response));
+      } catch (error) {
+        return reply
+          .status(500)
+          .send(
+            responseMapping(CODES.INTRNLSRVR, MESSAGES.INTERNAL_SERVER_ERROR)
+          );
+      }
+    }
+  );
+  fastify.get(
+    "/getUsdtRates",
+    {
+      preValidation: validateAdminTokenAndApiKey,
+    },
+    async (request, reply) => {
+      try {
+        const response = await getUsdtRates(request);
         return reply
           .status(200)
           .send(responseMappingWithData(200, "success", response));
