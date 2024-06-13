@@ -1,12 +1,12 @@
 
 /**
- * Transaction model definition.
- * Represents an Transaction entity in the database.
- * @module models/Transaction
+ * PayoutTransaction model definition.
+ * Represents an PayoutTransaction entity in the database.
+ * @module models/PayoutTransaction
  * @requires sequelize
  * @requires sequelize/Model
- * @exports Transaction
- * @class Transaction
+ * @exports PayoutTransaction
+ * @class PayoutTransaction
  */
 
 "use strict";

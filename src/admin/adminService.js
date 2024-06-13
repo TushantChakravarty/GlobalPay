@@ -4,7 +4,7 @@ import {
   convertPass,
   encryptText,
 } from "../utils/password.utils.js";
-import { createAdmin, findAdmin } from "./adminDao.js";
+import { createAdmin, findAdmin, updateAdminUsdtRate } from "./adminDao.js";
 import bcrypt from "bcryptjs";
 
 import db from "../db/index.js";
@@ -268,4 +268,26 @@ export async function BanUserPayout(request) {
     } catch (error) {
         throw new Error("Internal server error")
     }
+}
+
+export async function updateUsdtRate(request) {
+  try {
+      const { usdtRate } = request.body
+      const admin = await Admin.findOne({ where: { id: request.user.id } })
+      if (!admin) {
+        return "User not exist";
+      }
+      const now = Date.now();
+
+      admin.usdtRate = usdtRate
+      await updateAdminUsdtRate({
+        usdtRate,
+        date:now.toString()
+      })
+      await admin.save()
+      return 'success'
+  } catch (error) {
+    console.log('update usdt service',error)
+      throw new Error("Internal server error")
+  }
 }

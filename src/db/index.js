@@ -20,7 +20,7 @@ import User from './user/user.model.js';
 import Admin from './admin/admin.model.js';
 import PayoutTransaction from './Transaction/payout.model.js'
 import Gateway from './gateways/gateway.model.js'
-
+import usdtRateModel from './Transaction/usdtRate.model.js';
 
 
 const db = {}
@@ -36,6 +36,7 @@ db.Callbacks = Callbacks(sequelize, Sequelize.DataTypes)
 db.User = User(sequelize, Sequelize.DataTypes)
 db.Admin = Admin(sequelize, Sequelize.DataTypes)
 db.Gateway = Gateway(sequelize, Sequelize.DataTypes)
+db.UsdtRate = usdtRateModel(sequelize, Sequelize.DataTypes)
 
 // Initialize models
 const initializeModels = () => {

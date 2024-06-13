@@ -44,6 +44,7 @@ export default (sequelize, DataTypes) => {
             lastExecutionDate: { type: DataTypes.STRING, defaultValue: null },
             payoutsBalance: { type: DataTypes.FLOAT, defaultValue: 0.0 },
             totalSettlementAmount: { type: DataTypes.FLOAT, defaultValue: 0.0 },
+            usdtRate: { type: DataTypes.FLOAT, defaultValue: 0.0 },
             payouts: {
                 type: DataTypes.JSONB,
                 defaultValue: {

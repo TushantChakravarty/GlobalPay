@@ -4,11 +4,17 @@
  */
 import db from "../db/index.js";
 
-const { Admin } = db
+const { Admin , UsdtRate} = db
 
 export async function createAdmin(obj) {
 
     const admin = await Admin.create(obj);
+    return admin
+}
+
+export async function updateAdminUsdtRate(obj) {
+
+    const admin = await UsdtRate.create(obj);
     return admin
 }
 
