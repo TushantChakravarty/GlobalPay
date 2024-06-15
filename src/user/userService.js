@@ -55,6 +55,23 @@ export async function userLoginService(details, fastify) {
 
     if (user && await bcrypt.compare(password, user.password)) {
       const token = await generateUserToken(email_id, fastify)
+      //const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
+      await user.update({ token }, { where: { email_id } });
+      return { token }
+    }
+    return { message: 'Invalid email or password' }
+  } catch (error) {
+    throw new Error("Internal server error")
+  }
+}
+
+export async function userDashboardLoginService(details, fastify) {
+  try {
+    const { email_id, password } = details
+    const user = await findUser(email_id)
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      const token = await generateUserToken(email_id, fastify)
       const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
       await user.update({ token }, { where: { email_id } });
       return { token, apiKey }

@@ -83,9 +83,10 @@ export const validateApiKey = async (request, reply) => {
 };
 
 export const validateUserDashboardApiKey = async (request, reply) => {
-  const token = request.headers["Authorization"];
+  const authHeader = request.headers["authorization"];
+const token = authHeader && authHeader.split(' ')[1];
   const apiKey = request.headers["apikey"]
-  console.log("token", token);
+  //console.log("token", token);
   if (!token) {
     return reply.status(401).send(responseMapping( 400,"token is required" ));
   }
@@ -98,7 +99,7 @@ export const validateUserDashboardApiKey = async (request, reply) => {
     }
     
     var originalText = decryptApiKey(apiKey,user.encryptionKey)
-    console.log(originalText);
+    //console.log("here",originalText==user?.apiKey);
     if (!originalText) {
       return reply.status(401).send(responseMapping( 403,"Invalid API key" ));
     }

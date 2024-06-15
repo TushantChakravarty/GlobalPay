@@ -51,7 +51,6 @@ export const validateUserDashboardTokenAndApiKey = async (request, reply) => {
 
   }
   await validateToken(request, reply);
-  await validateApiKey(request, reply);
   await validateUserDashboardApiKey(request,reply)
 };
 

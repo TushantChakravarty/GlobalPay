@@ -1,6 +1,6 @@
 import { validateAdminTokenAndApiKey, validateTokenAndApiKey, validateUserDashboardTokenAndApiKey } from "../utils/jwt.utils.js";
 import { loginSchema } from "../utils/validationSchemas.js";
-import { addPayinCallbackUrl, addPayoutCallbackUrl, getAllPayinTransaction, getAllPayoutTransaction, getPayinTransactionStatus, getPayoutTransactionStatus, userLoginService, userRegisterService } from "./userService.js";
+import { addPayinCallbackUrl, addPayoutCallbackUrl, getAllPayinTransaction, getAllPayoutTransaction, getPayinTransactionStatus, getPayoutTransactionStatus, userDashboardLoginService, userLoginService, userRegisterService } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
 import { findUser } from "./userDao.js";
@@ -56,7 +56,20 @@ async function userRoutes(fastify, options) {
       const response = await userLoginService(request.body, fastify);
       // console.log(response)
       if (response?.token) return reply.status(200).send(response);
-      else reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+      else reply.status(500).send(responseMapping(500, response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+
+  fastify.post("/dashboard/login", { schema: loginSchema }, async (request, reply) => {
+    try {
+      
+      const response = await userDashboardLoginService(request.body, fastify);
+      // console.log(response)
+      if (response?.token) return reply.status(200).send(response);
+      else reply.status(500).send(responseMapping(500, response));
     } catch (err) {
       fastify.log.error(err);
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
