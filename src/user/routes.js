@@ -171,7 +171,8 @@ async function userRoutes(fastify, options) {
                   username: { type: 'string' },
                   upiId: { type: 'string' },
                   customer_email: { type: 'string' },
-                  business_name: { type: 'string' },
+                  transaction_date:{ type: 'string' },
+                  utr:{ type: 'string' },
                   createdAt: { type: 'string' }
                 }
 
