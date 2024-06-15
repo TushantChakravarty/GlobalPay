@@ -1,5 +1,5 @@
 import { responseMapping } from "./mapper.js";
-import { validateAdminApiKey, validateApiKey } from "./password.utils.js";
+import { validateAdminApiKey, validateApiKey, validateUserDashboardApiKey } from "./password.utils.js";
 
 export async function generateUserToken(details, fastify) {
   const { email_id } = details;
@@ -36,6 +36,23 @@ export const validateTokenAndApiKey = async (request, reply) => {
   }
   await validateToken(request, reply);
   await validateApiKey(request, reply);
+};
+
+export const validateUserDashboardTokenAndApiKey = async (request, reply) => {
+  console.log(request.headers)
+  if(!request.headers.authorization)
+  {
+    return reply.status(403).send(responseMapping(403,'Token is required'));
+
+  }
+  if(!request.headers.apikey)
+  {
+    return reply.status(403).send(responseMapping(403,'Apikey is required'));
+
+  }
+  await validateToken(request, reply);
+  await validateApiKey(request, reply);
+  await validateUserDashboardApiKey(request,reply)
 };
 
 export const validateAdminTokenAndApiKey = async (request, reply) => {

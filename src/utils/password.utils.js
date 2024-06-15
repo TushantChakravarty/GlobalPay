@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import CryptoJS from "crypto-js";
-import { findUser, findUserByApiKey } from "../user/userDao.js";
+import { findUser, findUserByApiKey, findUserByToken } from "../user/userDao.js";
 import { findAdminByApiKey } from "../admin/adminDao.js";
 import { responseMapping } from "./mapper.js";
 export function generatePassword(len, arr) {
@@ -26,6 +26,29 @@ export function encryptText(input) {
   console.log(ciphertext);
   return ciphertext;
 }
+export function encryptApiKey(input,secret) {
+  var ciphertext = CryptoJS.AES.encrypt(
+    input,
+    secret
+  ).toString();
+  console.log(ciphertext);
+  return ciphertext;
+}
+
+export function decryptApiKey(input,secret) {
+  var bytes = CryptoJS.AES.decrypt(input, secret);
+  var originalText = bytes.toString(CryptoJS.enc.Utf8);
+  console.log(originalText)
+  return originalText
+
+}
+export function decryptText(input) {
+  var bytes = CryptoJS.AES.decrypt(input, process.env.SECRETKEY);
+  var originalText = bytes.toString(CryptoJS.enc.Utf8);
+  console.log(originalText)
+  return originalText
+
+}
 
 export const validateApiKey = async (request, reply) => {
   const apiKey = request.headers["apikey"];
@@ -45,6 +68,39 @@ export const validateApiKey = async (request, reply) => {
     //console.log('userr',user);
     if (!user) {
       return reply.status(401).send(responseMapping( 400,"User Does Not exist" ));
+    }
+    if (user?.apiKey == originalText) {
+      request.apiKeyDetails = originalText;
+    } else {
+      return reply.status(401).send(responseMapping( 403,"Invalid API key" ));
+    }
+    request.user = user
+    // You can perform additional checks here if needed
+    // Storing the decrypted details in request for further use
+  } catch (error) {
+    return reply.status(401).send(responseMapping( 400,"Invalid API key" ));
+  }
+};
+
+export const validateUserDashboardApiKey = async (request, reply) => {
+  const token = request.headers["Authorization"];
+  const apiKey = request.headers["apikey"]
+  console.log("token", token);
+  if (!token) {
+    return reply.status(401).send(responseMapping( 400,"token is required" ));
+  }
+
+  try {
+    const user = await findUserByToken(token)
+
+    if (!user) {
+      return reply.status(401).send(responseMapping( 400,"User Does Not exist" ));
+    }
+    
+    var originalText = decryptApiKey(apiKey,user.encryptionKey)
+    console.log(originalText);
+    if (!originalText) {
+      return reply.status(401).send(responseMapping( 403,"Invalid API key" ));
     }
     if (user?.apiKey == originalText) {
       request.apiKeyDetails = originalText;

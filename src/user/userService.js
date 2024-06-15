@@ -1,5 +1,5 @@
 import { generateAdminToken, generateUserToken } from "../utils/jwt.utils.js";
-import { generatePassword, convertPass, encryptText } from "../utils/password.utils.js";
+import { generatePassword, convertPass, encryptText, encryptApiKey } from "../utils/password.utils.js";
 import { createUser, findUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
@@ -55,8 +55,9 @@ export async function userLoginService(details, fastify) {
 
     if (user && await bcrypt.compare(password, user.password)) {
       const token = await generateUserToken(email_id, fastify)
+      const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
       await user.update({ token }, { where: { email_id } });
-      return { token }
+      return { token, apiKey }
     }
     return { message: 'Invalid email or password' }
   } catch (error) {

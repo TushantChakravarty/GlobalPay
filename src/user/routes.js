@@ -1,4 +1,4 @@
-import { validateAdminTokenAndApiKey, validateTokenAndApiKey } from "../utils/jwt.utils.js";
+import { validateAdminTokenAndApiKey, validateTokenAndApiKey, validateUserDashboardTokenAndApiKey } from "../utils/jwt.utils.js";
 import { loginSchema } from "../utils/validationSchemas.js";
 import { addPayinCallbackUrl, addPayoutCallbackUrl, getAllPayinTransaction, getAllPayoutTransaction, getPayinTransactionStatus, getPayoutTransactionStatus, userLoginService, userRegisterService } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
@@ -169,7 +169,7 @@ async function userRoutes(fastify, options) {
         ...commonSchemas.errorResponse
       },
     },
-    preValidation: validateTokenAndApiKey
+    preValidation: validateUserDashboardTokenAndApiKey
   }, async (request, reply) => {
     try {
       const response = await getAllPayinTransaction(request, request.user);
@@ -229,7 +229,7 @@ async function userRoutes(fastify, options) {
         ...commonSchemas.errorResponse
       }
     },
-    preValidation: validateTokenAndApiKey
+    preValidation: validateUserDashboardTokenAndApiKey
   }, async (request, reply) => {
     try {
       const response = await getAllPayoutTransaction(request, request.user);
