@@ -21,6 +21,10 @@ export async function razorpayCallbackService(details) {
 
     const transaction = await getTransaction(details.id);
     console.log("tx", transaction);
+    if (!transaction) {
+      await callbackPayin(details, "https://sanbox.gsxsolutions.com/callback/razorpayPayin");
+      return { message: 'forwarded to sandbox' };
+    }
     const userQuery = { where: { id: transaction.uuid } };
     const admin = await Admin.findOne(adminQuery);
     console.log("admin", admin);
@@ -134,10 +138,10 @@ export async function razorpayPayoutCallbackService(details) {
     const transaction = await PayoutTransaction.findOne({
       where: { transactionId: details?.id },
     });
-    //   if (!transaction) {
-    //     await callbackPayin(details, "https://payhubsandbox.onrender.com/callback/cashfreePayoutStatus");
-    //     return { message: 'forwarded to sandbox' };
-    //   }
+      if (!transaction) {
+        await callbackPayin(details, "https://sanbox.gsxsolutions.com/callback/razorpayPayout");
+        return { message: 'forwarded to sandbox' };
+      }
 
     const updateObj = {
       status:
