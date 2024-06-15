@@ -88,14 +88,14 @@ const token = authHeader && authHeader.split(' ')[1];
   const apiKey = request.headers["apikey"]
   //console.log("token", token);
   if (!token) {
-    return reply.status(401).send(responseMapping( 400,"token is required" ));
+    return reply.status(401).send(responseMapping( 403,"token is required" ));
   }
 
   try {
     const user = await findUserByToken(token)
 
     if (!user) {
-      return reply.status(401).send(responseMapping( 400,"User Does Not exist" ));
+      return reply.status(401).send(responseMapping( 403,"Your session expired" ));
     }
     
     var originalText = decryptApiKey(apiKey,user.encryptionKey)
