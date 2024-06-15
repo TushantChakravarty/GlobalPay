@@ -19,27 +19,27 @@ async function adminRoutes(fastify, options) {
   /**
    * admin register routes
    */
-  fastify.post(
-    "/register",
-    {
-      schema: {
-        body: {
-          type: "object",
-          additionalProperties: true,
-        },
-      },
-    },
-    async (request, reply) => {
-      try {
-        const response = await adminRegisterService(request.body);
-        return reply
-          .status(200)
-          .send(responseMappingWithData(200, "success", response));
-      } catch (e) {
-        reply.status(500).send(responseMapping(500, "Internal Server Error"));
-      }
-    }
-  );
+  // fastify.post(
+  //   "/register",
+  //   {
+  //     schema: {
+  //       body: {
+  //         type: "object",
+  //         additionalProperties: true,
+  //       },
+  //     },
+  //   },
+  //   async (request, reply) => {
+  //     try {
+  //       const response = await adminRegisterService(request.body);
+  //       return reply
+  //         .status(200)
+  //         .send(responseMappingWithData(200, "success", response));
+  //     } catch (e) {
+  //       reply.status(500).send(responseMapping(500, "Internal Server Error"));
+  //     }
+  //   }
+  // );
   /**
    * admin login
    */
