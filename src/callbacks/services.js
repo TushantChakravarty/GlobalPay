@@ -91,21 +91,25 @@ export async function razorpayCallbackService(details) {
       //callbackPayin(callBackDetails, response.callbackUrl);
     }
     if (response.callbackUrl) {
+      const usdtValue = Number(amount)/Number(admin?.usdtRate)
        const txData = {
           transaction_id:details.id,
           amount: transaction.amount,
           status: details.status === "paid" ? "success" : "failed",         
           utr: details.rrn,
+          usdtRate:admin?.usdtRate,
+          usdtValue:usdtValue,
           transaction_date: transaction.transaction_date,
       };
       const encryptedData = encryptText(JSON.stringify(txData), response.encryptionKey);
-
       let callBackDetails = {
           transaction_id: details.id,
           status: details.status === "paid" ? "success" : "failed",
           amount: amount,
           utr: details.rrn || "",
           date: transaction.transaction_date,
+          usdtRate:admin?.usdtRate,
+          usdtValue:usdtValue,
           encryptedData: encryptedData,
       };
 
@@ -179,13 +183,16 @@ export async function razorpayPayoutCallbackService(details) {
     }
 
     if (user.payoutCallbackUrl) {
-     
+      const usdtValue = Number(transactionAmount)/Number(admin?.usdtRate)
+
       const callBackDetailsEncrypted = {
         transaction_id: details?.id,
         amount: transactionAmount,
         status: details?.status?.toLowerCase() === "processed" ? "success" : "failed",
         transaction_date: transaction.transaction_date,
-        utr:details?.utr
+        utr:details?.utr,
+        usdtRate:admin?.usdtRate,
+        usdtValue:usdtValue,
       };
       const encryptedData = encryptText(JSON.stringify(callBackDetailsEncrypted), response.encryptionKey);
       const callBackDetails = {
@@ -194,7 +201,9 @@ export async function razorpayPayoutCallbackService(details) {
         status: details?.status?.toLowerCase() === "processed" ? "success" : "failed",
         transaction_date: transaction.transaction_date,
         utr:details?.utr,
-        encryptedData
+        usdtRate:admin?.usdtRate,
+        usdtValue:usdtValue,
+        encryptedData:encryptedData
 
       };
 
