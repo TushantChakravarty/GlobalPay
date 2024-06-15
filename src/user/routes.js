@@ -67,8 +67,8 @@ async function userRoutes(fastify, options) {
     try {
       
       const response = await userDashboardLoginService(request.body, fastify);
-      // console.log(response)
-      if (response?.token) return reply.status(200).send(response);
+      console.log(response)
+      if (response?.token) return reply.status(200).send(responseMappingWithData(200,'success',response));
       else reply.status(500).send(responseMapping(500, response));
     } catch (err) {
       fastify.log.error(err);
