@@ -37,7 +37,7 @@ async function userRoutes(fastify, options) {
             email: response?.email,
             password: response?.password,
             apiKey: response?.apiKey,
-            encryptionKey:response?.encryptionKey
+            encryptionKey: response?.encryptionKey
           }
         });
       } catch (error) {
@@ -140,7 +140,31 @@ async function userRoutes(fastify, options) {
       response: {
         200: {
           type: 'object',
-          additionalProperties: true
+          properties: {
+            responseCode: { type: "integer" },
+            responseMessage: { type: "string" },
+            responseData: {
+              type: 'array',
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "integer" },
+                  uuid: { type: "integer" },
+                  txId: { type: "string" },
+                  amount: { type: 'string' },
+                  currency: { type: 'string' },
+                  status: { type: 'string' },
+                  phone: { type: 'string' },
+                  username: { type: 'string' },
+                  upiId: { type: 'string' },
+                  customer_email: { type: 'string' },
+                  business_name: { type: 'string' },
+                  createdAt: { type: 'string' }
+                }
+
+              }
+            }
+          }
         },
         ...commonSchemas.errorResponse
       },
@@ -171,10 +195,39 @@ async function userRoutes(fastify, options) {
       response: {
         200: {
           type: 'object',
-          additionalProperties: true
+          properties: {
+            responseCode: { type: "integer" },
+            responseMessage: { type: "string" },
+            responseData: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: "integer" },
+                  uuid: { type: "integer" },
+                  txId: { type: "string" },
+                  amount: { type: 'string' },
+                  currency: { type: 'string' },
+                  status: { type: 'string' },
+                  phone: { type: 'string' },
+                  customer_name: { type: 'string' },
+                  upiId: { type: 'string' },
+                  account_number: { type: 'string' },
+                  account_name: { type: 'string' },
+                  ifsc_code: { type: 'string' },
+                  bank_name: { type: 'string' },
+                  customer_email: { type: 'string' },
+                  method: { type: 'string' },
+                  createdAt: { type: 'string' }
+
+                }
+
+              }
+            }
+          }
         },
         ...commonSchemas.errorResponse
-      },
+      }
     },
     preValidation: validateTokenAndApiKey
   }, async (request, reply) => {

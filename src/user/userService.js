@@ -33,7 +33,7 @@ export async function userRegisterService(details) {
         email: createdUser.email_id,
         password: password,
         apiKey: encrytedKey,
-        encryptionKey:createdUser.encryptionKey
+        encryptionKey: createdUser.encryptionKey
       };
     }
 
@@ -93,10 +93,11 @@ export async function getAllPayinTransaction(details, user) {
     const { limit = 10, skip = 0 } = details.query
     const all_payin_transaction = await Transaction.findAll({
       where: {
-        uuid: user.id.toString()
+        uuid: parseInt(user.id)
       },
       limit: limit,
-      offset: skip
+      offset: skip,
+      order: [['createdAt', 'ASC']]
     })
     return all_payin_transaction
   } catch (error) {
@@ -110,10 +111,11 @@ export async function getAllPayoutTransaction(details, user) {
     const { limit = 10, skip = 0 } = details.query
     const all_payout_transaction = await PayoutTransaction.findAll({
       where: {
-        uuid: user.id.toString()
+        uuid: parseInt(user.id)
       },
       limit: limit,
-      offset: skip
+      offset: skip,
+      order: [['createdAt', 'ASC']]
     })
     return all_payout_transaction
   } catch (error) {
@@ -124,15 +126,14 @@ export async function getAllPayoutTransaction(details, user) {
 export async function getPayinTransactionStatus(details, user) {
   try {
     const transaction = await Transaction.findOne({
-      where: { uuid: user.id ,transactionId:details?.transaction_id}
+      where: { uuid: user.id, transactionId: details?.transaction_id }
     })
-    console.log(transaction)
     if (!transaction) {
-      return  'Transaction not found';
+      return 'Transaction not found';
     }
     return {
-      transaction_id:transaction?.transactionId,
-      status:transaction?.status
+      transaction_id: transaction?.transactionId,
+      status: transaction?.status
     }
   } catch (error) {
     console.log(error)
@@ -143,15 +144,15 @@ export async function getPayinTransactionStatus(details, user) {
 export async function getPayoutTransactionStatus(details, user) {
   try {
     const transaction = await PayoutTransaction.findOne({
-      where: { uuid: user.id ,transactionId:details?.transaction_id}
+      where: { uuid: user.id, transactionId: details?.transaction_id }
     })
     console.log(transaction)
     if (!transaction) {
-      return  'Transaction not found';
+      return 'Transaction not found';
     }
     return {
-      transaction_id:transaction?.transactionId,
-      status:transaction?.status
+      transaction_id: transaction?.transactionId,
+      status: transaction?.status
     }
   } catch (error) {
     console.log(error)
