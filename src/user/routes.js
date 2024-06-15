@@ -51,7 +51,7 @@ async function userRoutes(fastify, options) {
   /**
   * login user
   */
-  fastify.post("/login", { schema: loginSchema }, async (request, reply) => {
+  fastify.post("/generateToken", { schema: loginSchema }, async (request, reply) => {
     try {
       const response = await userLoginService(request.body, fastify);
       // console.log(response)
@@ -140,7 +140,7 @@ async function userRoutes(fastify, options) {
   /**
  * get all payin transaction
  */
-  fastify.get("/getAllPayinTransaction", {
+  fastify.get("/dashboard/getAllPayinTransaction", {
     schema: {
       querystring: {
         type: 'object',
@@ -195,7 +195,7 @@ async function userRoutes(fastify, options) {
   /**
 * get all payout transaction
 */
-  fastify.get("/getAllPayoutTransaction", {
+  fastify.get("/dashboard/getAllPayoutTransaction", {
     schema: {
       querystring: {
         type: 'object',
