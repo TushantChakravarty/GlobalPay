@@ -25,7 +25,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       "currency": "INR",
       "accept_partial": true,
       "first_min_partial_amount": 100,
-      "expire_by": new Date().getTime() + 15 * 60 * 1000,// 10 mins
+      "expire_by": new Date().getTime() + 10 * 60 * 1000,// 15 mins
       "reference_id": txId,
       "description": "",
       "customer": {
