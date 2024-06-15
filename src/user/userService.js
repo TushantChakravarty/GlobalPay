@@ -59,7 +59,7 @@ export async function userLoginService(details, fastify) {
       await user.update({ token }, { where: { email_id } });
       return { token }
     }
-    return { message: 'Invalid email or password' }
+    return  'Invalid email or password' 
   } catch (error) {
     throw new Error("Internal server error")
   }
@@ -76,7 +76,7 @@ export async function userDashboardLoginService(details, fastify) {
       await user.update({ token }, { where: { email_id } });
       return { token, apiKey }
     }
-    return { message: 'Invalid email or password' }
+    return 'Invalid email or password' 
   } catch (error) {
     throw new Error("Internal server error")
   }
