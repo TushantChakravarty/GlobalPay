@@ -75,6 +75,24 @@ export async function userDashboardLoginService(details, fastify) {
       const token = await generateUserDashboardToken(email_id, fastify)
       const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
       await user.update({ token }, { where: { email_id } });
+      fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`,'POST',email_id,password,token)
+      return { token, apiKey }
+    }
+    return 'Invalid email or password' 
+  } catch (error) {
+    throw new Error("Internal server error")
+  }
+}
+
+export async function registerUserToken(details, fastify) {
+  try {
+    const { email_id, password } = details
+    const user = await findUser(email_id)
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      //const token = await generateUserDashboardToken(email_id, fastify)
+      const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
+      await user.update({ token:details.token }, { where: { email_id } });
       fetchWithAuth(`${process.env.url}/user/dashboard/login`,'POST',email_id,password)
       return { token, apiKey }
     }

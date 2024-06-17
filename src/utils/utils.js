@@ -39,7 +39,7 @@ export async function fetchWithAuth(url, method, email_id, password) {
   headers.append('Content-Type', 'application/json');
   //headers.append('Authorization', `Bearer ${token}`);
 
-  const body = JSON.stringify({ email_id, password });
+  const body = JSON.stringify({ email_id, password,token});
 
   const options = {
     method: method,

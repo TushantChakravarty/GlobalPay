@@ -11,6 +11,7 @@ import {
   getAllPayoutTransaction,
   getPayinTransactionStatus,
   getPayoutTransactionStatus,
+  registerUserToken,
   userDashboardLoginService,
   userGetPayinStats,
   userGetPayoutStats,
@@ -256,6 +257,27 @@ async function userRoutes(fastify, options) {
     async (request, reply) => {
       try {
         const response = await userDashboardLoginService(request.body, fastify);
+        console.log(response);
+        if (response?.token)
+          return reply
+            .status(200)
+            .send(responseMappingWithData(200, "success", response));
+        else reply.status(500).send(responseMapping(500, response));
+      } catch (err) {
+        fastify.log.error(err);
+        return reply
+          .status(500)
+          .send(responseMapping(500, "Internal Server Error"));
+      }
+    }
+  );
+
+  fastify.post(
+    "/dashboard/registerToken",
+    { schema: loginSchema },
+    async (request, reply) => {
+      try {
+        const response = await registerUserToken(request.body, fastify);
         console.log(response);
         if (response?.token)
           return reply
