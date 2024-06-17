@@ -64,6 +64,8 @@ async function userRoutes(fastify, options) {
       }
     }
   );
+
+  
   /**
    * login user
    */
@@ -85,26 +87,7 @@ async function userRoutes(fastify, options) {
     }
   );
 
-  fastify.post(
-    "/dashboard/login",
-    { schema: loginSchema },
-    async (request, reply) => {
-      try {
-        const response = await userDashboardLoginService(request.body, fastify);
-        console.log(response);
-        if (response?.token)
-          return reply
-            .status(200)
-            .send(responseMappingWithData(200, "success", response));
-        else reply.status(500).send(responseMapping(500, response));
-      } catch (err) {
-        fastify.log.error(err);
-        return reply
-          .status(500)
-          .send(responseMapping(500, "Internal Server Error"));
-      }
-    }
-  );
+ 
   /**
    * add payin callback url
    */
@@ -146,6 +129,8 @@ async function userRoutes(fastify, options) {
       }
     }
   );
+
+  
   /**
    * add payout callback url
    */
@@ -165,6 +150,182 @@ async function userRoutes(fastify, options) {
         },
       },
       preValidation: validateTokenAndApiKey,
+    },
+    async (request, reply) => {
+      try {
+        const response = await addPayoutCallbackUrl(request.body, request.user);
+        if (response)
+          return reply.status(200).send(
+            responseMappingWithData(200, "success", {
+              message: "success",
+            })
+          );
+        else
+          return reply
+            .status(500)
+            .send(responseMapping(500, "Internal Server Error"));
+      } catch (err) {
+        fastify.log.error(err);
+        return reply
+          .status(500)
+          .send(responseMapping(500, "Internal Server Error"));
+      }
+    }
+  );
+
+  fastify.post(
+    "/getPayinStatus",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            transaction_id: {
+              type: "string",
+              minLength: 3,
+            },
+          },
+          required: ["transaction_id"],
+        },
+      },
+      preValidation: validateTokenAndApiKey,
+    },
+    async (request, reply) => {
+      try {
+        const response = await getPayinTransactionStatus(
+          request.body,
+          request.user
+        );
+        if (response?.transaction_id)
+          return reply
+            .status(200)
+            .send(responseMappingWithData(200, "Success", response));
+        else return reply.status(500).send(responseMapping(500, response));
+      } catch (err) {
+        fastify.log.error(err);
+        return reply
+          .status(500)
+          .send(responseMapping(500, "Internal Server Error"));
+      }
+    }
+  );
+
+  fastify.post(
+    "/getPayoutStatus",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            transaction_id: {
+              type: "string",
+              minLength: 3,
+            },
+          },
+          required: ["transaction_id"],
+        },
+      },
+      preValidation: validateTokenAndApiKey,
+    },
+    async (request, reply) => {
+      try {
+        const response = await getPayoutTransactionStatus(
+          request.body,
+          request.user
+        );
+        if (response?.transaction_id)
+          return reply
+            .status(200)
+            .send(responseMappingWithData(200, "Success", response));
+        else return reply.status(500).send(responseMapping(500, response));
+      } catch (err) {
+        fastify.log.error(err);
+        return reply
+          .status(500)
+          .send(responseMapping(500, "Internal Server Error"));
+      }
+    }
+  );
+
+  // Dashboard routes below**************************************
+
+
+  fastify.post(
+    "/dashboard/login",
+    { schema: loginSchema },
+    async (request, reply) => {
+      try {
+        const response = await userDashboardLoginService(request.body, fastify);
+        console.log(response);
+        if (response?.token)
+          return reply
+            .status(200)
+            .send(responseMappingWithData(200, "success", response));
+        else reply.status(500).send(responseMapping(500, response));
+      } catch (err) {
+        fastify.log.error(err);
+        return reply
+          .status(500)
+          .send(responseMapping(500, "Internal Server Error"));
+      }
+    }
+  );
+
+  fastify.post(
+    "/dashboard/addPayinCallbackUrl",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            payinCallbackUrl: {
+              type: "string",
+              minLength: 3,
+            },
+          },
+          required: ["payinCallbackUrl"],
+        },
+      },
+      preValidation: validateUserDashboardTokenAndApiKey,
+    },
+    async (request, reply) => {
+      try {
+        const response = await addPayinCallbackUrl(request.body, request.user);
+        if (response)
+          return reply.status(200).send(
+            responseMappingWithData(200, "success", {
+              message: "success",
+            })
+          );
+        else
+          return reply
+            .status(500)
+            .send(responseMapping(500, "Internal Server Error"));
+      } catch (err) {
+        fastify.log.error(err);
+        return reply
+          .status(500)
+          .send(responseMapping(500, "Internal Server Error"));
+      }
+    }
+  );
+
+  fastify.post(
+    "/dashboard/addPayoutCallbackUrl",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            payoutCallbackUrl: {
+              type: "string",
+              minLength: 3,
+            },
+          },
+          required: ["payoutCallbackUrl"],
+        },
+      },
+      preValidation: validateUserDashboardTokenAndApiKey,
     },
     async (request, reply) => {
       try {
@@ -374,79 +535,8 @@ async function userRoutes(fastify, options) {
     }
   );
 
-  fastify.post(
-    "/getPayinStatus",
-    {
-      schema: {
-        body: {
-          type: "object",
-          properties: {
-            transaction_id: {
-              type: "string",
-              minLength: 3,
-            },
-          },
-          required: ["transaction_id"],
-        },
-      },
-      preValidation: validateTokenAndApiKey,
-    },
-    async (request, reply) => {
-      try {
-        const response = await getPayinTransactionStatus(
-          request.body,
-          request.user
-        );
-        if (response?.transaction_id)
-          return reply
-            .status(200)
-            .send(responseMappingWithData(200, "Success", response));
-        else return reply.status(500).send(responseMapping(500, response));
-      } catch (err) {
-        fastify.log.error(err);
-        return reply
-          .status(500)
-          .send(responseMapping(500, "Internal Server Error"));
-      }
-    }
-  );
-
-  fastify.post(
-    "/getPayoutStatus",
-    {
-      schema: {
-        body: {
-          type: "object",
-          properties: {
-            transaction_id: {
-              type: "string",
-              minLength: 3,
-            },
-          },
-          required: ["transaction_id"],
-        },
-      },
-      preValidation: validateTokenAndApiKey,
-    },
-    async (request, reply) => {
-      try {
-        const response = await getPayoutTransactionStatus(
-          request.body,
-          request.user
-        );
-        if (response?.transaction_id)
-          return reply
-            .status(200)
-            .send(responseMappingWithData(200, "Success", response));
-        else return reply.status(500).send(responseMapping(500, response));
-      } catch (err) {
-        fastify.log.error(err);
-        return reply
-          .status(500)
-          .send(responseMapping(500, "Internal Server Error"));
-      }
-    }
-  );
+ 
+  
 }
 
 export default userRoutes;
