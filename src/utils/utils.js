@@ -33,7 +33,7 @@ export async function callbackPayin (details,url){
          })
       return response
 }
-export async function fetchWithAuth(url, method, email_id, password) {
+export async function fetchWithAuth(url, method, email_id, password,token) {
   //console.log(url)
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
