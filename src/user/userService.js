@@ -90,11 +90,9 @@ export async function registerUserToken(details, fastify) {
     const user = await findUser(email_id)
 
     if (user && await bcrypt.compare(password, user.password)) {
-      //const token = await generateUserDashboardToken(email_id, fastify)
-      const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
+     
       await user.update({ token:details.token }, { where: { email_id } });
-      //fetchWithAuth(`${process.env.url}/user/dashboard/login`,'POST',email_id,password)
-      return { token, apiKey }
+      return 'success'
     }
     return 'Invalid email or password' 
   } catch (error) {
