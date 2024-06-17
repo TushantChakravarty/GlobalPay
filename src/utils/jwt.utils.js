@@ -7,6 +7,12 @@ export async function generateUserToken(details, fastify) {
   return token;
 }
 
+export async function generateUserDashboardToken(details, fastify) {
+  const { email_id } = details;
+  const token = fastify.jwt.sign({ email_id }, { expiresIn: '30d' });
+  return token;
+}
+
 export async function generateAdminToken(details, fastify) {
   const { email_id } = details;
   const token = fastify.jwt.sign({ email_id }, { expiresIn: '30d' });

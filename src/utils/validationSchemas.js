@@ -1,3 +1,5 @@
+import commonSchemas from "./common.schemas.js";
+
 export const loginSchema = {
     body: {
       type: 'object',
@@ -93,3 +95,54 @@ export const upiSchema = {
   },
 
 }
+
+export const payinStatsSchema = {
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        responseCode: { type: "integer" },
+        responseMessage: { type: "string" },
+        responseData: {
+          type: "object",
+          properties: {
+            balance: { type: "integer" },
+            last24hr: { type: "integer" },
+            yesterday: { type: "integer" },
+            successfulTransactions: { type: "integer" },
+            last24hrSuccess: { type: "integer" },
+            last24hrTotal: { type: "integer" },
+            totalTransactions: { type: "integer" },
+          },
+        },
+      },
+    },
+    ...commonSchemas.errorResponse,
+  },
+};
+
+export const payoutStatsSchema = {
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        responseCode: { type: "integer" },
+        responseMessage: { type: "string" },
+        responseData: {
+          type: "object",
+          properties: {
+            balance: { type: "integer" },
+            last24hr: { type: "integer" },
+            yesterday: { type: "integer" },
+            successfulTransactions: { type: "integer" },
+            last24hrSuccess: { type: "integer" },
+            last24hrTotal: { type: "integer" },
+            totalTransactions: { type: "integer" },
+          },
+        },
+      },
+    },
+    ...commonSchemas.errorResponse,
+  },
+};
+

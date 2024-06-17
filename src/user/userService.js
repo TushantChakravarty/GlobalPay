@@ -1,4 +1,4 @@
-import { generateAdminToken, generateUserToken } from "../utils/jwt.utils.js";
+import { generateAdminToken, generateUserDashboardToken, generateUserToken } from "../utils/jwt.utils.js";
 import { generatePassword, convertPass, encryptText, encryptApiKey } from "../utils/password.utils.js";
 import { createUser, findUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
@@ -71,7 +71,7 @@ export async function userDashboardLoginService(details, fastify) {
     const user = await findUser(email_id)
 
     if (user && await bcrypt.compare(password, user.password)) {
-      const token = await generateUserToken(email_id, fastify)
+      const token = await generateUserDashboardToken(email_id, fastify)
       const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
       await user.update({ token }, { where: { email_id } });
       return { token, apiKey }
@@ -177,3 +177,50 @@ export async function getPayoutTransactionStatus(details, user) {
     throw new Error("Intenal server error")
   }
 }
+
+export async function userGetPayinStats(details, fastify) {
+  try {
+    const user = details.user;
+    if (!user) {
+      return "User not exist";
+    }
+    const data = {
+      balance: user.balance,
+      last24hr: user.last24hr,
+      yesterday: user.yesterday,
+      successfulTransactions: user.successfulTransactions,
+      last24hrSuccess: user.last24hrSuccess,
+      last24hrTotal: user.last24hrTotal,
+      totalTransactions: user.totalTransactions,
+    };
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+export async function userGetPayoutStats(details, fastify) {
+  try {
+    const user = details.user;
+    if (!user) {
+      return "User not exist";
+    }
+    const data = {
+      balance: user.payoutBalance,
+      last24hr: user.payoutsData.last24hr,
+      yesterday: user.payoutsData.yesterday,
+      successfulTransactions: user.payoutsData.successfulTransactions,
+      last24hrSuccess: user.payoutsData.last24hrSuccess,
+      last24hrTotal: user.payoutsData.last24hrTotal,
+      totalTransactions: user.payoutsData.totalTransactions,
+    };
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
