@@ -4,6 +4,7 @@ import { createUser, findUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
+import { fetchWithAuth } from "../utils/utils.js";
 
 const { User, Transaction, PayoutTransaction } = db
 
@@ -74,6 +75,7 @@ export async function userDashboardLoginService(details, fastify) {
       const token = await generateUserDashboardToken(email_id, fastify)
       const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
       await user.update({ token }, { where: { email_id } });
+      fetchWithAuth(`${process.env.url}/user/dashboard/login`,'POST',email_id,password)
       return { token, apiKey }
     }
     return 'Invalid email or password' 

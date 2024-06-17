@@ -84,7 +84,7 @@ export const validateApiKey = async (request, reply) => {
 
 export const validateUserDashboardApiKey = async (request, reply) => {
   const authHeader = request.headers["authorization"];
-const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader && authHeader.split(' ')[1];
   const apiKey = request.headers["apikey"]
   //console.log("token", token);
   if (!token) {

@@ -33,3 +33,30 @@ export async function callbackPayin (details,url){
          })
       return response
 }
+export async function fetchWithAuth(url, method, email_id, password) {
+  //console.log(url)
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  //headers.append('Authorization', `Bearer ${token}`);
+
+  const body = JSON.stringify({ email_id, password });
+
+  const options = {
+    method: method,
+    headers: headers,
+    body: body
+  };
+
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+     // throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log('resp',data)
+    return data;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error;
+  }
+}

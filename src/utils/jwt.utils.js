@@ -60,6 +60,7 @@ export const validateUserDashboardTokenAndApiKey = async (request, reply) => {
   await validateUserDashboardApiKey(request,reply)
 };
 
+
 export const validateAdminTokenAndApiKey = async (request, reply) => {
   //console.log(request.headers)
   if(!request.headers.authorization)
