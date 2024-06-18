@@ -23,6 +23,7 @@ import {
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
 import { findUser } from "./userDao.js";
+import { encryptText } from "../utils/password.utils.js";
 
 async function userRoutes(fastify, options) {
   /**
@@ -563,11 +564,13 @@ async function userRoutes(fastify, options) {
     preValidation: validateUserDashboardTokenAndApiKey
   }, async (request, reply) => {
     try {
+      const encrytedKey = encryptText(request?.user?.apiKey);
+
       const response = {
         business_name: request.user.business_name,
         name: `${request.user.first_name} ${request.user.last_name}`,
         email: request?.user?.email_id,
-        apiKey: request?.user?.apiKey,
+        apiKey: encrytedKey,
         encryptionKey: request?.user?.encryptionKey,
         payinCallbackUrl: request?.user?.callbackUrl,
         payoutCallbackUrl: request?.user?.payoutCallbackUrl
