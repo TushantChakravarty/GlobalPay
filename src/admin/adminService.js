@@ -49,7 +49,7 @@ export async function adminLoginService(details, fastify) {
     return { token };
   }
 
-  return "Invalid email or password" 
+  return "Invalid email or password"
 }
 
 /**
@@ -100,20 +100,20 @@ export async function adminUpdatePayoutGatewayService(details, fastify) {
  * add gateway service
  */
 export async function addGateway(details) {
-    try {
-        const gateway_exist = await Gateway.findOne({ where: { gatewayName: details.gatewayName } })
-        if (gateway_exist) {
-            return false
-        }
-        const gateway = await Gateway.create({
-            gatewayName: details.gatewayName,
-            abbr: details?.abbr
-        })
-        return gateway
-
-    } catch (error) {
-        throw new Error("Internal server error")
+  try {
+    const gateway_exist = await Gateway.findOne({ where: { gatewayName: details.gatewayName } })
+    if (gateway_exist) {
+      return false
     }
+    const gateway = await Gateway.create({
+      gatewayName: details.gatewayName,
+      abbr: details?.abbr
+    })
+    return gateway
+
+  } catch (error) {
+    throw new Error("Internal server error")
+  }
 }
 
 /**
@@ -236,74 +236,88 @@ export async function adminGetPayoutStats(details, fastify) {
  * Ban user payin
  */
 export async function BanUserPayin(request) {
-    try {
-        const { id } = request.params
-        const { isBanned } = request.body
-        const user = await User.findOne({ where: { id: id } })
-        if (!user) {
-          return "User not exist";
-        }
-        user.isBanned = isBanned
-        await user.save()
-        return 'success'
-    } catch (error) {
-        throw new Error("Internal server error")
+  try {
+    const { id } = request.params
+    const { isBanned } = request.body
+    const user = await User.findOne({ where: { id: id } })
+    if (!user) {
+      return "User not exist";
     }
+    user.isBanned = isBanned
+    await user.save()
+    return 'success'
+  } catch (error) {
+    throw new Error("Internal server error")
+  }
 }
 
 /**
  * Ban user payin
  */
 export async function BanUserPayout(request) {
-    try {
-        const { id } = request.params
-        const { payoutsActive } = request.body
-        const user = await User.findOne({ where: { id: id } })
-        if (!user) {
-          return "User not exist";
-        }
-        user.payoutsActive = payoutsActive
-        await user.save()
-        return 'success'
-    } catch (error) {
-        throw new Error("Internal server error")
+  try {
+    const { id } = request.params
+    const { payoutsActive } = request.body
+    const user = await User.findOne({ where: { id: id } })
+    if (!user) {
+      return "User not exist";
     }
+    user.payoutsActive = payoutsActive
+    await user.save()
+    return 'success'
+  } catch (error) {
+    throw new Error("Internal server error")
+  }
 }
 
 export async function updateUsdtRate(request) {
   try {
-      const { usdtRate, notes } = request.body
-      const admin = await Admin.findOne({ where: { id: request.user.id } })
-      if (!admin) {
-        return "User not exist";
-      }
-      const now = Date.now();
+    const { usdtRate, notes } = request.body
+    const admin = await Admin.findOne({ where: { id: request.user.id } })
+    if (!admin) {
+      return "User not exist";
+    }
+    const now = Date.now();
 
-      admin.usdtRate = usdtRate
-      await updateAdminUsdtRate({
-        usdtRate,
-        date:now.toString(),
-        notes: notes
-      })
-      await admin.save()
-      return 'success'
+    admin.usdtRate = usdtRate
+    await updateAdminUsdtRate({
+      usdtRate,
+      date: now.toString(),
+      notes: notes
+    })
+    await admin.save()
+    return 'success'
   } catch (error) {
-    console.log('update usdt service',error)
-      throw new Error("Internal server error")
+    console.log('update usdt service', error)
+    throw new Error("Internal server error")
   }
 }
 
 export async function getUsdtRates(request) {
   try {
-    const {limit, skip} = request.query
+    const { limit, skip } = request.query
     const rates = await UsdtRate.findAll({
       limit: limit,
       offset: skip,
       order: [['createdAt', 'DESC']],
-    })      
-      return rates
+    })
+    return rates
   } catch (error) {
-    console.log('get usdt service',error)
-      throw new Error("Internal server error")
+    console.log('get usdt service', error)
+    throw new Error("Internal server error")
   }
 }
+
+export async function getUsdtRate() {
+  try {
+    const admin = await Admin.findOne({ where: { emailId: "info@gsxsolutions.com" } })
+    if (!admin) {
+      return { usdtRate: null }
+    }
+    return { usdtRate: admin?.usdtRate }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+

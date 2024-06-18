@@ -17,6 +17,8 @@ import {
   userGetPayoutStats,
   userLoginService,
   userRegisterService,
+  getUsdtRate,
+  resetPassword
 } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
@@ -66,7 +68,7 @@ async function userRoutes(fastify, options) {
     }
   );
 
-  
+
   /**
    * login user
    */
@@ -88,7 +90,7 @@ async function userRoutes(fastify, options) {
     }
   );
 
- 
+
   /**
    * add payin callback url
    */
@@ -131,7 +133,7 @@ async function userRoutes(fastify, options) {
     }
   );
 
-  
+
   /**
    * add payout callback url
    */
@@ -557,8 +559,67 @@ async function userRoutes(fastify, options) {
     }
   );
 
- 
-  
+  fastify.get("/dashboard/profile", {
+    preValidation: validateUserDashboardTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = {
+        business_name: request.user.business_name,
+        name: `${request.user.first_name} ${request.user.last_name}`,
+        email: request?.user?.email_id,
+        apiKey: request?.user?.apiKey,
+        encryptionKey: request?.user?.encryptionKey,
+        payinCallbackUrl: request?.user?.callbackUrl,
+        payoutCallbackUrl: request?.user?.payoutCallbackUrl
+      }
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/dashboard/usdtRate", {
+    preValidation: validateUserDashboardTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getUsdtRate()
+      if (response.usdtRate === null) {
+        return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
+      }
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.post("/dashboard/resetPassword", {
+    schema: {
+      body: {
+        type: "object",
+        properties: {
+          old_password: { type: "string" },
+          new_password: { type: "string" },
+        },
+        required: ["old_password", "new_password"],
+        additionalProperties: true
+      },
+    },
+    preValidation: validateUserDashboardTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await resetPassword(request.body, request.user)
+      if (response === "Success") {
+        return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+      }
+      return reply.status(500).send(responseMapping(500, response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+
+
+
 }
 
 export default userRoutes;

@@ -6,7 +6,7 @@ import db from "../db/index.js";
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
 import { fetchWithAuth } from "../utils/utils.js";
 
-const { User, Transaction, PayoutTransaction } = db
+const { User, Transaction, PayoutTransaction, Admin } = db
 
 
 export async function userRegisterService(details) {
@@ -60,7 +60,7 @@ export async function userLoginService(details, fastify) {
       await user.update({ token }, { where: { email_id } });
       return { token }
     }
-    return  'Invalid email or password' 
+    return 'Invalid email or password'
   } catch (error) {
     throw new Error("Internal server error")
   }
@@ -73,12 +73,12 @@ export async function userDashboardLoginService(details, fastify) {
 
     if (user && await bcrypt.compare(password, user.password)) {
       const token = await generateUserDashboardToken(email_id, fastify)
-      const apiKey = encryptApiKey(user.apiKey,user.encryptionKey);
+      const apiKey = encryptApiKey(user.apiKey, user.encryptionKey);
       await user.update({ token }, { where: { email_id } });
-      fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`,'POST',email_id,password,token)
+      fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`, 'POST', email_id, password, token)
       return { token, apiKey }
     }
-    return 'Invalid email or password' 
+    return 'Invalid email or password'
   } catch (error) {
     throw new Error("Internal server error")
   }
@@ -90,11 +90,11 @@ export async function registerUserToken(details, fastify) {
     const user = await findUser(email_id)
 
     if (user && await bcrypt.compare(password, user.password)) {
-     
-      await user.update({ token:details.token }, { where: { email_id } });
+
+      await user.update({ token: details.token }, { where: { email_id } });
       return 'success'
     }
-    return 'Invalid email or password' 
+    return 'Invalid email or password'
   } catch (error) {
     throw new Error("Internal server error")
   }
@@ -241,4 +241,75 @@ export async function userGetPayoutStats(details, fastify) {
     throw new Error("Internal server error");
   }
 }
+
+export async function getUsdtRate() {
+  try {
+    const admin = await Admin.findOne({ where: { emailId: "info@gsxsolutions.com" } })
+    if (!admin) {
+      return { usdtRate: null }
+    }
+    return { usdtRate: admin?.usdtRate }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+
+
+function validatePassword(password) {
+  const MIN_PASSWORD_LENGTH = 8;
+  const SPECIAL_CHAR_REGEX = /[!@#$%^&*(),.?":{}|<>]/;
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    throw new Error('Password must be at least 8 characters long');
+  }
+  if (!/[A-Z]/.test(password)) {
+    throw new Error('Password must contain at least one uppercase letter');
+  }
+  if (!/[a-z]/.test(password)) {
+    throw new Error('Password must contain at least one lowercase letter');
+  }
+  if (!/[0-9]/.test(password)) {
+    throw new Error('Password must contain at least one number');
+  }
+  if (!SPECIAL_CHAR_REGEX.test(password)) {
+    throw new Error('Password must contain at least one special character');
+  }
+}
+
+
+export async function resetPassword(details, user) {
+  try {
+    const foundUser = await User.findOne({ where: { email_id: user.email_id } });
+    const { old_password, new_password } = details;
+
+    if (!foundUser) {
+      return 'Invalid email or password';
+    }
+
+    const isPasswordValid = await bcrypt.compare(old_password, foundUser.password);
+    if (!isPasswordValid) {
+      return 'Invalid email or password';
+    }
+
+    validatePassword(new_password);
+
+    // Hash the new password before saving it to the database
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    foundUser.password = hashedPassword
+
+    // fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`, 'POST', email_id, password, token)
+
+
+    await foundUser.save()
+
+
+    return "Success"; // Replace with actual apiKey logic
+
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
 

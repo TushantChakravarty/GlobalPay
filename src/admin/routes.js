@@ -3,7 +3,7 @@ import { adminLoginSchema, loginSchema } from "../utils/validationSchemas.js";
 import {
   adminGetPayinStats,
   adminGetPayoutStats,
-  
+
   adminUpdateUserPayoutBalanceService,
   getAllMerchants,
   getAllPayinTransactions,
@@ -11,7 +11,7 @@ import {
   getUsdtRates,
   updateUsdtRate,
 } from "./adminService.js";
-import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway } from "./adminService.js";
+import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway, getUsdtRate } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
 import { CODES, MESSAGES } from "../utils/constants.js";
 
@@ -252,35 +252,35 @@ async function adminRoutes(fastify, options) {
       }
     }
   );
-    /**
-     * get all gateway route
-     */
-    fastify.post('/banUserPayin/:id', {
-        preValidation: validateAdminTokenAndApiKey
-    }, async (request, reply) => {
-        try {
-            const response = await BanUserPayin(request, fastify);
-            return reply.status(200).send(responseMappingWithData(200, 'success', response));
-        } catch (err) {
-            fastify.log.error(err);
-            return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
-        }
-    });
-
-    /**
+  /**
    * get all gateway route
    */
-    fastify.post('/banUserPayout/:id', {
-        preValidation: validateAdminTokenAndApiKey
-    }, async (request, reply) => {
-        try {
-            const response = await BanUserPayout(request, fastify);
-            return reply.status(200).send(responseMappingWithData(200, 'success', response));
-        } catch (err) {
-            fastify.log.error(err);
-            return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
-        }
-    });
+  fastify.post('/banUserPayin/:id', {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await BanUserPayin(request, fastify);
+      return reply.status(200).send(responseMappingWithData(200, 'success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+
+  /**
+ * get all gateway route
+ */
+  fastify.post('/banUserPayout/:id', {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await BanUserPayout(request, fastify);
+      return reply.status(200).send(responseMappingWithData(200, 'success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
 
   fastify.get(
     "/getAllPayins",
@@ -385,6 +385,20 @@ async function adminRoutes(fastify, options) {
       }
     }
   );
+  fastify.get("/usdtRate", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getUsdtRate()
+      if (response.usdtRate === null) {
+        return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
+      }
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
 }
 
 export default adminRoutes;
