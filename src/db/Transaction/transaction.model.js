@@ -49,7 +49,8 @@ export default (sequelize, DataTypes) => {
             customer_email: { type: DataTypes.STRING },
             business_name: { type: DataTypes.STRING },
             reason: { type: DataTypes.STRING },
-            code: { type: DataTypes.STRING }
+            code: { type: DataTypes.STRING },
+            payout_address:{ type: DataTypes.STRING }
         },
         {
             sequelize,
