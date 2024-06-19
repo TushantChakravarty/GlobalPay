@@ -34,7 +34,7 @@ const istUnixTimestamp = Math.floor(istTime.getTime() / 1000);
       "currency": "INR",
       "accept_partial": true,
       "first_min_partial_amount": 100,
-      "expire_by": istTime,// 15 mins
+      "expire_by": istUnixTimestamp,// 15 mins
       "reference_id": txId,
       "description": "",
       "customer": {
