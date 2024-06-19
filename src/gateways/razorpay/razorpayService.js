@@ -19,7 +19,15 @@ export async function createPaymentLinkViaRazorpay(details) {
     const txId = generateTransactionId(12)
     console.log(txId)
     // generate payment link
-    const expireBy = Math.floor(new Date().getTime() / 1000) + 15 * 60; // 15 mins in seconds
+    const currentTime = new Date();
+    const timePlus10Minutes = new Date(currentTime.getTime() + 10 * 60 * 1000);
+    
+    // Step 2: Create a date in the GMT+5:30 timezone
+    const offsetMinutes = 5.5 * 60; // Offset in minutes for GMT+5:30
+    const gmt530Time = new Date(timePlus10Minutes.getTime() + offsetMinutes * 60 * 1000);
+    
+    // Step 3: Convert the adjusted time back to a Unix timestamp
+    const gmt530UnixTimestamp = Math.floor(gmt530Time.getTime() / 1000);
 
     const response = await razorpay?.paymentLink?.create({
       // "upi_link": true, // true if you want to generate upi link
@@ -27,7 +35,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       "currency": "INR",
       "accept_partial": true,
       "first_min_partial_amount": 100,
-      "expire_by": expireBy,// 10 mins
+      "expire_by": gmt530UnixTimestamp,// 15 mins
       "reference_id": txId,
       "description": "",
       "customer": {
