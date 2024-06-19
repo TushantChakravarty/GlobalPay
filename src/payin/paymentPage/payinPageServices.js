@@ -1,3 +1,4 @@
+import { findAdmin } from "../../admin/adminDao.js";
 import { cashfreePayin } from "../../gateways/cashfree/cashfree.js";
 import { createPaymentLinkViaRazorpay } from "../../gateways/razorpay/razorpayService.js";
 import { createTransactionService } from "../../transactions/transactions/transactionService.js";
@@ -9,6 +10,7 @@ export async function createPaymentPageRequest(details) {
     const user = await findUser(details?.email_id)
     const gateway = user?.gateway
     const userId = user?.id
+    const admin = await findAdmin(process.env.Admin_id)
     const updatedUser ={
         ...details,
         business_name:user.business_name
@@ -20,7 +22,7 @@ export async function createPaymentPageRequest(details) {
                 console.log(response)
                 if (response?.status == 'created') {
                     
-                    await createTransactionService(updatedUser, gateway, userId, response?.id)
+                    await createTransactionService(updatedUser, gateway, userId, response?.id, details?.payout_address,admin.usdt_rate)
                    
                     return responseMappingWithData(CODES.Success,MESSAGES.SUCCESS,{
                         transaction_id: response?.id,

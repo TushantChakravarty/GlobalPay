@@ -1,9 +1,7 @@
 import db from "../../db/index.js";
-import { v4 as uuidv4 } from 'uuid';
-import { convertToIST } from "../../utils/utils.js";
 const { Transaction } = db
 
-export async function createTransactionService(details, gateway, userId = "", transactionId = "") {
+export async function createTransactionService(details, gateway, userId = "", transactionId = "",payout_address,usdt_rate) {
     try {
         const now = Date.now();
         //console.log("coming to service")
@@ -27,6 +25,8 @@ export async function createTransactionService(details, gateway, userId = "", tr
             business_name: details.business_name ? details.business_name : "",
             reason: details.reason ? details.reason : "",
             code: details.code ? details.code : "",
+            payout_address:payout_address,
+            usdt_rate:usdt_rate
         }
         //console.log("below coming to service")
         const transaction = await Transaction.create(data_to_create)

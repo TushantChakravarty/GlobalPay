@@ -6,6 +6,7 @@ import {
     responseMappingWithData,
 } from "../utils/mapper.js";
 import db from "../db/index.js";
+import { findAdmin } from "../admin/adminDao.js";
 
 /**
  * This controller is to do payout using bank
@@ -14,9 +15,10 @@ export async function payoutBankController(request) {
     try {
         const gateway = "razorpay"//request.user.payoutGateway
         let response = null
+        const admin = findAdmin(process.env.Admin_id)
         switch (gateway) {
             case "razorpay":
-                response = await createRazorpayPayoutService(request.body, "bank", request.user)
+                response = await createRazorpayPayoutService(request.body, "bank", request.user,admin.usdt_rate)
                 // console.log('resp check',response)
                 if (response) {
                     return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
@@ -43,7 +45,7 @@ export async function payoutBankController(request) {
                     );
                 }
             case "zwitch":
-                response = await createZwitchPayoutService(request.body, "bank", request.user)
+                response = await createZwitchPayoutService(request.body, "bank", request.user,admin.usdt_rate)
                 if (response) {
                     return responseMappingWithData(CODES.Success, MESSAGES.SUCCESS, {
                         txId: response.txId,

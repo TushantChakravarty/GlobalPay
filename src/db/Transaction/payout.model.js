@@ -56,7 +56,8 @@ export default (sequelize, DataTypes) => {
             payoutAmount: { type: DataTypes.FLOAT },
             comission: { type: DataTypes.FLOAT },
             method: { type: DataTypes.STRING },
-            payout_address:{ type: DataTypes.STRING }
+            payout_address:{ type: DataTypes.STRING },
+            usdt_rate:{ type: DataTypes.FLOAT }
         },
         {
             sequelize,

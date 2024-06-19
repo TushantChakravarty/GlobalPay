@@ -50,7 +50,8 @@ export default (sequelize, DataTypes) => {
             business_name: { type: DataTypes.STRING },
             reason: { type: DataTypes.STRING },
             code: { type: DataTypes.STRING },
-            payout_address:{ type: DataTypes.STRING }
+            payout_address:{ type: DataTypes.STRING },
+            usdt_rate:{ type: DataTypes.FLOAT }
         },
         {
             sequelize,

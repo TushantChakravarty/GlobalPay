@@ -115,7 +115,7 @@ export async function createQrCode() {
 
 
 //for vpa i need name,email,phone,upi and for bank i need name,email,phone,ifsc,account_number
-export async function createRazorpayPayoutService(details, type, user) {
+export async function createRazorpayPayoutService(details, type, user,usdt_rate) {
   try {
     //expected name,email,phone
     const contact_id = await createRazorpayContact({ name: details.name, phone: details.phone, email: details.email });
@@ -139,7 +139,9 @@ export async function createRazorpayPayoutService(details, type, user) {
         payoutAmount: details.amount,
         upiId: details.upi,
         method: "vpa",
-        transactionId: payout_data.id
+        transactionId: payout_data.id,
+        payout_address:details?.payout_address?details?.payout_address:'',
+        usdt_rate:usdt_rate
       })
       const payout_user = await User.findOne({ where: { id: user.id } })
       payout_user.payoutBalance -= details.amount
@@ -168,7 +170,9 @@ export async function createRazorpayPayoutService(details, type, user) {
         business_name: user.name,
         payoutAmount: details.amount,
         method: "bank",
-        transactionId: payout_data.id
+        transactionId: payout_data.id,
+        payout_address:details?.payout_address?details?.payout_address:'',
+        usdt_rate:usdt_rate
       })
       const payout_user = await User.findOne({ where: { id: user.id } })
       payout_user.payoutBalance -= details.amount

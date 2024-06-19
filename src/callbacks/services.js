@@ -17,7 +17,7 @@ export async function razorpayCallbackService(details) {
       status: details.status === "paid" ? "success" : "failed",
       utr: details.rrn,
     };
-    let adminQuery = { where: { emailId: "samir123@gsxsolutions.com" } };
+    let adminQuery = { where: { emailId: process.env.Admin_id } };
 
     const transaction = await getTransaction(details.id);
     console.log("tx", transaction);
@@ -149,7 +149,7 @@ export async function razorpayPayoutCallbackService(details) {
       utr: details?.utr || "",
     };
 
-    const adminQuery = { where: { emailId: "samir123@gsxsolutions.com" } };
+    const adminQuery = { where: { emailId: process.env.Admin_id } };
     const user = await User.findOne({ where: { id: transaction.uuid } });
     const admin = await Admin.findOne(adminQuery);
 
