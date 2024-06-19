@@ -19,13 +19,15 @@ export async function createPaymentLinkViaRazorpay(details) {
     const txId = generateTransactionId(12)
     console.log(txId)
     // generate payment link
+    const expireBy = Math.floor(new Date().getTime() / 1000) + 15 * 60; // 15 mins in seconds
+
     const response = await razorpay?.paymentLink?.create({
       // "upi_link": true, // true if you want to generate upi link
       "amount": Number(details?.amount) * 100,
       "currency": "INR",
       "accept_partial": true,
       "first_min_partial_amount": 100,
-      "expire_by": new Date().getTime() + 10 * 60 * 1000,// 10 mins
+      "expire_by": expireBy,// 10 mins
       "reference_id": txId,
       "description": "",
       "customer": {
