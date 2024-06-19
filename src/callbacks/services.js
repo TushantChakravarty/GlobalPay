@@ -198,7 +198,7 @@ export async function razorpayPayoutCallbackService(details) {
         usdtRate:admin?.usdtRate,
         usdtValue:usdtValue,
       };
-      const encryptedData = encryptText(JSON.stringify(callBackDetailsEncrypted), response.encryptionKey);
+      const encryptedData = encryptText(JSON.stringify(callBackDetailsEncrypted), user.encryptionKey);
       const callBackDetails = {
         transaction_id: details?.id,
         amount: transactionAmount,
