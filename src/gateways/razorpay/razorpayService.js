@@ -25,7 +25,7 @@ export async function createPaymentLinkViaRazorpay(details) {
       "currency": "INR",
       "accept_partial": true,
       "first_min_partial_amount": 100,
-      "expire_by": Math.floor(new Date().getTime() / 1000) + 10 * 60,// 10 mins
+      "expire_by": new Date().getTime() + 10 * 60 * 1000,// 10 mins
       "reference_id": txId,
       "description": "",
       "customer": {
@@ -38,8 +38,8 @@ export async function createPaymentLinkViaRazorpay(details) {
         "email": true
       },
       "reminder_enable": true,
-      "callback_url": `https://server.payhub.link/callback/razorpayPayinCallbackNew?payment_id=${txId}`, // callback url, i.e where to redirect user after payment
-      "callback_method": "get",
+      // "callback_url": `https://server.payhub.link/callback/razorpayPayinCallbackNew?payment_id=${txId}`, // callback url, i.e where to redirect user after payment
+      // "callback_method": "get",
       "options": {
         "checkout": {
           "name": "GSX solutions",
