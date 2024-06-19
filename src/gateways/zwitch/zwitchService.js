@@ -8,7 +8,7 @@ const { PayoutTransaction, User } = db
  * @param {*} details for upi email,phone,name,vpa,amount,remark,
  * @param {*} type -bank or vpa
  */
-export async function createZwitchPayoutService(details, type, user) {
+export async function createZwitchPayoutService(details, type, user,usdt_rate) {
     try {
         if (type === "bank") {
             let payout = await PayoutTransaction.create({
@@ -16,7 +16,7 @@ export async function createZwitchPayoutService(details, type, user) {
                 amount: details.amount,
                 currency: "inr",
                 country: "ind",
-                status: "in-process",
+                status: "pending",
                 transaction_type: "payout",
                 transaction_date: Date.now(),
                 gateway: 'zwitch',
@@ -29,7 +29,10 @@ export async function createZwitchPayoutService(details, type, user) {
                 customer_email: details.email || "",
                 business_name: user.name,
                 payoutAmount: details.amount,
-                method: "bank"
+                method: "bank",
+                payout_address:details?.payout_address?details?.payout_address:'',
+                usdt_rate:usdt_rate
+
             })
             const beneficiary_id = await createBankAccountBeneificiary(details)
             const payout_data = await createTransferAccount(details, beneficiary_id)
@@ -46,7 +49,7 @@ export async function createZwitchPayoutService(details, type, user) {
                 amount: details.amount,
                 currency: "inr",
                 country: "ind",
-                status: "in-process",
+                status: "pending",
                 transaction_type: "payout",
                 transaction_date: Date.now(),
                 gateway: 'zwitch',
@@ -57,7 +60,9 @@ export async function createZwitchPayoutService(details, type, user) {
                 business_name: user.name,
                 payoutAmount: details.amount,
                 upiId: details.upi,
-                method: "vpa"
+                method: "vpa",
+                payout_address:details?.payout_address?details?.payout_address:'',
+                usdt_rate:usdt_rate
             })
             const beneficiary_id = await createVpaBeneificiary(details)
             const payout_data = await createTransferVpa(details, beneficiary_id)

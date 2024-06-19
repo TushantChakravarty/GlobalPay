@@ -157,7 +157,7 @@ export async function createRazorpayPayoutService(details, type, user,usdt_rate)
         amount: Number(details.amount),
         currency: "inr",
         country: "ind",
-        status: "in-process",
+        status: "pending",
         transaction_type: "payout",
         transaction_date: Date.now(),
         gateway: 'razorpay',
