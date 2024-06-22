@@ -244,7 +244,7 @@ export async function userGetPayoutStats(details, fastify) {
 
 export async function getUsdtRate() {
   try {
-    const admin = await Admin.findOne({ where: { emailId: "info@gsxsolutions.com" } })
+    const admin = await Admin.findOne({ where: { emailId: process.env.Admin_id } })
     if (!admin) {
       return { usdtRate: null }
     }
