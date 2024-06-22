@@ -18,7 +18,8 @@ import {
   userLoginService,
   userRegisterService,
   getUsdtRate,
-  resetPassword
+  resetPassword,
+  getDashboardStats
 } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
@@ -596,11 +597,11 @@ async function userRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
-  fastify.get("/dashboard/usdtRate", {
+  fastify.get("/dashboard/stats", {
     preValidation: validateUserDashboardTokenAndApiKey
   }, async (request, reply) => {
     try {
-      const response = await getUsdtRate()
+      const response = await getDashboardStats(request)
       if (response.usdtRate === null) {
         return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
       }

@@ -256,6 +256,21 @@ export async function getUsdtRate() {
 }
 
 
+export async function getDashboardStats(details) {
+  try {
+    const admin = await Admin.findOne({ where: { emailId: process.env.Admin_id } })
+    
+    if (!admin) {
+      return { usdtRate: null }
+    }
+    return { usdtRate: admin?.usdtRate, payin24:details?.user?.last24hr,payout24: details?.user?.payoutsData?.last24hr, totalUsdtTx:0 }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+
 
 function validatePassword(password) {
   const MIN_PASSWORD_LENGTH = 8;
