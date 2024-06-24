@@ -133,7 +133,7 @@ export async function getAllPayinTransaction(details, user) {
       },
       limit: limit,
       offset: skip,
-      order: [['createdAt', 'ASC']]
+      order: [['createdAt', 'DESC']]
     })
     return all_payin_transaction
   } catch (error) {
@@ -151,7 +151,7 @@ export async function getAllPayoutTransaction(details, user) {
       },
       limit: limit,
       offset: skip,
-      order: [['createdAt', 'ASC']]
+      order: [['createdAt', 'DESC']]
     })
     return all_payout_transaction
   } catch (error) {
