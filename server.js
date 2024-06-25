@@ -7,7 +7,7 @@ import fastifyCors from '@fastify/cors';
 import { createUPICollectRequest, createUPIVirtualAccount, updateUPIVirtualAccount } from './src/gateways/zwitch/zwitchServices.js';
 import { createPaymentLinkViaRazorpay } from './src/gateways/razorpay/razorpayService.js';
 import { convertToIST } from './src/utils/utils.js';
-import { consumeMessages } from './src/utils/rabbitMQ.js';
+import { consumeMessages, initializeConsumers } from './src/utils/rabbitMQ.js';
 const fastify = Fastify({
     logger: true
 })
@@ -31,16 +31,7 @@ const startServer = async () => {
             return { message: 'Hello World' };
         });
         await fastify.listen({ port: 3000 })
-        try{
-
-            await consumeMessages('resetPassword')
-            .catch((e)=>{
-                console.log(e)
-            })
-        }catch(e)
-        {
-            console.log(e)
-        }
+        await initializeConsumers()
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)

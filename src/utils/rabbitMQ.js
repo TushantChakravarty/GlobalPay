@@ -56,6 +56,18 @@ export async function sendToQueue(message,channelName) {
       console.error('Error consuming messages from RabbitMQ:', error);
     }
   }
+
+  export async function initializeConsumers() {
+    try {
+      await consumeMessages('resetPassword').catch((e) => {
+        console.log(e);
+      });
+     
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  
   
   
   
