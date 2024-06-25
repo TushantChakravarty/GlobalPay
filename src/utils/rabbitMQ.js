@@ -31,20 +31,26 @@ export async function sendToQueue(message,channelName) {
   
       channel.consume(queue, (msg) => {
         if (msg !== null) {
-          const messageContent = msg.content.toString();
-          console.log(`Received message: ${messageContent}`);
-          if(channelName=='resetPassword')
-          {
-            registerNewPassword(messageContent)
-          }
-          // Process the message here
+          try {
+            const messageContent = msg.content.toString();
+            console.log(`Received message: ${messageContent}`);
   
-          channel.ack(msg);
+            if (channelName === 'resetPassword') {
+              registerNewPassword(messageContent);
+            }
+            // Process the message here
+  
+            channel.ack(msg);
+          } catch (processError) {
+            console.error('Error processing message:', processError);
+            // Optionally, acknowledge the message to remove it from the queue even if an error occurs
+            channel.ack(msg); 
+          }
         }
       });
     } catch (error) {
       console.error('Error consuming messages from RabbitMQ:', error);
     }
   }
-
+  
   
