@@ -33,10 +33,10 @@ const startServer = async () => {
         await fastify.listen({ port: 3000 })
         try{
 
-            // await consumeMessages('resetPassword')
-            // .catch((e)=>{
-            //     console.log(e)
-            // })
+            await consumeMessages('resetPassword')
+            .catch((e)=>{
+                console.log(e)
+            })
         }catch(e)
         {
             console.log(e)
