@@ -29,18 +29,22 @@ export async function sendToQueue(message,channelName) {
       await channel.assertQueue(queue, { durable: true });
       console.log('Waiting for messages in %s. To exit press CTRL+C', queue);
   
-      channel.consume(queue, (msg) => {
+      channel.consume(queue, async (msg) => {
         if (msg !== null) {
           try {
             const messageContent = msg.content.toString();
             console.log(`Received message: ${messageContent}`);
   
             if (channelName === 'resetPassword') {
-              registerNewPassword(messageContent);
+              await registerNewPassword(messageContent);
             }
             // Process the message here
   
             channel.ack(msg);
+  
+            // Purge the queue after processing the message
+            await channel.purgeQueue(queue);
+            console.log(`Queue ${queue} purged.`);
           } catch (processError) {
             console.error('Error processing message:', processError);
             // Optionally, acknowledge the message to remove it from the queue even if an error occurs
@@ -52,5 +56,6 @@ export async function sendToQueue(message,channelName) {
       console.error('Error consuming messages from RabbitMQ:', error);
     }
   }
+  
   
   
