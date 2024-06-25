@@ -10,6 +10,10 @@ import {
   getAllPayoutTransactions,
   getUsdtRates,
   updateUsdtRate,
+  getPayinActiveUsers,
+  getPayoutActiveUsers,
+  getMerchantPayinData,
+  getMerchantPayoutData
 } from "./adminService.js";
 import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway, getUsdtRate } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
@@ -393,6 +397,50 @@ async function adminRoutes(fastify, options) {
       if (response.usdtRate === null) {
         return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
       }
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/payoutActiveUsers", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getPayoutActiveUsers()
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/payinActiveUsers", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getPayinActiveUsers()
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/merchantPayoutData/:id", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getMerchantPayoutData(request)
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/merchantPayinData/:id", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getMerchantPayinData(request)
       return reply.status(200).send(responseMappingWithData(200, 'Success', response));
     } catch (err) {
       fastify.log.error(err);

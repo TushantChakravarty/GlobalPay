@@ -321,3 +321,51 @@ export async function getUsdtRate() {
   }
 }
 
+
+
+export async function getPayinActiveUsers() {
+  try {
+    const active_users = await User.findAll({
+      where: { isBanned: false },
+      attributes: ['id', 'business_name']
+    })
+    return active_users
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+export async function getPayoutActiveUsers() {
+  try {
+    const active_users = await User.findAll({ where: { payoutsActive: false }, attributes: ['id', 'business_name'] })
+    return active_users
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+
+export async function getMerchantPayoutData(details) {
+  try {
+    const id = details.params.id
+    const all_payout = PayoutTransaction.findAll({ where: { uuid: parseInt(id) } })
+    return all_payout
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+
+export async function getMerchantPayinData(details) {
+  try {
+    const id = details.params.id
+    const all_payin_transaction = Transaction.findAll({ where: { uuid: parseInt(id) } })
+    return all_payin_transaction
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
