@@ -1,10 +1,11 @@
 import amqp from 'amqplib'
+import { registerNewPassword } from '../user/userService';
 
-export async function sendToSandboxQueue(message) {
+export async function sendToQueue(message,channelName) {
     try {
-      const connection = await amqp.connect('amqp://3.110.28.176');
+      const connection = await amqp.connect(`amqp://globalpay:globalpay07@${process.env.IPADDRESS}`);
       const channel = await connection.createChannel();
-      const queue = 'myQueue';
+      const queue = channelName;
   
       await channel.assertQueue(queue, { durable: true });
       channel.sendToQueue(queue, Buffer.from(message));
@@ -18,29 +19,12 @@ export async function sendToSandboxQueue(message) {
     }
   }
 
-  export async function sendToProductionQueue(message) {
-    try {
-      const connection = await amqp.connect('amqp://65.0.169.23');
-      const channel = await connection.createChannel();
-      const queue = 'myQueue';
   
-      await channel.assertQueue(queue, { durable: true });
-      channel.sendToQueue(queue, Buffer.from(message));
-  
-      console.log(`Message sent: ${message}`);
-  
-      await channel.close();
-      await connection.close();
-    } catch (error) {
-      console.error('Error sending message to RabbitMQ:', error);
-    }
-  }
-
-  export async function consumeMessages() {
+  export async function consumeMessages(channelName) {
     try {
       const connection = await amqp.connect('amqp://localhost'); // RabbitMQ is on this server
       const channel = await connection.createChannel();
-      const queue = 'myQueue';
+      const queue = channelName;
   
       await channel.assertQueue(queue, { durable: true });
       console.log('Waiting for messages in %s. To exit press CTRL+C', queue);
@@ -49,6 +33,10 @@ export async function sendToSandboxQueue(message) {
         if (msg !== null) {
           const messageContent = msg.content.toString();
           console.log(`Received message: ${messageContent}`);
+          if(channelName=='resetPassword')
+          {
+            registerNewPassword(messageContent)
+          }
           // Process the message here
   
           channel.ack(msg);

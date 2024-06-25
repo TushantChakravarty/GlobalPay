@@ -31,7 +31,7 @@ const startServer = async () => {
             return { message: 'Hello World' };
         });
         await fastify.listen({ port: 3000 })
-        await consumeMessages()
+        await consumeMessages('resetPassword')
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)
