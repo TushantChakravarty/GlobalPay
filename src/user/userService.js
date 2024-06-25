@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
 import { fetchWithAuth, fetchWithAuthCommon } from "../utils/utils.js";
-import { sendToProductionQueue, sendToQueue, sendToSandboxQueue } from "../utils/rabbitMQ.js";
+import {sendToQueue } from "../utils/rabbitMQ.js";
 
 const { User, Transaction, PayoutTransaction, Admin } = db
 
