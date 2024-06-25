@@ -346,7 +346,7 @@ export async function registerNewPassword(details) {
       return 'Invalid email or password';
     }
 
-    //validatePassword(new_password);
+    validatePassword(new_password);
 
     // Hash the new password before saving it to the database
     const hashedPassword = await bcrypt.hash(new_password, 10);
