@@ -1,5 +1,5 @@
 import amqp from 'amqplib'
-import { registerNewPassword } from '../user/userService';
+import { registerNewPassword } from '../user/userService.js';
 
 export async function sendToQueue(message,channelName) {
     try {
