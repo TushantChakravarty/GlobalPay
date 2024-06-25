@@ -109,6 +109,8 @@ export const validateUserDashboardApiKey = async (request, reply) => {
       return reply.status(401).send(responseMapping( 403,"Invalid API key" ));
     }
     request.user = user
+    request.token = token
+    request.apiKey = apiKey
     // You can perform additional checks here if needed
     // Storing the decrypted details in request for further use
   } catch (error) {

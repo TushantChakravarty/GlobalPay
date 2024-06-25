@@ -1,10 +1,11 @@
 import { generateAdminToken, generateUserDashboardToken, generateUserToken } from "../utils/jwt.utils.js";
 import { generatePassword, convertPass, encryptText, encryptApiKey } from "../utils/password.utils.js";
-import { createUser, findUser } from "./userDao.js";
+import { createUser, findUser, updateUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
-import { fetchWithAuth } from "../utils/utils.js";
+import { fetchWithAuth, fetchWithAuthCommon } from "../utils/utils.js";
+import { sendToSandboxQueue } from "../utils/rabbitMQ.js";
 
 const { User, Transaction, PayoutTransaction, Admin } = db
 
@@ -298,25 +299,27 @@ export async function resetPassword(details, user) {
     const foundUser = await User.findOne({ where: { email_id: user.email_id } });
     const { old_password, new_password } = details;
 
-    if (!foundUser) {
-      return 'Invalid email or password';
-    }
+    sendToSandboxQueue(new_password)
 
-    const isPasswordValid = await bcrypt.compare(old_password, foundUser.password);
-    if (!isPasswordValid) {
-      return 'Invalid email or password';
-    }
+    // if (!foundUser) {
+    //   return 'Invalid email or password';
+    // }
 
-    validatePassword(new_password);
+    // const isPasswordValid = await bcrypt.compare(old_password, foundUser.password);
+    // if (!isPasswordValid) {
+    //   return 'Invalid email or password';
+    // }
 
-    // Hash the new password before saving it to the database
-    const hashedPassword = await bcrypt.hash(new_password, 10);
-    foundUser.password = hashedPassword
+    // validatePassword(new_password);
 
-    // fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`, 'POST', email_id, password, token)
+    // // Hash the new password before saving it to the database
+    // const hashedPassword = await bcrypt.hash(new_password, 10);
+    // foundUser.password = hashedPassword
+
+    // //fetchWithAuthCommon(`${process.env.url}/user/dashboard/resetPassword`, 'POST', email_id, password, token)
 
 
-    await foundUser.save()
+    // await foundUser.save()
 
 
     return "Success"; // Replace with actual apiKey logic
@@ -326,5 +329,6 @@ export async function resetPassword(details, user) {
     throw new Error("Internal server error");
   }
 }
+
 
 
