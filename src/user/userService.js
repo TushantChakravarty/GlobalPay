@@ -300,7 +300,7 @@ export async function resetPassword(details, user) {
     const { old_password, new_password } = details;
 
     //sendToSandboxQueue(new_password)
-    sendToQueue(new_password,'resetPassword')
+    sendToQueue({new_password,old_password,id:user.id},'resetPassword')
     if (!foundUser) {
       return 'Invalid email or password';
     }
