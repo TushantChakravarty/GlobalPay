@@ -300,7 +300,7 @@ export async function resetPassword(details, user) {
     const { old_password, new_password } = details;
 
     //sendToSandboxQueue(new_password)
-    sendToQueue(JSON.stringify({new_password,old_password,id:user.id}),'resetPassword')
+    sendToQueue(JSON.stringify({new_password,old_password,email_id:user.email_id}),'resetPassword')
     if (!foundUser) {
       return 'Invalid email or password';
     }
@@ -333,29 +333,29 @@ export async function resetPassword(details, user) {
 export async function registerNewPassword(details) {
   try {
     const data = JSON.parse(details)
-    const { old_password,new_password, id } = data;
-    const foundUser = await User.findOne({ where: { id: id} });
+    const { old_password,new_password, email_id } = data;
+    const foundUser = await User.findOne({ where: { email_id: email_id } });
 
    console.log(data)
-    // if (!foundUser) {
-    //   return 'Invalid email or password';
-    // }
+    if (!foundUser) {
+      return 'Invalid email or password';
+    }
 
-    // const isPasswordValid = await bcrypt.compare(old_password, foundUser.password);
-    // if (!isPasswordValid) {
-    //   return 'Invalid email or password';
-    // }
+    const isPasswordValid = await bcrypt.compare(old_password, foundUser.password);
+    if (!isPasswordValid) {
+      return 'Invalid email or password';
+    }
 
-    // //validatePassword(new_password);
+    //validatePassword(new_password);
 
-    // // Hash the new password before saving it to the database
-    // const hashedPassword = await bcrypt.hash(new_password, 10);
-    // foundUser.password = hashedPassword
+    // Hash the new password before saving it to the database
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    foundUser.password = hashedPassword
 
-    // //fetchWithAuthCommon(`${process.env.url}/user/dashboard/resetPassword`, 'POST', email_id, password, token)
+    //fetchWithAuthCommon(`${process.env.url}/user/dashboard/resetPassword`, 'POST', email_id, password, token)
 
 
-    // await foundUser.save()
+    await foundUser.save()
 
 
     return "Success"; // Replace with actual apiKey logic
