@@ -300,7 +300,7 @@ export async function resetPassword(details, user) {
     const { old_password, new_password } = details;
 
     //sendToSandboxQueue(new_password)
-    sendToQueue(JSON.stringify({new_password,old_password,email_id:user.email_id}),'resetPassword')
+    
     if (!foundUser) {
       return 'Invalid email or password';
     }
@@ -309,8 +309,8 @@ export async function resetPassword(details, user) {
     if (!isPasswordValid) {
       return 'Invalid email or password';
     }
-
     validatePassword(new_password);
+    sendToQueue(JSON.stringify({new_password,old_password,email_id:user.email_id}),'resetPassword')
 
     // Hash the new password before saving it to the database
     const hashedPassword = await bcrypt.hash(new_password, 10);
