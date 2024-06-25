@@ -350,7 +350,14 @@ export async function getPayoutActiveUsers() {
 export async function getMerchantPayoutData(details) {
   try {
     const id = details.params.id
-    const all_payout = PayoutTransaction.findAll({ where: { uuid: parseInt(id) } })
+    const { limit = 10, skip = 0 } = details.query
+    const all_payout = PayoutTransaction.findAll({
+      where: {
+        uuid: parseInt(id)
+      },
+      limit: limit,
+      offset: skip
+    })
     return all_payout
   } catch (error) {
     console.log(error);
@@ -362,7 +369,12 @@ export async function getMerchantPayoutData(details) {
 export async function getMerchantPayinData(details) {
   try {
     const id = details.params.id
-    const all_payin_transaction = Transaction.findAll({ where: { uuid: parseInt(id) } })
+    const { limit = 10, skip = 0 } = details.query
+    const all_payin_transaction = Transaction.findAll({
+      where: { uuid: parseInt(id) },
+      limit: limit,
+      offset: skip
+    })
     return all_payin_transaction
   } catch (error) {
     console.log(error);
