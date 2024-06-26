@@ -35,6 +35,9 @@ export async function userRegisterService(details) {
         email_id:createdUser.email_id,
         password: convertedPass,
         apiKey:apiKey,
+        first_name:details.first_name,
+        last_name:details.last_name,
+        business_name:details.business_name
       }
       sendToQueue(JSON.stringify(queueData),'registerUser')
 
