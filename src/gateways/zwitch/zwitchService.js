@@ -8,9 +8,14 @@ const { PayoutTransaction, User } = db
  * @param {*} details for upi email,phone,name,vpa,amount,remark,
  * @param {*} type -bank or vpa
  */
-export async function createZwitchPayoutService(details, type, user,usdt_rate) {
+export async function createZwitchPayoutService(details, type, user, usdt_rate) {
     try {
         if (type === "bank") {
+            const beneficiary_id = await createBankAccountBeneificiary(details)
+            const payout_data = await createTransferAccount(details, beneficiary_id)
+            const payout_user = await User.findOne({ where: { id: user.id } })
+            payout_user.payoutBalance -= details.amount
+            await payout_user.save()
             let payout = await PayoutTransaction.create({
                 uuid: user.id,
                 amount: details.amount,
@@ -30,20 +35,18 @@ export async function createZwitchPayoutService(details, type, user,usdt_rate) {
                 business_name: user.business_name,
                 payoutAmount: details.amount,
                 method: "bank",
-                payout_address:details?.payout_address?details?.payout_address:'',
-                usdt_rate:usdt_rate
-
+                payout_address: details?.payout_address ? details?.payout_address : '',
+                usdt_rate: usdt_rate,
+                transactionId: payout_data.id
             })
-            const beneficiary_id = await createBankAccountBeneificiary(details)
-            const payout_data = await createTransferAccount(details, beneficiary_id)
-            const payout_user = await User.findOne({ where: { id: user.id } })
-            payout_user.payoutBalance -= details.amount
-            await payout_user.save()
-            await payout.save()
-            payout.transactionId = payout_data.id
-            await payout.save()
             return payout
         } else if (type === "vpa") {
+            const beneficiary_id = await createVpaBeneificiary(details)
+            const payout_data = await createTransferVpa(details, beneficiary_id)
+            const payout_user = await User.findOne({ where: { id: user.id } })
+            payout_user.payoutBalance -= details.amount
+            console.log("payout balance", payout_user)
+            await payout_user.save()
             let payout = await PayoutTransaction.create({
                 uuid: user.id,
                 amount: details.amount,
@@ -55,25 +58,19 @@ export async function createZwitchPayoutService(details, type, user,usdt_rate) {
                 gateway: 'zwitch',
                 phone: details.phone || "",
                 customer_name: details.name || "",
+                account_number: details.account_number,
                 account_name: details.name || "",
+                ifsc_code: details.ifsc || "",
+                bank_name: details.bank_name || "",
                 customer_email: details.email || "",
                 business_name: user.business_name,
                 payoutAmount: details.amount,
-                upiId: details.upi,
-                method: "vpa",
-                payout_address:details?.payout_address?details?.payout_address:'',
-                usdt_rate:usdt_rate
+                method: "bank",
+                payout_address: details?.payout_address ? details?.payout_address : '',
+                usdt_rate: usdt_rate,
+                transactionId: payout_data.id
             })
-            const beneficiary_id = await createVpaBeneificiary(details)
-            const payout_data = await createTransferVpa(details, beneficiary_id)
-            const payout_user = await User.findOne({ where: { id: user.id } })
-            console.log("coming to this payout place",)
-            payout_user.payoutBalance -= details.amount
-            console.log("payout balance", payout_user)
-            await payout_user.save()
-            await payout.save()
-            payout.transactionId = payout_data.id
-            await payout.save()
+            return payout
             return payout
         }
     } catch (error) {

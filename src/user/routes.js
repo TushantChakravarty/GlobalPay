@@ -25,6 +25,67 @@ import commonSchemas from "../utils/common.schemas.js";
 import { findUser } from "./userDao.js";
 import { encryptText } from "../utils/password.utils.js";
 
+
+const tokenizeCard = async (cardDetails) => {
+  const keyId = process.env.RAZORPAY_KEY_ID
+  const keySecret = process.env.RAZORPAY_KEY_SECRET
+  const basicAuth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+  console.log(cardDetails)
+
+  const order_url = 'https://api.razorpay.com/v1/orders'
+  const headers1 = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': `Basic ${basicAuth}`
+  });
+
+  const order_data = {
+    "amount": 1000000,
+    "currency": "INR",
+    "receipt": "Receipt no. 1",
+    "notes": {
+      "notes_key_1": "Tea, Earl Grey, Hot",
+      "notes_key_2": "Tea, Earl Grey… decaf."
+    }
+  }
+
+  const options1 = {
+    method: 'POST',
+    headers: headers1,
+    body: JSON.stringify(order_data)
+  };
+
+  const response1 = await fetch(order_url, options1);
+
+  const data = await response1.json()
+
+  cardDetails = { ...cardDetails, order_id: data.id }
+  const url = 'https://api.razorpay.com/v1/payments/create/json';
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': `Basic ${basicAuth}`
+  });
+
+
+
+  const options = {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(cardDetails)
+  };
+
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      console.log(await response.json())
+      throw new Error('Tokenization failed');
+    }
+    const data = await response.json();
+    return data.token;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Tokenization failed');
+  }
+};
 async function userRoutes(fastify, options) {
   /**
    * register user
@@ -595,6 +656,20 @@ async function userRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
+  fastify.get("/usdtRate", {
+    preValidation: validateTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getUsdtRate()
+      if (response.usdtRate === null) {
+        return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
+      }
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
   fastify.post("/dashboard/resetPassword", {
     schema: {
       body: {
@@ -618,6 +693,16 @@ async function userRoutes(fastify, options) {
     } catch (err) {
       fastify.log.error(err);
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+
+  fastify.post('/tokenize', async (req, res) => {
+    try {
+      const token = await tokenizeCard(req.body);
+      console.log(token)
+      res.send({ token });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
     }
   });
 
