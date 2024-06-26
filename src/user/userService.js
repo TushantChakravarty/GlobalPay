@@ -1,10 +1,11 @@
 import { generateAdminToken, generateUserDashboardToken, generateUserToken } from "../utils/jwt.utils.js";
 import { generatePassword, convertPass, encryptText, encryptApiKey } from "../utils/password.utils.js";
-import { createUser, findUser } from "./userDao.js";
+import { createUser, findUser, updateUser } from "./userDao.js";
 import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
-import { fetchWithAuth } from "../utils/utils.js";
+import { fetchWithAuth, fetchWithAuthCommon } from "../utils/utils.js";
+import {sendToQueue } from "../utils/rabbitMQ.js";
 
 const { User, Transaction, PayoutTransaction, Admin } = db
 
@@ -30,6 +31,16 @@ export async function userRegisterService(details) {
     const createdUser = await createUser(details)
     let responseData = {}
     if (createdUser) {
+      const queueData ={
+        email_id:createdUser.email_id,
+        password: convertedPass,
+        apiKey:apiKey,
+        first_name:details.first_name,
+        last_name:details.last_name,
+        business_name:details.business_name
+      }
+      sendToQueue(JSON.stringify(queueData),'registerUser')
+
       responseData = {
         email: createdUser.email_id,
         password: password,
@@ -39,6 +50,29 @@ export async function userRegisterService(details) {
     }
 
     return responseData;
+
+  } catch (err) {
+    console.log("userRegisterService", err)
+    throw new Error("Internal server error")
+
+  }
+
+}
+
+export async function registerUserFromServer(details) {
+  try {
+   
+
+    const data = JSON.parse(details)
+    
+    data.balance = 0;
+    const createdUser = await createUser(data)
+   
+    if (createdUser) {
+     
+      
+      return responseMapping(200,'success')
+    }
 
   } catch (err) {
     console.log("userRegisterService", err)
@@ -73,7 +107,7 @@ export async function userDashboardLoginService(details, fastify) {
 
     if (user && await bcrypt.compare(password, user.password)) {
       const token = await generateUserDashboardToken(email_id, fastify)
-      const apiKey = encryptApiKey(user.apiKey, user.encryptionKey);
+      const apiKey = encryptText(user.apiKey);
       await user.update({ token }, { where: { email_id } });
       fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`, 'POST', email_id, password, token)
       return { token, apiKey }
@@ -133,7 +167,7 @@ export async function getAllPayinTransaction(details, user) {
       },
       limit: limit,
       offset: skip,
-      order: [['createdAt', 'ASC']]
+      order: [['createdAt', 'DESC']]
     })
     return all_payin_transaction
   } catch (error) {
@@ -151,7 +185,7 @@ export async function getAllPayoutTransaction(details, user) {
       },
       limit: limit,
       offset: skip,
-      order: [['createdAt', 'ASC']]
+      order: [['createdAt', 'DESC']]
     })
     return all_payout_transaction
   } catch (error) {
@@ -244,11 +278,26 @@ export async function userGetPayoutStats(details, fastify) {
 
 export async function getUsdtRate() {
   try {
-    const admin = await Admin.findOne({ where: { emailId: "info@gsxsolutions.com" } })
+    const admin = await Admin.findOne({ where: { emailId: process.env.Admin_id } })
     if (!admin) {
       return { usdtRate: null }
     }
     return { usdtRate: admin?.usdtRate }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+
+export async function getDashboardStats(details) {
+  try {
+    const admin = await Admin.findOne({ where: { emailId: process.env.Admin_id } })
+    
+    if (!admin) {
+      return { usdtRate: null }
+    }
+    return { usdtRate: admin?.usdtRate, payin24:details?.user?.last24hr,payout24: details?.user?.payoutsData?.last24hr, totalUsdtTx:0 }
   } catch (error) {
     console.log(error);
     throw new Error("Internal server error");
@@ -283,6 +332,44 @@ export async function resetPassword(details, user) {
     const foundUser = await User.findOne({ where: { email_id: user.email_id } });
     const { old_password, new_password } = details;
 
+    //sendToSandboxQueue(new_password)
+    
+    if (!foundUser) {
+      return 'Invalid email or password';
+    }
+
+    const isPasswordValid = await bcrypt.compare(old_password, foundUser.password);
+    if (!isPasswordValid) {
+      return 'Invalid email or password';
+    }
+    validatePassword(new_password);
+    sendToQueue(JSON.stringify({new_password,old_password,email_id:user.email_id}),'resetPassword')
+
+    // Hash the new password before saving it to the database
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    foundUser.password = hashedPassword
+
+    //fetchWithAuthCommon(`${process.env.url}/user/dashboard/resetPassword`, 'POST', email_id, password, token)
+
+
+    await foundUser.save()
+
+
+    return "Success"; // Replace with actual apiKey logic
+
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+export async function registerNewPassword(details) {
+  try {
+    const data = JSON.parse(details)
+    const { old_password,new_password, email_id } = data;
+    const foundUser = await User.findOne({ where: { email_id: email_id } });
+
+   console.log(data)
     if (!foundUser) {
       return 'Invalid email or password';
     }
@@ -298,7 +385,7 @@ export async function resetPassword(details, user) {
     const hashedPassword = await bcrypt.hash(new_password, 10);
     foundUser.password = hashedPassword
 
-    // fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`, 'POST', email_id, password, token)
+    //fetchWithAuthCommon(`${process.env.url}/user/dashboard/resetPassword`, 'POST', email_id, password, token)
 
 
     await foundUser.save()
@@ -311,5 +398,6 @@ export async function resetPassword(details, user) {
     throw new Error("Internal server error");
   }
 }
+
 
 

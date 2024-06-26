@@ -7,6 +7,7 @@ import fastifyCors from '@fastify/cors';
 import { createUPICollectRequest, createUPIVirtualAccount, updateUPIVirtualAccount } from './src/gateways/zwitch/zwitchServices.js';
 import { createPaymentLinkViaRazorpay } from './src/gateways/razorpay/razorpayService.js';
 import { convertToIST } from './src/utils/utils.js';
+import { consumeMessages, initializeConsumers } from './src/utils/rabbitMQ.js';
 const fastify = Fastify({
     logger: true
 })
@@ -30,6 +31,7 @@ const startServer = async () => {
             return { message: 'Hello World' };
         });
         await fastify.listen({ port: 3000 })
+        await initializeConsumers()
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)
@@ -37,3 +39,9 @@ const startServer = async () => {
 }
 //
 startServer()
+
+
+//Address: https://gsxsolutions.com
+// Email id: test1@gmail.com
+// Password: 73dqod44kza6n3kxd4bs
+// Apikey: U2FsdGVkX1+Su6lZGKoLUztkOKHZJFraCl5v7twFwO8=

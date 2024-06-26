@@ -18,7 +18,8 @@ import {
   userLoginService,
   userRegisterService,
   getUsdtRate,
-  resetPassword
+  resetPassword,
+  getDashboardStats
 } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
@@ -312,6 +313,21 @@ async function userRoutes(fastify, options) {
     }
   );
 
+  fastify.get("/usdtRate", {
+    preValidation: validateTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getUsdtRate()
+      if (response.usdtRate === null) {
+        return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
+      }
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+
   // Dashboard routes below**************************************
 
 
@@ -473,6 +489,8 @@ async function userRoutes(fastify, options) {
                     customer_email: { type: "string" },
                     transaction_date: { type: "string" },
                     utr: { type: "string" },
+                    payout_address:{ type: "string" },
+                    usdt_rate:{ type: "integer" },
                     createdAt: { type: "string" },
                   },
                 },
@@ -541,6 +559,8 @@ async function userRoutes(fastify, options) {
                     method: { type: "string" },
                     transaction_date: { type: "string" },
                     utr: { type: "string" },
+                    payout_address:{ type: "string" },
+                    usdt_rate:{ type: "integer" },
                     createdAt: { type: "string" },
                   },
                 },
@@ -642,11 +662,11 @@ async function userRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
-  fastify.get("/dashboard/usdtRate", {
+  fastify.get("/dashboard/stats", {
     preValidation: validateUserDashboardTokenAndApiKey
   }, async (request, reply) => {
     try {
-      const response = await getUsdtRate()
+      const response = await getDashboardStats(request)
       if (response.usdtRate === null) {
         return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
       }

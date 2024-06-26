@@ -310,7 +310,7 @@ export async function getUsdtRates(request) {
 
 export async function getUsdtRate() {
   try {
-    const admin = await Admin.findOne({ where: { emailId: "info@gsxsolutions.com" } })
+    const admin = await Admin.findOne({ where: { emailId: process.env.Admin_id } })
     if (!admin) {
       return { usdtRate: null }
     }
@@ -376,6 +376,20 @@ export async function getMerchantPayinData(details) {
       offset: skip
     })
     return all_payin_transaction
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+export async function getDashboardStats() {
+  try {
+    const admin = await Admin.findOne({ where: { emailId: process.env.Admin_id } })
+
+    if (!admin) {
+      return { usdtRate: null }
+    }
+    return { usdtRate: admin?.usdtRate, payin24: admin.last24hr, payout24: admin?.payouts?.last24hr, totalUsdtTx: 0 }
   } catch (error) {
     console.log(error);
     throw new Error("Internal server error");
