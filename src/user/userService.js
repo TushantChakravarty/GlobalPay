@@ -107,7 +107,7 @@ export async function userDashboardLoginService(details, fastify) {
 
     if (user && await bcrypt.compare(password, user.password)) {
       const token = await generateUserDashboardToken(email_id, fastify)
-      const apiKey = encryptApiKey(user.apiKey, user.encryptionKey);
+      const apiKey = encryptText(user.apiKey);
       await user.update({ token }, { where: { email_id } });
       fetchWithAuth(`${process.env.url}/user/dashboard/registerToken`, 'POST', email_id, password, token)
       return { token, apiKey }
