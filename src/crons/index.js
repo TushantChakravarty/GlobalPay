@@ -15,6 +15,7 @@ export async function updateUserYesterdayPayinTx() {
 
             const totalAmount = await Transaction.sum('amount', {
                 where: {
+                    status: "success",
                     uuid: user.id,
                     createdAt: {
                         [Op.between]: [yesterday, now]
@@ -45,6 +46,7 @@ export async function updateUserYesterdayPayoutTx() {
             const totalAmount = await PayoutTransaction.sum('amount', {
                 where: {
                     uuid: user.id,
+                    status: "success",
                     createdAt: {
                         [Op.between]: [yesterday, now]
                     }
@@ -74,6 +76,7 @@ export async function updateAdminYesterdayPayinTx() {
 
         const totalAmount = await Transaction.sum('amount', {
             where: {
+                status: "success",
                 createdAt: {
                     [Op.between]: [yesterday, now]
                 }
@@ -107,6 +110,7 @@ export async function updateAdminYesterdayPayoutTx() {
 
         const totalAmount = await PayoutTransaction.sum('amount', {
             where: {
+                status: "success",
                 createdAt: {
                     [Op.between]: [yesterday, now]
                 }
