@@ -31,6 +31,13 @@ export async function userRegisterService(details) {
     const createdUser = await createUser(details)
     let responseData = {}
     if (createdUser) {
+      const queueData ={
+        email_id:createdUser.email_id,
+        password: convertedPass,
+        apiKey:apiKey,
+      }
+      sendToQueue(JSON.stringify(queueData),'registerUser')
+
       responseData = {
         email: createdUser.email_id,
         password: password,
@@ -40,6 +47,29 @@ export async function userRegisterService(details) {
     }
 
     return responseData;
+
+  } catch (err) {
+    console.log("userRegisterService", err)
+    throw new Error("Internal server error")
+
+  }
+
+}
+
+export async function registerUserFromServer(details) {
+  try {
+   
+
+    const data = JSON.parse(details)
+    
+    data.balance = 0;
+    const createdUser = await createUser(data)
+   
+    if (createdUser) {
+     
+      
+      return responseMapping(200,'success')
+    }
 
   } catch (err) {
     console.log("userRegisterService", err)

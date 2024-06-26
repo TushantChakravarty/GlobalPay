@@ -1,5 +1,5 @@
 import amqp from 'amqplib'
-import { registerNewPassword } from '../user/userService.js';
+import { registerNewPassword, registerUserFromServer } from '../user/userService.js';
 
 export async function sendToQueue(message,channelName) {
     try {
@@ -38,6 +38,9 @@ export async function sendToQueue(message,channelName) {
             if (channelName === 'resetPassword') {
               await registerNewPassword(messageContent);
             }
+            if (channelName === 'registerUser') {
+              await registerUserFromServer(messageContent);
+            }
             // Process the message here
   
             channel.ack(msg);
@@ -60,6 +63,10 @@ export async function sendToQueue(message,channelName) {
   export async function initializeConsumers() {
     try {
       await consumeMessages('resetPassword').catch((e) => {
+        console.log(e);
+      });
+
+      await consumeMessages('registerUser').catch((e) => {
         console.log(e);
       });
      
