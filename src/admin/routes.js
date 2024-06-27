@@ -15,7 +15,8 @@ import {
   getPayoutActiveUsers,
   getMerchantPayinData,
   getMerchantPayoutData,
-  getMerchantPayinStats
+  getMerchantPayinStats,
+  getMerchantPayoutStats
 } from "./adminService.js";
 import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway, getUsdtRate } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
@@ -463,7 +464,7 @@ async function adminRoutes(fastify, options) {
     }
   });
 
-  fastify.get("/merchantStats/:id", {
+  fastify.get("/merchantPayinStats/:id", {
     preValidation: validateAdminTokenAndApiKey
   }, async (request, reply) => {
     try {
@@ -474,6 +475,20 @@ async function adminRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
+
+  fastify.get("/merchantPayoutStats/:id", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getMerchantPayoutStats(request)
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
 }
+
+
 
 export default adminRoutes;
