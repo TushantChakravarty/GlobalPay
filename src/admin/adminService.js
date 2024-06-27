@@ -8,6 +8,7 @@ import { createAdmin, findAdmin, updateAdminUsdtRate } from "./adminDao.js";
 import bcrypt from "bcryptjs";
 
 import db from "../db/index.js";
+import { findUserById } from "../user/userDao.js";
 
 const { Admin, User, Gateway, PayoutTransaction, Transaction, UsdtRate } = db;
 
@@ -390,6 +391,55 @@ export async function getDashboardStats() {
       return { usdtRate: null }
     }
     return { usdtRate: admin?.usdtRate, payin24: admin.last24hr, payout24: admin?.payouts?.last24hr, totalUsdtTx: 0 }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+export async function getMerchantPayinStats(details, fastify) {
+  try {
+    const id = details.params.id
+    const user = await findUserById(id);
+    if (!user) {
+      return "User not exist";
+    }
+    const data = {
+      balance: user.balance,
+      last24hr: user.last24hr,
+      yesterday: user.yesterday,
+      totalVolume: user.totalVolume,
+      successfulTransactions: user.successfulTransactions,
+      last24hrSuccess: user.last24hrSuccess,
+      last24hrTotal: user.last24hrTotal,
+      totalTransactions: user.totalTransactions,
+    };
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+export async function getMerchantPayoutStats(details, fastify) {
+  try {
+    const id = details.params.id
+    const user = await findUserById(id);
+    if (!user) {
+      return "User not exist";
+    }
+    const data = {
+      balance: user.payoutBalance,
+      last24hr: user.payoutsData.last24hr,
+      yesterday: user.payoutsData.yesterday,
+      successfulTransactions: user.payoutsData.successfulTransactions,
+      last24hrSuccess: user.payoutsData.last24hrSuccess,
+      last24hrTotal: user.payoutsData.last24hrTotal,
+      totalTransactions: user.payoutsData.totalTransactions,
+    };
+
+    return data;
   } catch (error) {
     console.log(error);
     throw new Error("Internal server error");

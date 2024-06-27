@@ -24,6 +24,15 @@ export async function findUser(email_id) {
   }
 }
 
+export async function findUserById(id) {
+  try {
+    const user = await User.findOne({ where: { id } });
+    return user;
+  } catch (error) {
+    throw new Error("Internal server error");
+  }
+}
+
 export async function findUserByApiKey(apiKey) {
   try {
     const user = await User.findOne({ where: { apiKey } });
