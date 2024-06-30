@@ -476,7 +476,7 @@ async function adminRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
-  fastify.get("/getAlTransactionDatewise", {
+  fastify.get("/getAllTransactionDatewise", {
     preValidation: validateAdminTokenAndApiKey
   }, async (request, reply) => {
     try {
