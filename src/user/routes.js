@@ -19,7 +19,8 @@ import {
   userRegisterService,
   getUsdtRate,
   resetPassword,
-  getDashboardStats
+  getDashboardStats,
+  getAllTransactionDatewise
 } from "./userService.js";
 import { responseMappingWithData, responseMapping } from "../utils/mapper.js";
 import commonSchemas from "../utils/common.schemas.js";
@@ -715,6 +716,19 @@ async function userRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
+
+  fastify.post("/dashboard/getAllTransactionDatewise", {
+    preValidation: validateUserDashboardTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getAllTransactionDatewise(request)
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+
 
   fastify.post('/tokenize', async (req, res) => {
     try {

@@ -5,7 +5,9 @@ import bcrypt from 'bcryptjs';
 import db from "../db/index.js";
 import { responseMapping, responseMappingWithData } from "../utils/mapper.js";
 import { fetchWithAuth, fetchWithAuthCommon } from "../utils/utils.js";
-import {sendToQueue } from "../utils/rabbitMQ.js";
+import { sendToQueue } from "../utils/rabbitMQ.js";
+import { Op } from "sequelize";
+import moment from "moment";
 
 const { User, Transaction, PayoutTransaction, Admin } = db
 
@@ -31,15 +33,15 @@ export async function userRegisterService(details) {
     const createdUser = await createUser(details)
     let responseData = {}
     if (createdUser) {
-      const queueData ={
-        email_id:createdUser.email_id,
+      const queueData = {
+        email_id: createdUser.email_id,
         password: convertedPass,
-        apiKey:apiKey,
-        first_name:details.first_name,
-        last_name:details.last_name,
-        business_name:details.business_name
+        apiKey: apiKey,
+        first_name: details.first_name,
+        last_name: details.last_name,
+        business_name: details.business_name
       }
-      sendToQueue(JSON.stringify(queueData),'registerUser')
+      sendToQueue(JSON.stringify(queueData), 'registerUser')
 
       responseData = {
         email: createdUser.email_id,
@@ -61,17 +63,17 @@ export async function userRegisterService(details) {
 
 export async function registerUserFromServer(details) {
   try {
-   
+
 
     const data = JSON.parse(details)
-    
+
     data.balance = 0;
     const createdUser = await createUser(data)
-   
+
     if (createdUser) {
-     
-      
-      return responseMapping(200,'success')
+
+
+      return responseMapping(200, 'success')
     }
 
   } catch (err) {
@@ -293,11 +295,11 @@ export async function getUsdtRate() {
 export async function getDashboardStats(details) {
   try {
     const admin = await Admin.findOne({ where: { emailId: process.env.Admin_id } })
-    
+
     if (!admin) {
       return { usdtRate: null }
     }
-    return { usdtRate: admin?.usdtRate, payin24:details?.user?.last24hr,payout24: details?.user?.payoutsData?.last24hr, totalUsdtTx:0 }
+    return { usdtRate: admin?.usdtRate, payin24: details?.user?.last24hr, payout24: details?.user?.payoutsData?.last24hr, totalUsdtTx: 0 }
   } catch (error) {
     console.log(error);
     throw new Error("Internal server error");
@@ -333,7 +335,7 @@ export async function resetPassword(details, user) {
     const { old_password, new_password } = details;
 
     //sendToSandboxQueue(new_password)
-    
+
     if (!foundUser) {
       return 'Invalid email or password';
     }
@@ -343,7 +345,7 @@ export async function resetPassword(details, user) {
       return 'Invalid email or password';
     }
     validatePassword(new_password);
-    sendToQueue(JSON.stringify({new_password,old_password,email_id:user.email_id}),'resetPassword')
+    sendToQueue(JSON.stringify({ new_password, old_password, email_id: user.email_id }), 'resetPassword')
 
     // Hash the new password before saving it to the database
     const hashedPassword = await bcrypt.hash(new_password, 10);
@@ -366,10 +368,10 @@ export async function resetPassword(details, user) {
 export async function registerNewPassword(details) {
   try {
     const data = JSON.parse(details)
-    const { old_password,new_password, email_id } = data;
+    const { old_password, new_password, email_id } = data;
     const foundUser = await User.findOne({ where: { email_id: email_id } });
 
-   console.log(data)
+    console.log(data)
     if (!foundUser) {
       return 'Invalid email or password';
     }
@@ -398,6 +400,34 @@ export async function registerNewPassword(details) {
     throw new Error("Internal server error");
   }
 }
+
+export async function getAllTransactionDatewise(details) {
+  try {
+    const { startDate = null, endDate = null, limit = 10, skip = 0 } = details.query
+    if (startDate === null || endDate === null) {
+      return []
+    }
+    const start = moment(startDate).startOf('day').toDate(); // 2024-06-01 00:00:00
+    const end = moment(endDate).endOf('day').toDate(); // 2024-06-30 23:59:59
+
+    const all_transaction = await Transaction.findAll({
+      where: {
+        uuid: details.user.id,
+        createdAt: {
+          [Op.between]: [start, end] //[new Date(startDate), new Date(endDate + 'T23:59:59')]
+        }
+      },
+      limit: limit,
+      offset: skip
+    })
+    return all_transaction
+
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
 
 
 

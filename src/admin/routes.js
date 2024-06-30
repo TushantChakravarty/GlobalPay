@@ -14,7 +14,9 @@ import {
   getPayinActiveUsers,
   getPayoutActiveUsers,
   getMerchantPayinData,
-  getMerchantPayoutData
+  getMerchantPayoutData,
+  getAllMerchantTransactionDatewise,
+  getAllTransactionDatewise
 } from "./adminService.js";
 import { BanUserPayin, BanUserPayout, addGateway, adminLoginService, adminRegisterService, adminUpdatePayinGatewayService, adminUpdatePayoutGatewayService, getAllGateway, getUsdtRate } from "./adminService.js";
 import { validateAdminTokenAndApiKey } from "../utils/jwt.utils.js";
@@ -456,6 +458,42 @@ async function adminRoutes(fastify, options) {
       if (response.usdtRate === null) {
         return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
       }
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/getDashboardStats", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getDashboardStats()
+      if (response.usdtRate === null) {
+        return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
+      }
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/getAlTransactionDatewise", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getAllTransactionDatewise(request)
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
+
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+    }
+  });
+  fastify.get("/getAllMerchantTransactonDatewise", {
+    preValidation: validateAdminTokenAndApiKey
+  }, async (request, reply) => {
+    try {
+      const response = await getAllMerchantTransactionDatewise(request)
+      return reply.status(200).send(responseMappingWithData(200, 'Success', response));
     } catch (err) {
       fastify.log.error(err);
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));

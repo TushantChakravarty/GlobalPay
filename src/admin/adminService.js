@@ -8,6 +8,8 @@ import { createAdmin, findAdmin, updateAdminUsdtRate } from "./adminDao.js";
 import bcrypt from "bcryptjs";
 
 import db from "../db/index.js";
+import { Op } from "sequelize";
+import moment from "moment";
 
 const { Admin, User, Gateway, PayoutTransaction, Transaction, UsdtRate } = db;
 
@@ -390,6 +392,61 @@ export async function getDashboardStats() {
       return { usdtRate: null }
     }
     return { usdtRate: admin?.usdtRate, payin24: admin.last24hr, payout24: admin?.payouts?.last24hr, totalUsdtTx: 0 }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+
+export async function getAllTransactionDatewise(details) {
+  try {
+    const { startDate = null, endDate = null, limit = 10, skip = 0 } = details.query
+    if (startDate === null || endDate === null) {
+      return []
+    }
+    const start = moment(startDate).startOf('day').toDate(); // 2024-06-01 00:00:00
+    const end = moment(endDate).endOf('day').toDate(); // 2024-06-30 23:59:59
+
+    const all_transaction = await Transaction.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [start, end] ////[new Date(startDate), new Date(endDate + 'T23:59:59')]
+        }
+      },
+      limit: limit,
+      offset: skip
+    })
+    return all_transaction
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}
+
+export async function getAllMerchantTransactionDatewise(details) {
+  try {
+    const { startDate = null, endDate = null, limit = 10, skip = 0, id = null } = details.query
+    if (startDate === null || endDate === null) {
+      return []
+    }
+    if (id === null) {
+      return []
+    }
+    const start = moment(startDate).startOf('day').toDate(); // 2024-06-01 00:00:00
+    const end = moment(endDate).endOf('day').toDate(); // 2024-06-30 23:59:59
+
+    const all_transaction = await Transaction.findAll({
+      where: {
+        uuid: parseInt(id),
+        createdAt: {
+          [Op.between]: [start, end] ////[new Date(startDate), new Date(endDate + 'T23:59:59')]
+        }
+      },
+      limit: limit,
+      offset: skip
+    })
+    return all_transaction
   } catch (error) {
     console.log(error);
     throw new Error("Internal server error");
