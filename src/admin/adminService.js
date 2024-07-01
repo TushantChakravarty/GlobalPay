@@ -402,23 +402,34 @@ export async function getDashboardStats() {
 
 export async function getAllTransactionDatewise(details) {
   try {
-    const { startDate = null, endDate = null, limit = 10, skip = 0 } = details.query
+    const { startDate = null, endDate = null, limit = 10, skip = 0, status = "all" } = details.query;
+
     if (startDate === null || endDate === null) {
-      return []
+      return [];
     }
+
     const start = moment(startDate).startOf('day').toDate(); // 2024-06-01 00:00:00
     const end = moment(endDate).endOf('day').toDate(); // 2024-06-30 23:59:59
 
+    // Create a where clause object
+    const whereClause = {
+      createdAt: {
+        [Op.between]: [start, end]
+      }
+    };
+
+    // Conditionally add the status to the where clause if it's not "all"
+    if (status !== "all") {
+      whereClause.status = status;
+    }
+
     const all_transaction = await Transaction.findAll({
-      where: {
-        createdAt: {
-          [Op.between]: [start, end] ////[new Date(startDate), new Date(endDate + 'T23:59:59')]
-        }
-      },
+      where: whereClause,
       limit: limit,
       offset: skip
-    })
-    return all_transaction
+    });
+
+    return all_transaction;
   } catch (error) {
     console.log(error);
     throw new Error("Internal server error");
@@ -451,7 +462,7 @@ export async function getMerchantPayinStats(details, fastify) {
 
 export async function getAllMerchantTransactionDatewise(details) {
   try {
-    const { startDate = null, endDate = null, limit = 10, skip = 0, id = null } = details.query
+    const { startDate = null, endDate = null, limit = 10, skip = 0, id = null, status = 'all' } = details.query
     if (startDate === null || endDate === null) {
       return []
     }
@@ -460,14 +471,18 @@ export async function getAllMerchantTransactionDatewise(details) {
     }
     const start = moment(startDate).startOf('day').toDate(); // 2024-06-01 00:00:00
     const end = moment(endDate).endOf('day').toDate(); // 2024-06-30 23:59:59
+    const whereClause = {
+      uuid: parseInt(id),
+      createdAt: {
+        [Op.between]: [start, end] ////[new Date(startDate), new Date(endDate + 'T23:59:59')]
+      }
+    }
+    if (status !== 'all') {
+      whereClause.status = status
 
+    }
     const all_transaction = await Transaction.findAll({
-      where: {
-        uuid: parseInt(id),
-        createdAt: {
-          [Op.between]: [start, end] ////[new Date(startDate), new Date(endDate + 'T23:59:59')]
-        }
-      },
+      where: whereClause,
       limit: limit,
       offset: skip
     })

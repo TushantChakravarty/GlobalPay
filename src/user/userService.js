@@ -403,20 +403,25 @@ export async function registerNewPassword(details) {
 
 export async function getAllTransactionDatewise(details) {
   try {
-    const { startDate = null, endDate = null, limit = 10, skip = 0 } = details.query
+    const { startDate = null, endDate = null, limit = 10, skip = 0, status = 'all' } = details.query
     if (startDate === null || endDate === null) {
       return []
     }
     const start = moment(startDate).startOf('day').toDate(); // 2024-06-01 00:00:00
     const end = moment(endDate).endOf('day').toDate(); // 2024-06-30 23:59:59
 
+    let whereClause = {
+      uuid: details.user.id,
+      createdAt: {
+        [Op.between]: [start, end] //[new Date(startDate), new Date(endDate + 'T23:59:59')]
+      }
+    }
+    if (status !== 'all') {
+      whereClause.status = status
+    }
+
     const all_transaction = await Transaction.findAll({
-      where: {
-        uuid: details.user.id,
-        createdAt: {
-          [Op.between]: [start, end] //[new Date(startDate), new Date(endDate + 'T23:59:59')]
-        }
-      },
+      where: whereClause,
       limit: limit,
       offset: skip
     })
