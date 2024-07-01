@@ -465,19 +465,19 @@ async function adminRoutes(fastify, options) {
       return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
     }
   });
-  fastify.get("/getDashboardStats", {
-    preValidation: validateAdminTokenAndApiKey
-  }, async (request, reply) => {
-    try {
-      const response = await getDashboardStats()
-      if (response.usdtRate === null) {
-        return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
-      }
-    } catch (err) {
-      fastify.log.error(err);
-      return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
-    }
-  });
+  // fastify.get("/getDashboardStats", {
+  //   preValidation: validateAdminTokenAndApiKey
+  // }, async (request, reply) => {
+  //   try {
+  //     const response = await getDashboardStats()
+  //     if (response.usdtRate === null) {
+  //       return reply.status(500).send(responseMapping(500, 'Unable to get usdt rate'));
+  //     }
+  //   } catch (err) {
+  //     fastify.log.error(err);
+  //     return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+  //   }
+  // });
   fastify.get("/getAllTransactionDatewise", {
     preValidation: validateAdminTokenAndApiKey
   }, async (request, reply) => {
