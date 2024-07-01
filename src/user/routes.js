@@ -721,6 +721,9 @@ async function userRoutes(fastify, options) {
     preValidation: validateUserDashboardTokenAndApiKey
   }, async (request, reply) => {
     try {
+      if (request.query.status !== 'all' || request.query.status !== 'pending' || request.query.status !== 'success' || request.query.status !== 'failed' || request.query.status !== 'expired') {
+        return reply.status(500).send(responseMapping(500, 'Internal Server Error'));
+      }
       const response = await getAllTransactionDatewise(request)
       return reply.status(200).send(responseMappingWithData(200, 'Success', response));
     } catch (err) {
