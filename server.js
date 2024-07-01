@@ -41,7 +41,7 @@ const startServer = async () => {
 //
 startServer()
 
-cronJobs()
+//cronJobs()
 
 //Address: https://gsxsolutions.com
 // Email id: test1@gmail.com
